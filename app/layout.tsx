@@ -23,6 +23,11 @@ export default function RootLayout({
 
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
   const [isCollapsed, setIsCollapsed] = React.useState(false);
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleToggleSidebar = () => setSidebarOpen((prev) => !prev);
 
@@ -56,14 +61,14 @@ export default function RootLayout({
                   className="flex-1 flex flex-col min-h-screen transition-all duration-300 ml-0"
                   style={{
                     marginLeft:
-                      window.innerWidth >= 768 ? `${sidebarWidth}px` : "0",
+                      mounted && window.innerWidth >= 768 ? `${sidebarWidth}px` : "0",
                   }}
                 >
                   <div
                     className="fixed top-0 right-0 z-20 w-full transition-all duration-300 md:left-auto"
                     style={{
                       left:
-                        window.innerWidth >= 768 ? `${sidebarWidth}px` : "0",
+                        mounted && window.innerWidth >= 768 ? `${sidebarWidth}px` : "0",
                     }}
                   >
                     <TalentTopBar onToggleSidebar={handleToggleSidebar} />
