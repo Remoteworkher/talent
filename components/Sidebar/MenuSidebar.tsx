@@ -64,7 +64,7 @@ const others: MenuItemType[] = [
   {
     label: "Settings",
     icon: "/settings-2-line.svg",
-    href: "#",
+    href: "/settings",
   },
   {
     label: "Support",

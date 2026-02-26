@@ -53,27 +53,27 @@ const LoginCarousel = () => {
   }, []);
 
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-l-[80px] hidden md:block group">
+    <div className="relative h-full w-full overflow-hidden hidden rounded-l-[80px] md:block group">
       <AnimatePresence mode="wait">
         <motion.div
           key={current}
           initial={{ opacity: 0, scale: 1.05 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="relative h-full w-full"
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="relative h-full rounded-l-[80px] w-full"
         >
-          <div className="absolute inset-0">
+          <div className="absolute inset-0 rounded-l-[80px]">
             <Image
               src={slides[current].image}
               alt="Slide background"
               fill
-              className="object-cover"
+              className="object-cover rounded-l-[80px]"
               priority
             />
             {/* Multi-stage gradient for text legibility without muddying the whole image */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-            <div className="absolute inset-0 bg-black/10" />
+            <div className="absolute rounded-l-[80px] inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+            <div className="absolute rounded-l-[80px] inset-0 bg-black/10" />
           </div>
 
           <div className="absolute bottom-16 left-16 right-16 z-10 text-white space-y-10">
