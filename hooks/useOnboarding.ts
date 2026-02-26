@@ -18,13 +18,13 @@ export interface OnboardingQuestion {
   label: string;
   key: string;
   input: {
-    type: "dropdown" | "radio" | "text" | "number" | "range" | "file";
+    type: "dropdown" | "radio" | "text" | "number" | "range" | "file" | "single-selection";
     label: string;
     placeholder: string;
     base_label?: string;
   };
   other: null | any;
-  options: { label: string; value: string }[];
+  options: (string | { label: string; value: string })[];
 }
 
 export interface OnboardingQuestionsData {
@@ -32,13 +32,16 @@ export interface OnboardingQuestionsData {
 }
 
 // 3. Payload Structure for Saving Answers
-export interface OnboardingAnswerItem {
-  key: string;
-  answer: string | string[] | number;
+export type OnboardingAnswersPayload = Record<string, any> | FormData;
+
+// 4. Goal structure
+export interface OnboardingGoal {
+  label: string;
+  value: string;
 }
 
-export interface OnboardingAnswersPayload {
-  answers: OnboardingAnswerItem[];
+export interface OnboardingGoalsData {
+  goals: OnboardingGoal[];
 }
 
 // --- Goal Mutation Hook ---
@@ -58,6 +61,23 @@ export const useSetPrimaryGoal = () => {
     onSuccess: (data) => {
       queryClient.setQueryData(["onboarding-questions"], data);
     },
+  });
+};
+
+// --- Fetch Goals Hook ---
+
+const fetchOnboardingGoals = async (): Promise<OnboardingGoalsData> => {
+  const res = await axios.get<ApiResponse<OnboardingGoalsData>>(
+    "/api/talent/onboarding/goals",
+  );
+  return res.data.data;
+};
+
+export const useOnboardingGoals = () => {
+  return useQuery({
+    queryKey: ["onboarding-goals"],
+    queryFn: fetchOnboardingGoals,
+    staleTime: 1000 * 60 * 60, // 1 hour as goals don't change often
   });
 };
 
@@ -81,9 +101,15 @@ export const useOnboardingQuestions = () => {
 // --- Store Mutation Hook ---
 
 const storeOnboardingAnswers = async (payload: OnboardingAnswersPayload) => {
+  const isFormData = payload instanceof FormData;
   const res = await axios.post<ApiResponse<null>>(
     "/api/talent/onboarding/answers",
     payload,
+    {
+      headers: {
+        'Content-Type': isFormData ? 'multipart/form-data' : 'application/json',
+      }
+    }
   );
   return res.data;
 };

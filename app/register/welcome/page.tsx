@@ -104,14 +104,13 @@ const Page = () => {
         </div>
 
         {/* Buttons */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-8">
-          <Button className="w-full">Get started</Button>
+        <div className="flex justify-center items-center pt-8">
           <Button
             className="w-full"
             variant="outline"
             onClick={() => router.push("/")}
           >
-            Skip for now
+            Go to Dashboard
           </Button>
         </div>
       </section>

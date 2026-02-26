@@ -2,19 +2,29 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "../lib/axios";
 
 export interface Plan {
-  id: number;
+  uid: string;
+  tag: string | null;
   name: string;
-  price: number;
-  // Add other fields as needed
+  price: string;
+  tokens: string;
+  currency: string;
+  billing_period: string;
+  features: string[];
 }
 
-const fetchPlans = async (): Promise<Plan[]> => {
+export interface PlansByPeriod {
+  monthly?: Plan[];
+  quarterly?: Plan[];
+  yearly?: Plan[];
+}
+
+const fetchPlans = async (): Promise<PlansByPeriod> => {
   const res = await axios.get("/api/talent/plans");
   return res.data.data;
 };
 
 export const usePlans = () => {
-  return useQuery<Plan[]>({
+  return useQuery<PlansByPeriod>({
     queryKey: ["plans"],
     queryFn: fetchPlans,
   });
