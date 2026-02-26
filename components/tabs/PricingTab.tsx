@@ -15,6 +15,7 @@ type PriceCardProps = {
     tag: string | null;
     name: string;
     price: string;
+    tokens: string;
     currency: string;
     billing_period: string;
     features: string[];
@@ -28,7 +29,7 @@ const PriceCard: React.FC<PriceCardProps> = ({ plan, onSelect }) => (
       plan.tag === "recommended"
         ? "border-4 border-[#322FEB]"
         : "border border-[#E8E8E8]"
-    } px-4 py-10 rounded-[10px] h-full bg-white`}
+    } px-4 py-10 rounded-[18px] h-full bg-white`}
     style={{ minHeight: 500 }}
   >
     {plan.tag === "recommended" && (
@@ -60,7 +61,7 @@ const PriceCard: React.FC<PriceCardProps> = ({ plan, onSelect }) => (
         </span>
       </div>
       <div className="text-[#6A6D71] text-[16px] text-center">
-        20 Credits/month
+        { plan.tokens} Token(s)/month
       </div>
     </div>
     <div className="pt-8 text-[#161A21] text-[16px] space-y-4 flex-1">
@@ -85,6 +86,7 @@ type Plan = {
   tag: string | null;
   name: string;
   price: string;
+  tokens: string;
   currency: string;
   billing_period: string;
   features: string[];
@@ -123,9 +125,11 @@ const PricingTab = () => {
   const renderPlans = (period: "monthly" | "quarterly" | "yearly") => {
     if (!plans || !plans[period]) return null;
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+      <div className="flex flex-wrap justify-center gap-5">
         {plans[period].map((plan: Plan) => (
-          <PriceCard key={plan.uid} plan={plan} onSelect={handleSelectPlan} />
+          <div key={plan.uid} className="w-full sm:w-[calc(50%-1.25rem)] md:w-[calc(33.333%-1.25rem)] max-w-[360px]">
+            <PriceCard plan={plan} onSelect={handleSelectPlan} />
+          </div>
         ))}
       </div>
     );

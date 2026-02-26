@@ -32,6 +32,7 @@ export default function RootLayout({
   const handleToggleSidebar = () => setSidebarOpen((prev) => !prev);
 
   const sidebarWidth = isCollapsed ? 80 : 275;
+  const isDesktop = mounted && typeof window !== "undefined" ? window.innerWidth >= 768 : false;
 
   return (
     <html lang="en">

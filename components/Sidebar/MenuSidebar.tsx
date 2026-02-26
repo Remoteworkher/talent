@@ -52,7 +52,7 @@ const resources: MenuItemType[] = [
   {
     label: "Resources",
     icon: "/resources-icon.svg",
-    href: "#",
+    href: "/resources",
   },
   {
     label: "Challenges",
