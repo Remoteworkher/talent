@@ -13,18 +13,38 @@ function getToken() {
 }
 
 const instance = axios.create({
-  baseURL: "https://api.remoteworkher.com",
+  baseURL: "https://api.usecompass.co",
   withCredentials: true,
 });
 
+import { getFullDeviceInfo } from "./device-info";
+
+let cachedDeviceInfo: { fingerprint: string; deviceInfo: string } | null = null;
+
+async function getHeadersInfo() {
+  if (cachedDeviceInfo) return cachedDeviceInfo;
+  cachedDeviceInfo = await getFullDeviceInfo();
+  return cachedDeviceInfo;
+}
+
 // Request interceptor: attach JWT if present
 instance.interceptors.request.use(
-  (config) => {
+  async (config) => {
     const token = getToken();
     if (token) {
       config.headers = config.headers || {};
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    // Add device info and fingerprint to headers
+    try {
+      const { fingerprint, deviceInfo } = await getHeadersInfo();
+      config.headers["x-fingerprint"] = fingerprint;
+      config.headers["x-device-info"] = deviceInfo;
+    } catch (err) {
+      console.error("Failed to attach device info headers", err);
+    }
+
     return config;
   },
   (error) => Promise.reject(error),
