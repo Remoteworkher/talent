@@ -8,7 +8,7 @@ import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "next/navigation";
 import Loader from "./Loader";
 
-// --- PriceCard Component ---
+// --- PriceCard Reusable Component ---
 type PriceCardProps = {
   plan: {
     uid: string;

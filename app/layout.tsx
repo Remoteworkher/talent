@@ -61,13 +61,15 @@ export default function RootLayout({
                 <div
                   className="flex-1 flex flex-col min-h-screen transition-all duration-300 ml-0"
                   style={{
-                    marginLeft: isDesktop ? `${sidebarWidth}px` : "0",
+                    marginLeft:
+                      mounted && window.innerWidth >= 768 ? `${sidebarWidth}px` : "0",
                   }}
                 >
                   <div
                     className="fixed top-0 right-0 z-20 w-full transition-all duration-300 md:left-auto"
                     style={{
-                      left: isDesktop ? `${sidebarWidth}px` : "0",
+                      left:
+                        mounted && window.innerWidth >= 768 ? `${sidebarWidth}px` : "0",
                     }}
                   >
                     <TalentTopBar onToggleSidebar={handleToggleSidebar} />
