@@ -12,48 +12,31 @@ import ResourceDetail from "@/components/Resources/ResourceDetail";
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
-const categories = [
-  { id: "all", label: "All resources" },
-  { id: "templates", label: "Templates" },
-  { id: "guides", label: "Guides" },
-  { id: "interview", label: "Interview" },
-  { id: "linkedin", label: "LinkedIn" },
-  { id: "career", label: "Career" },
-  { id: "videos", label: "Videos" },
-];
+import { useResources } from "@/hooks/useResources";
+import { useUserData } from "@/hooks/userData";
+import { Loader2 } from "lucide-react";
 
-const mockTemplates = [
-  { id: "1", title: "Resume Templates", description: "Access reusable resume templates for your next job", image: "/resume-templates.svg", tokenCost: 1, actionLabel: "View resume templates", type: "PDF + Editable Document" },
-  { id: "2", title: "Cover Letter Templates", description: "Access reusable cover letter templates for your next job", image: "/resume-templates.svg", tokenCost: 1, actionLabel: "View cover letter templates", type: "PDF + Editable Document" },
-  { id: "3", title: "Email Templates", description: "Access reusable email templates for your next job", image: "/resume-templates.svg", tokenCost: 1, actionLabel: "View email templates", type: "PDF + Editable Document" },
-];
-
-const mockGuides = [
-  { id: "g1", title: "Remote Work 101", description: "A guide on how to secure high paying remote jobs and staying productive", tokenCost: 1, buttonLabel: "Download" },
-  { id: "g2", title: "Writing Winning Resumes", description: "Access reusable resume templates for your next job", tokenCost: 1, buttonLabel: "Download" },
-  { id: "g3", title: "Building Remote Work Relationship", description: "Access reusable resume templates for your next job", tokenCost: 1, buttonLabel: "Download" },
-];
-
-const mockRecordings = [
-  { id: "r1", title: "Resume Building Masterclass", description: "Learn how to build a professional resume that lands a high paying job...", duration: "45mins", date: "Jan 21, 2025" },
-  { id: "r2", title: "Salary Negotiation Workshop", description: "Learn how to negotiate your salary like a pro...", duration: "60mins", date: "Jan 18, 2025" },
-];
+import { useRouter } from "next/navigation";
 
 export default function ResourcesPage() {
-  const [selectedResource, setSelectedResource] = useState<any>(null);
+  const router = useRouter();
+  const [selectedResourceType, setSelectedResourceType] = useState<string | undefined>(undefined);
+  
+  const { data: resourcesData, isLoading: isResourcesLoading } = useResources(selectedResourceType === 'all' ? undefined : selectedResourceType);
+  const { data: userData } = useUserData();
 
-  if (selectedResource) {
-    return (
-      <ResourceDetail
-        title={selectedResource.title}
-        type={selectedResource.type || "Resource Guide"}
-        image={selectedResource.image || "/resume-template-1.png"}
-        tokenCost={selectedResource.tokenCost || 1}
-        tokensAvailable={5}
-        onBack={() => setSelectedResource(null)}
-      />
-    );
-  }
+  const handleTabChange = (value: string) => {
+    setSelectedResourceType(value);
+  };
+
+  const handleViewDetail = (uid: string) => {
+    router.push(`/resources/${uid}`);
+  };
+
+  const categories = [
+    { id: "all", label: "All resources" },
+    ...(resourcesData?.types.map(t => ({ id: t.id, label: t.label })) || [])
+  ];
 
   return (
     <div className="max-w-[1440px] mx-auto p-4 md:p-8 space-y-12 pb-20">
@@ -73,7 +56,7 @@ export default function ResourcesPage() {
           />
         </div>
 
-        <Tabs defaultValue="all" className="w-full space-y-8">
+        <Tabs defaultValue="all" className="w-full space-y-8" onValueChange={handleTabChange}>
           <TabsList className="bg-transparent h-auto p-0 flex flex-wrap gap-2 justify-start overflow-x-auto scrollbar-hide">
             {categories.map((cat) => (
               <TabsTrigger
@@ -86,85 +69,87 @@ export default function ResourcesPage() {
             ))}
           </TabsList>
 
-          <TabsContent value="all" className="space-y-12">
-            {/* Templates Section */}
-            <section className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="mori-semibold text-[20px] text-[#161A21]">Templates (12)</h2>
-                <button className="text-[#322FEB] text-[14px] font-semibold hover:underline">View all</button>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {mockTemplates.map((item) => (
-                  <TemplateCard 
-                    key={item.id} 
-                    {...item} 
-                    onViewDetail={() => setSelectedResource(item)} 
-                  />
-                ))}
-              </div>
-            </section>
-
-            {/* Guides Section */}
-            <section className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="mori-semibold text-[20px] text-[#161A21]">Guides (24)</h2>
-                <button className="text-[#322FEB] text-[14px] font-semibold hover:underline">View all</button>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {mockGuides.map((item) => (
-                  <GuideCard key={item.id} {...item} />
-                ))}
-              </div>
-            </section>
-
-            {/* Salary CTA Banner */}
-            <SalaryCTA />
-
-            {/* Past Recordings Section */}
-            <section className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="mori-semibold text-[20px] text-[#161A21]">Past Recordings</h2>
-                <button className="text-[#322FEB] text-[14px] font-semibold hover:underline">View all</button>
-              </div>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {mockRecordings.map((item) => (
-                  <RecordingCard key={item.id} {...item} />
-                ))}
-              </div>
-            </section>
-          </TabsContent>
-
-          <TabsContent value="templates">
-             <section className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {mockTemplates.map((item) => (
-                    <TemplateCard 
-                      key={item.id} 
-                      {...item} 
-                      onViewDetail={() => setSelectedResource(item)} 
-                    />
-                  ))}
-                  {/* Additional mock items could go here */}
-                </div>
-             </section>
-          </TabsContent>
-
-          {/* ... Other TabsContent items as needed ... */}
-          <TabsContent value="guides">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {mockGuides.map((item) => (
-                <GuideCard key={item.id} {...item} />
-              ))}
+          {isResourcesLoading ? (
+            <div className="flex justify-center items-center py-20">
+              <Loader2 className="w-10 h-10 animate-spin text-[#322FEB]" />
             </div>
-          </TabsContent>
+          ) : (
+            <>
+              <TabsContent value={selectedResourceType || "all"} className="space-y-12">
+                {resourcesData?.groups.map((group) => {
+                  const type = group.resource_type || group.name.toLowerCase();
+                  const isVideo = type === 'videos' || type === 'recording';
+                  const isTemplate = type === 'templates';
+                  
+                  return (
+                    <section key={group.uid} className="space-y-6">
+                      <div className="flex items-center justify-between">
+                        <div className="space-y-1">
+                          <h2 className="mori-semibold text-[20px] text-[#161A21]">
+                            {group.name} ({group.resources_count})
+                          </h2>
+                          {group.description && (
+                            <p className="text-[#6A6D71] text-[14px]">{group.description}</p>
+                          )}
+                        </div>
+                        <button className="text-[#322FEB] text-[14px] font-semibold hover:underline">View all</button>
+                      </div>
 
-          <TabsContent value="videos">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {mockRecordings.map((item) => (
-                <RecordingCard key={item.id} {...item} />
-              ))}
-            </div>
-          </TabsContent>
+                      <div className={
+                        isVideo 
+                          ? "grid grid-cols-1 lg:grid-cols-2 gap-6" 
+                          : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                      }>
+                        {group.resources.map((item) => (
+                          <div key={item.uid}>
+                            {isTemplate ? (
+                              <TemplateCard 
+                                title={item.name}
+                                description={item.description}
+                                image={item.preview_url || "/resume-templates.svg"}
+                                tokenCost={item.tokens}
+                                actionLabel={`View ${group.name.toLowerCase()}`}
+                                onViewDetail={() => handleViewDetail(item.uid)} 
+                              />
+                            ) : isVideo ? (
+                              <RecordingCard 
+                                title={item.name}
+                                description={item.description}
+                                duration={(item as any).duration || "45mins"}
+                                date={(item as any).date || "Jan 21, 2025"}
+                                onWatch={() => handleViewDetail(item.uid)}
+                              />
+                            ) : (
+                              <GuideCard 
+                                title={item.name}
+                                description={item.description}
+                                tokenCost={item.tokens}
+                                buttonLabel="Download"
+                                onAction={() => handleViewDetail(item.uid)}
+                              />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                      
+                      {/* Inject Salary CTA after Templates group in "All" view */}
+                      {selectedResourceType === 'all' && isTemplate && (
+                        <div className="py-6">
+                          <SalaryCTA />
+                        </div>
+                      )}
+                    </section>
+                  );
+                })}
+
+                {(!resourcesData?.groups || resourcesData.groups.length === 0) && (
+                  <div className="py-20 text-center text-[#6A6D71]">
+                    No resources found in this category.
+                  </div>
+                )}
+              </TabsContent>
+            </>
+          )}
         </Tabs>
       </div>
     </div>

@@ -21,7 +21,7 @@ const RecordingCard = ({
   onWatch
 }: RecordingCardProps) => {
   return (
-    <div className="bg-white rounded-[16px] border border-[#E8E8E8] p-5 flex flex-col md:flex-row md:items-center gap-5 hover:shadow-sm transition-all">
+    <div className="bg-white rounded-[16px] border border-[#E8E8E8] p-3 flex flex-col md:flex-row md:items-center gap-5 transition-all">
       <div className="w-16 h-16 md:w-20 md:h-20 lg:w-[100px] lg:h-[100px] rounded-[10px] bg-[#F6F3FF] flex-shrink-0 flex items-center justify-center text-[#322FEB]">
         <Image src="/gift-line-2.svg" alt="Gift" width={20} height={20} />
       </div>
@@ -46,7 +46,7 @@ const RecordingCard = ({
 
       <Button 
         variant="outline"
-        className="rounded-full h-[46px] px-6 border-[#E8E8E8] text-[#161A21] font-medium flex items-center gap-2"
+        className="rounded-full px-6 border-[#E8E8E8] text-[#161A21] font-medium flex items-center gap-2"
         onClick={onWatch}
       >
         Watch

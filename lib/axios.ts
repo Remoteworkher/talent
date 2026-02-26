@@ -36,13 +36,16 @@ instance.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
-    // Add device info and fingerprint to headers
+    // Add device info, fingerprint and current URL to headers
     try {
       const { fingerprint, deviceInfo } = await getHeadersInfo();
       config.headers["x-fingerprint"] = fingerprint;
       config.headers["x-device-info"] = deviceInfo;
+      if (typeof window !== "undefined") {
+        config.headers["x-current-url"] = window.location.href;
+      }
     } catch (err) {
-      console.error("Failed to attach device info headers", err);
+      console.error("Failed to attach extra headers", err);
     }
 
     return config;

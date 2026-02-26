@@ -60,7 +60,18 @@ const resources: MenuItemType[] = [
     href: "#",
   },
 ];
-const others: MenuItemType[] = [];
+const others: MenuItemType[] = [
+  {
+    label: "Settings",
+    icon: "/settings-2-line.svg",
+    href: "#",
+  },
+  {
+    label: "Support",
+    icon: "/headphone-line.svg",
+    href: "#",
+  },
+];
 
 const MenuSidebar = ({
   onCollapseChange,
@@ -83,6 +94,7 @@ const MenuSidebar = ({
         >
           <NameCard isCollapsed={isCollapsed} />
         </div>
+
         <div
           className={`flex-1 overflow-y-auto ${isCollapsed ? "px-2 pt-2" : "pr-4"} pb-4 transition-all duration-300`}
         >
@@ -125,16 +137,51 @@ const MenuSidebar = ({
               isCollapsed={isCollapsed}
             />
           ))}
-          {others.map((item) => (
-            <MenuItem
-              key={item.label}
-              label={item.label}
-              icon={item.icon}
-              href={item.href}
-              soon={item.soon}
-              isCollapsed={isCollapsed}
-            />
-          ))}
+        </div>
+
+        {/* Bottom Section */}
+        <div className={`mt-auto pb-6 ${isCollapsed ? "px-2" : "px-4"} space-y-4 transition-all duration-300`}>
+          <div className="space-y-1">
+            {others.map((item) => (
+              <MenuItem
+                key={item.label}
+                label={item.label}
+                icon={item.icon}
+                href={item.href}
+                soon={item.soon}
+                isCollapsed={isCollapsed}
+              />
+            ))}
+          </div>
+
+          {!isCollapsed && (
+            <div className="mt-4 p-4 rounded-[12px] bg-[url('/featured-card.svg')] text-white relative overflow-hidden group border border-[#C3BCFC]">
+              {/* Decorative background circle */}
+              <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+              
+              <div className="relative z-10 space-y-3">
+                <div className="space-y-1">
+                  <h4 className="text-[14px] mori-semibold">Upgrade to Premium</h4>
+                  <p className="text-[11px] text-blue-100 leading-relaxed">
+                    Unlock more credits and get the most out of Lightforth's tools.
+                  </p>
+                </div>
+                
+                <Button className="w-full h-[40px] rounded-full bg-white text-[#322FEB] hover:bg-gray-100 text-[12px] font-semibold flex items-center justify-center gap-2">
+                   <Image src="/diamond.svg" width={16} height={16} alt="diamond" />
+                   Upgrade Now
+                </Button>
+              </div>
+            </div>
+          )}
+          
+          {isCollapsed && (
+             <div className="bg-[url('/featured-card-col.svg')] py-14 bg-no-repeat w-full flex justify-center ml-2">
+              <Button variant="ghost" size="icon" className="h-10 rounded-xl text-[#322FEB]">
+                <Image src="/diamond.svg" width={20} height={20} alt="diamond" />
+             </Button>
+             </div>
+          )}
         </div>
       </div>
       <div className="absolute right-1 top-[30%] z-10">
