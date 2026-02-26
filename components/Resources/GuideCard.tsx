@@ -44,7 +44,7 @@ const GuideCard = ({
       </div>
 
       <Button 
-        className="w-full rounded-full h-[52px] bg-[#322FEB] hover:bg-[#2826c8] text-white font-medium"
+        className="w-full rounded-full bg-[#322FEB] hover:bg-[#2826c8] text-white font-medium"
         onClick={onAction}
       >
         {buttonLabel}

@@ -23,31 +23,33 @@ const TemplateCard = ({
   onViewDetail 
 }: TemplateCardProps) => {
   return (
-    <div className="bg-white rounded-[12px] w-full border border-[#E8E8E8] p-2 flex flex-col gap-4 group transition-all">
-      <div className="relative aspect-[5/3] rounded-[8px] overflow-hidden bg-[#F6F3FF] px-4 flex justify-center items-center">
-        <Image 
-          src={image} 
-          alt={title} 
-          fill 
-          className=""
-        />
+    <div className="bg-white rounded-[16px] w-full border border-[#E8E8E8] pb-6 px-2 pt-2 flex flex-col gap-6 group transition-all">
+      <div className="relative aspect-[16/10] rounded-[8px] overflow-hidden bg-[#D8F8E8] flex justify-center items-center px-2 pt-2">
+        <div className="relative w-full h-full">
+          <Image 
+            src={image} 
+            alt={title} 
+            fill 
+            className="object-contain"
+          />
+        </div>
       </div>
       
-      <div className="flex justify-between items-end">
-        <div className="space-y-2 px-2 flex-1">
-          <h3 className="mori-semibold text-[16px] text-[#161A21]">{title}</h3>
-          <p className="text-[#6A6D71] text-[13px] line-clamp-2">{description}</p>
+      <div className="flex justify-between items-end px-1">
+        <div className="space-y-2 flex-1">
+          <h3 className="sora-semibold text-[16px] text-[#161A21] leading-tight">{title}</h3>
+          <p className="text-[#6A6D71] text-[14px] leading-relaxed line-clamp-2">{description}</p>
         </div>
 
-        <div className="flex items-center gap-1 text-[#95969A] text-[14px]">
-          <Image src="/coins-line.svg" alt="Coins" width={20} height={20} />
-          <span className="text-[12px]">{tokenCost} Token</span>
+        <div className="flex items-center gap-1.5 text-[#95969A] mt-1 shrink-0">
+          <Image src="/coins-line.svg" alt="Coins" width={22} height={22} />
+          <span className="text-[14px] font-medium">{tokenCost} Token</span>
         </div>
       </div>
 
       <Button 
         variant="outline" 
-        className="w-full rounded-full h-[48px] border-[#E8E8E8] text-[#161A21] font-medium mt-auto mb-2"
+        className="w-full rounded-full border-[#E8E8E8] text-[#161A21] font-semibold mt-auto"
         onClick={onViewDetail}
       >
         {actionLabel}
