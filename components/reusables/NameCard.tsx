@@ -17,40 +17,40 @@ import {
 } from "@/components/ui/dropdown-menu";
 import SubMenu from "./SubMenu";
 import { useAuthContext } from "@/context/AuthContext";
-import { useUserData } from "@/hooks/userData"; // <-- import the hook
+import { ProfileData, useProfile } from "@/hooks/useProfile";
 
-const NameCard = ({ isCollapsed = false }: { isCollapsed?: boolean }) => {
+const NameCard = ({ 
+  isCollapsed = false,
+  profileData
+}: { 
+  isCollapsed?: boolean;
+  profileData?: ProfileData;
+}) => {
   const { logout } = useAuthContext();
-  const { data: user, isLoading } = useUserData(); // <-- fetch user data
+  const { data: fetchedProfile } = useProfile();
+  
+  const userProfile = profileData || fetchedProfile;
 
   return (
     <div
-      className={`flex ${isCollapsed ? "justify-center" : "justify-between"} items-center gap-3 border-b border-[#E8E8E8] pt-3 pb-5 transition-all duration-300`}
+      className={`flex ${isCollapsed ? "justify-center" : "justify-between"} items-center gap-3 transition-all duration-300`}
     >
-      <Image src={`/apex.svg`} width={40} height={40} alt="apex" />
+      
       {!isCollapsed && (
         <>
-          <div className="flex-1 flex-shrink max-w-[136px]">
-            <div className="text-[#161A21] text-[14px] truncate">
-              {isLoading
-                ? "Loading..."
-                : user?.first_name + " " + user?.last_name}
-            </div>
-            <div className="text-[#6A6D71] text-[12px] truncate">
-              {isLoading ? "" : user?.email || ""}
-            </div>
-          </div>
           <div>
             <DropdownMenu>
-              <DropdownMenuTrigger>
-                <div className="p-2 border border-[#E8E8E8] rounded-[6px]">
-                  <Image
-                    src={`/arrow-down.svg`}
-                    width={9.55}
-                    height={5.83}
-                    alt="arrow down"
-                  />
-                </div>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center gap-2 focus:outline-none">
+                  <div className="relative w-10 h-10 rounded-full overflow-hidden border border-gray-200">
+                    <Image
+                      src={userProfile?.avatar || "/apex.svg"}
+                      fill
+                      className="object-cover"
+                      alt="profile"
+                    />
+                  </div>
+                </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-[275px]" align="start">
                 <DropdownMenuGroup>

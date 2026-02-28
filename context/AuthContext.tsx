@@ -10,6 +10,8 @@ import { AxiosResponse } from "axios";
 import { useAuthStore } from "../store/authStore";
 import axios from "../lib/axios";
 import { usePathname, useRouter } from "next/navigation";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import ProcessModal from "@/components/reusables/ProcessModal";
 
 // --- Data Interfaces ---
 interface User {
@@ -88,6 +90,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [isMounted, setIsMounted] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   // 1. Handle Hydration & Route Protection
   useEffect(() => {
@@ -95,7 +98,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    if (!isMounted) return;
+    if (!isMounted || isLoggingOut) return;
 
     const isPublicRoute = PUBLIC_ROUTES.some((route) =>
       pathname.startsWith(route),
@@ -108,7 +111,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (isAuthenticated && pathname === "/login") {
       router.push("/");
     }
-  }, [isAuthenticated, pathname, router, isMounted]);
+  }, [isAuthenticated, pathname, router, isMounted, isLoggingOut]);
 
   // LOGIN
   const login = async (email: string, password: string) => {
@@ -125,13 +128,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // LOGOUT
   const logout = async () => {
+    setIsLoggingOut(true);
     try {
       await axios.post<ApiResponse>("/api/talent/auth/logout");
     } catch (error) {
       console.error("Logout API failed", error);
     } finally {
       clearUser();
-      router.push("/login");
+      // Added a small timeout to ensure the user sees the modal before redirect
+      setTimeout(() => {
+        setIsLoggingOut(false);
+        router.push("/login");
+      }, 1000);
     }
   };
 
@@ -192,6 +200,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }}
     >
       {children}
+
+      <Dialog open={isLoggingOut}>
+        <DialogContent 
+          className="sm:max-w-md p-0 overflow-hidden border-none" 
+          showCloseButton={false}
+          onPointerDownOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
+          <div className="p-10 bg-white">
+            <ProcessModal 
+              title="Logging out..."
+              description="Please wait while we safely sign you out."
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     </AuthContext.Provider>
   );
 };

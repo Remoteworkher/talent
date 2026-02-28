@@ -14,43 +14,37 @@ const CoverLetterCard: React.FC<CoverLetterCardProps> = ({
   title,
   description,
   value,
-  previewBg = "#FEF1E8",
+  previewBg = "#FFF5EE",
   isSelected = false,
 }) => {
   return (
     <div
-      className={`bg-white border w-full md:w-[302px] p-3 rounded-[12px] relative cursor-pointer transition-all ${
-        isSelected ? "border-[2px] border-[#322FEB]" : "border border-[#E8E8E8]"
+      className={`bg-white border w-full p-4 rounded-[16px] relative cursor-pointer transition-all duration-300 ${
+        isSelected ? "ring-2 ring-[#322FEB] border-transparent" : "border-[#E8E8E8] hover:border-[#322FEB]/50"
       }`}
       style={{
-        boxShadow: `
-          0px 96px 96px -32px #3333330F,
-          0px 48px 48px -24px #3333330A,
-          0px 24px 24px -12px #3333330A,
-          0px 12px 12px -6px #3333330A,
-          0px 6px 6px -3px #3333330A,
-          0px 3px 3px -1.5px #33333305,
-          0px 1px 1px 0.5px #3333330A,
-          0px 0px 0px 1px #3333330A,
-          0px -1px 1px -0.5px #3333330F inset
-        `,
+        boxShadow: isSelected ? "0px 16px 32px -12px #322FEB1A" : "0px 1px 2px 0px #0A0D1408",
       }}
     >
-      {/* Radio selector */}
-      <div className="absolute top-3 right-3 z-10">
-        <RadioGroupItem value={value} id={`cl-${value}`} />
-      </div>
+      {/* Selection indicator */}
+      {isSelected && (
+        <div className="absolute top-4 right-4 z-10">
+          <div className="w-5 h-5 rounded-full border-2 border-[#322FEB] flex items-center justify-center bg-white">
+             <div className="w-2.5 h-2.5 rounded-full bg-[#322FEB]" />
+          </div>
+        </div>
+      )}
 
       {/* Template preview pane */}
       <div
-        className="rounded-[8px] h-[140px] md:h-[160px] w-full"
+        className="rounded-[12px] h-[160px] w-full mb-4"
         style={{ backgroundColor: previewBg }}
       />
 
       {/* Info */}
-      <div className="p-2 pt-3">
-        <div className="text-[#161A21] text-[16px] mori-semibold">{title}</div>
-        <div className="text-[#6A6D71] text-[14px] mt-0.5">{description}</div>
+      <div className="space-y-1">
+        <div className="text-[#161A21] text-[16px] font-bold">{title}</div>
+        <div className="text-[#6A6D71] text-[13px] leading-relaxed">{description}</div>
       </div>
     </div>
   );

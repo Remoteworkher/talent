@@ -1,13 +1,17 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Checkbox } from "../ui/checkbox";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { Task as TaskType, useSkipTask } from "@/hooks/useTask";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEmailVerification } from "@/hooks/useEmailVerification";
 import { toast } from "sonner";
 import { Loader2, X } from "lucide-react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import ProcessModal from "@/components/reusables/ProcessModal";
 
 const Task = ({ task }: { task: TaskType }) => {
   const { mutate: skip, isPending: isSkipping } = useSkipTask();
@@ -31,11 +35,38 @@ const Task = ({ task }: { task: TaskType }) => {
   };
 
   const isUrgent = task.urgency === "urgent";
+  const router = useRouter();
+  const { sendOTP } = useEmailVerification();
+  const [isTriggering, setIsTriggering] = useState(false);
+
+  const handleAction = async (e: React.MouseEvent) => {
+    if (task.task_type === "email_verification") {
+      e.preventDefault();
+      setIsTriggering(true);
+      try {
+        const res = await sendOTP.mutateAsync();
+        if (res.status === "success" && res.data?.signature) {
+          toast.success("Verification code sent!");
+          router.push(`/settings/verify-email?signature=${res.data.signature}`);
+        } else {
+          toast.error(res.message || "Failed to trigger verification.");
+          setIsTriggering(false);
+        }
+      } catch (error) {
+        toast.error("An error occurred. Please try again.");
+        setIsTriggering(false);
+      }
+    } else if (task.task_type === "onboarding") {
+      router.push("/register/onboarding");
+    } else if (taskRoute) {
+      router.push(taskRoute);
+    }
+  };
 
   // Handle fallback routes if missing from API
   const taskRoute = task.route || (
     task.task_type === "onboarding" ? "/register/onboarding" : 
-    task.task_type === "email_verification" ? "/profile" : 
+    task.task_type === "email_verification" ? "/settings/verify-email" : 
     null
   );
 
@@ -72,22 +103,24 @@ const Task = ({ task }: { task: TaskType }) => {
           </div>
           <div className="md:col-span-2 flex md:justify-end items-center">
             {taskRoute && (
-              <Button asChild className="px-6 rounded-full bg-[#322FEB] hover:bg-[#2826c8]">
-                <Link href={taskRoute} className="flex items-center gap-2">
-                  {task.task_type === "onboarding"
-                    ? "Onboarding"
-                    : task.task_type === "email_verification"
-                    ? "Verify"
-                    : task.task_type === "library"
-                    ? "View"
-                    : "Action"}
-                  <Image
-                    src={`/apply-icon.svg`}
-                    width={18}
-                    height={18}
-                    alt="arrow"
-                  />
-                </Link>
+              <Button 
+                onClick={handleAction} 
+                className="px-6 rounded-full bg-[#322FEB] hover:bg-[#2826c8] flex items-center gap-2"
+                disabled={isTriggering}
+              >
+                {task.task_type === "onboarding"
+                  ? "Onboarding"
+                  : task.task_type === "email_verification"
+                  ? "Verify"
+                  : task.task_type === "library"
+                  ? "View"
+                  : "Action"}
+                <Image
+                  src={`/apply-icon.svg`}
+                  width={18}
+                  height={18}
+                  alt="arrow"
+                />
               </Button>
             )}
           </div>
@@ -103,6 +136,22 @@ const Task = ({ task }: { task: TaskType }) => {
       >
         {isSkipping ? <Loader2 className="w-4 h-4 animate-spin" /> : <X className="w-4 h-4" />}
       </button>
+
+      <Dialog open={isTriggering}>
+        <DialogContent 
+          className="sm:max-w-md p-0 overflow-hidden border-none" 
+          showCloseButton={false}
+          onPointerDownOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
+          <div className="p-10 bg-white">
+            <ProcessModal 
+              title={task.task_type === "email_verification" ? "Sending Verification Code" : "Preparing Onboarding"}
+              description={task.task_type === "email_verification" ? "We're sending a fresh verification code to your email." : "Taking you to the onboarding flow..."}
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

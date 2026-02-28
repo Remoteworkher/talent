@@ -31,12 +31,6 @@ const Page = () => {
     <div className="bg-[#FFFCFD] min-h-screen py-10 px-4">
       <div className="max-w-[1200px] mx-auto">
         <div className="mb-6">
-          <Link href="/career-tools">
-            <Button variant="outline" size="sm" className="gap-1.5 rounded-[12px]">
-              <Image src="/arrow-left-line.svg" width={16} height={16} alt="back" />
-              Go back
-            </Button>
-          </Link>
         </div>
 
         <div className="flex justify-center">
