@@ -7,7 +7,7 @@ export default function CareerToolsLayout({
 }>) {
   return (
     <div>
-      <div className="max-w-[1440px] mx-auto">{children}</div>
+      <div className=" max-w-[1440px] mx-auto">{children}</div>
     </div>
   );
 }

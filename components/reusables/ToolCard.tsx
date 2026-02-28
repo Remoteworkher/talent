@@ -18,7 +18,7 @@ const ToolCard: React.FC<ToolCardProps> = ({
   url = "#",
 }) => {
   return (
-    <div className="border border-[#E8E8E8] rounded-[16px] p-4 space-y-3">
+    <div className="border w-full border-[#E8E8E8] rounded-[16px] p-4 space-y-3">
       <div className="flex">
         <div
           className="p-2 rounded-[10px]"
