@@ -97,13 +97,31 @@ const OnboardingFlow = () => {
     if (currentQuestionStep < dynamicQuestions.length - 1) {
       setCurrentQuestionStep((prev) => prev + 1);
     } else {
-      const payload = {
-        answers: Object.entries(answers).map(([key, value]) => ({
-          key,
-          answer: typeof value === 'object' ? `${value.min}-${value.max}` : value,
-        })),
-      };
-      saveAnswers(payload, {
+      const hasFile = Object.values(answers).some(val => val instanceof File);
+      
+      let payloadToSubmit: any;
+      
+      if (hasFile) {
+        payloadToSubmit = new FormData();
+        Object.entries(answers).forEach(([key, value]) => {
+          if (value instanceof File) {
+            payloadToSubmit.append(key, value);
+          } else if (value && typeof value === 'object') {
+            payloadToSubmit.append(key, `${value.min}-${value.max}`);
+          } else {
+            payloadToSubmit.append(key, value);
+          }
+        });
+      } else {
+        payloadToSubmit = {
+          answers: Object.entries(answers).map(([key, value]) => ({
+            key,
+            answer: (value && typeof value === 'object') ? `${value.min}-${value.max}` : value,
+          })),
+        };
+      }
+
+      saveAnswers(payloadToSubmit, {
         onSuccess: () => {
           setStep("completed");
           toast.success("Profile optimization complete!");
@@ -229,9 +247,13 @@ const OnboardingFlow = () => {
               <SelectValue placeholder={currentQuestion.input.placeholder} />
             </SelectTrigger>
             <SelectContent className="rounded-2xl">
-              {currentQuestion.options.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-              ))}
+              {currentQuestion.options.map((opt) => {
+                const value = typeof opt === "string" ? opt : opt.value;
+                const label = typeof opt === "string" ? opt : opt.label;
+                return (
+                  <SelectItem key={value} value={value}>{label}</SelectItem>
+                );
+              })}
             </SelectContent>
           </Select>
         )}
@@ -242,24 +264,28 @@ const OnboardingFlow = () => {
             value={answers[currentQuestion.key]} 
             className="w-full space-y-4"
           >
-            {currentQuestion.options.map((opt) => (
-              <FieldLabel key={opt.value} htmlFor={opt.value} className="w-full has-[>[data-slot=field]]:border-none has-[>[data-slot=field]]:rounded-none">
-                <Field 
-                  orientation="horizontal" 
-                  data-slot="field"
-                  className={`cursor-pointer h-[64px] rounded-full border px-6 transition-all ${
-                    answers[currentQuestion.key] === opt.value 
-                      ? 'border-[#322FEB] bg-[#F6F3FF] ring-1 ring-[#322FEB]' 
-                      : 'border-[#E8E8E8] hover:border-[#322FEB] hover:bg-gray-50'
-                  }`}
-                >
-                  <RadioGroupItem value={opt.value} id={opt.value} />
-                  <FieldContent className="flex-row">
-                    <FieldDescription className="text-[#161A21] text-[16px] font-medium">{opt.label}</FieldDescription>
-                  </FieldContent>
-                </Field>
-              </FieldLabel>
-            ))}
+            {currentQuestion.options.map((opt) => {
+              const value = typeof opt === "string" ? opt : opt.value;
+              const label = typeof opt === "string" ? opt : opt.label;
+              return (
+                <FieldLabel key={value} htmlFor={value} className="w-full has-[>[data-slot=field]]:border-none has-[>[data-slot=field]]:rounded-none">
+                  <Field 
+                    orientation="horizontal" 
+                    data-slot="field"
+                    className={`cursor-pointer h-[64px] rounded-full border px-6 transition-all ${
+                      answers[currentQuestion.key] === value 
+                        ? 'border-[#322FEB] bg-[#F6F3FF] ring-1 ring-[#322FEB]' 
+                        : 'border-[#E8E8E8] hover:border-[#322FEB] hover:bg-gray-50'
+                    }`}
+                  >
+                    <RadioGroupItem value={value} id={value} />
+                    <FieldContent className="flex-row">
+                      <FieldDescription className="text-[#161A21] text-[16px] font-medium">{label}</FieldDescription>
+                    </FieldContent>
+                  </Field>
+                </FieldLabel>
+              );
+            })}
           </RadioGroup>
         )}
 
