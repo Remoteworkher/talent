@@ -6,7 +6,11 @@ interface UserData {
   last_name: string;
   email: string;
   phone: string;
-  ai_tokens: number;
+  tokens: number;
+  ai_tokens?: number; // Keep for backward compatibility if any
+  email_verified: boolean;
+  plan_uid: string;
+  completed_onboarding: boolean;
 }
 
 interface ApiResponse<T> {

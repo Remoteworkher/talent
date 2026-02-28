@@ -78,8 +78,6 @@ const PlansTab = () => {
   // Note: Assuming there's a way to identify current plan, 
   // currently using a placeholder logic (e.g. matching name if plan_uid not in user data)
   // For now, let's assume 'Standard' is the default current plan if none specified
-  const currentPlanName = "Standard"; 
-
   return (
     <div className="space-y-8">
       <div className="flex flex-col lg:flex-row gap-6">
@@ -87,7 +85,7 @@ const PlansTab = () => {
           <PlanCard 
             key={plan.uid} 
             plan={plan} 
-            isCurrent={plan.name === currentPlanName} 
+            isCurrent={userData?.plan_uid === plan.uid} 
           />
         ))}
         

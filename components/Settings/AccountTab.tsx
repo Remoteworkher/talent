@@ -17,6 +17,7 @@ const AccountTab = () => {
   const router = useRouter();
   const { sendOTP } = useEmailVerification();
   const { data: profileData, isLoading: profileLoading } = useProfile();
+  const { data: userData } = useUserData();
   const updateProfileMutation = useUpdateProfile();
 
   const [name, setName] = useState("");
@@ -159,19 +160,29 @@ const AccountTab = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 className="h-[44px] bg-white px-4 text-[15px] pr-[120px]"
               />
-              <Button 
-                onClick={handleVerifyClick}
-                disabled={sendOTP.isPending}
-                className="absolute right-1 top-1 bottom-1 h-auto rounded-lg bg-[#322FEB] hover:bg-[#2826c8] text-white px-4 text-[13px] font-semibold flex items-center gap-2"
-              >
-                {sendOTP.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Verify email"}
-              </Button>
+              {!userData?.email_verified && (
+                <Button 
+                  onClick={handleVerifyClick}
+                  disabled={sendOTP.isPending}
+                  className="absolute right-1 top-1 bottom-1 h-auto rounded-lg bg-[#322FEB] hover:bg-[#2826c8] text-white px-4 text-[13px] font-semibold flex items-center gap-2"
+                >
+                  {sendOTP.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Verify email"}
+                </Button>
+              )}
             </div>
-            {/* Note: This logic for "verified" status might need real data from API if available */}
-            <div className="flex items-center gap-2 text-[#F29339] text-[12px]">
-              <AlertTriangle className="w-4 h-4" />
-              <span>Email not verified</span>
-            </div>
+            {userData?.email_verified ? (
+              <div className="flex items-center gap-2 text-[#4BB543] text-[12px]">
+                <div className="w-4 h-4 rounded-full bg-[#4BB543] flex items-center justify-center">
+                  <span className="text-white text-[10px]">✓</span>
+                </div>
+                <span>Email verified</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 text-[#F29339] text-[12px]">
+                <AlertTriangle className="w-4 h-4" />
+                <span>Email not verified</span>
+              </div>
+            )}
           </div>
         </div>
 

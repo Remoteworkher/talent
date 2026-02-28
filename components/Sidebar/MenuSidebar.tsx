@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import NameCard from "../reusables/NameCard";
+// import NameCard from "../reusables/NameCard";
 import MenuItem from "../reusables/MenuItem";
 import { Button } from "../ui/button";
 import Image from "next/image";
@@ -25,40 +25,40 @@ const career: MenuItemType[] = [
     icon: "/career-tools-icon.svg",
     href: "/career-tools",
   },
-  {
-    label: "Courses",
-    icon: "/courses-icon.svg",
-    href: "#",
-  },
+  // {
+  //   label: "Courses",
+  //   icon: "/courses-icon.svg",
+  //   href: "#",
+  // },
 ];
 const community: MenuItemType[] = [
-  {
-    label: "Events",
-    icon: "/events-icon.svg",
-    href: "/events",
-  },
-  {
-    label: "Partner Match",
-    icon: "/community-icon.svg",
-    href: "#",
-  },
+  // {
+  //   label: "Events",
+  //   icon: "/events-icon.svg",
+  //   href: "/events",
+  // },
+  // {
+  //   label: "Partner Match",
+  //   icon: "/community-icon.svg",
+  //   href: "#",
+  // },
 ];
 const resources: MenuItemType[] = [
-  {
-    label: "Perks",
-    icon: "/perks-icon.svg",
-    href: "#",
-  },
+  // {
+  //   label: "Perks",
+  //   icon: "/perks-icon.svg",
+  //   href: "#",
+  // },
   {
     label: "Resources",
     icon: "/resources-icon.svg",
     href: "/resources",
   },
-  {
-    label: "Challenges",
-    icon: "/challenge-icon.svg",
-    href: "#",
-  },
+  // {
+  //   label: "Challenges",
+  //   icon: "/challenge-icon.svg",
+  //   href: "#",
+  // },
 ];
 const others: MenuItemType[] = [
   {
@@ -90,9 +90,14 @@ const MenuSidebar = ({
     <div className="border-r border-[#E8E8E8] h-screen flex flex-col relative transition-all duration-300 w-full">
       <div className="flex-1 flex flex-col overflow-hidden">
         <div
-          className={`${isCollapsed ? "px-2" : "px-4 pb-4 pt-2"} transition-all duration-300`}
+          className={`${isCollapsed ? "p-2" : "px-4 pb-4 pt-2"} transition-all duration-300 flex justify-center items-center`}
         >
-          <NameCard isCollapsed={isCollapsed} />
+          {isCollapsed ? (
+            <Image src={`logo-icon.svg`} alt="logo" width={40} height={40} className=""/>
+          ) : (
+            <Image src={`logo.svg`} alt="logo" width={188} height={100} className=""/>
+          )}
+          {/* <NameCard isCollapsed={isCollapsed} /> */}
         </div>
 
         <div
