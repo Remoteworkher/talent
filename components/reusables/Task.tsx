@@ -57,7 +57,7 @@ const Task = ({ task }: { task: TaskType }) => {
         setIsTriggering(false);
       }
     } else if (task.task_type === "onboarding") {
-      router.push("/register/onboarding");
+      router.push("/settings/onboarding");
     } else if (taskRoute) {
       router.push(taskRoute);
     }
