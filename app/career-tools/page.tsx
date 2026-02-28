@@ -3,123 +3,68 @@ import HeaderSub from "@/components/reusables/HeaderSub";
 import SubHeader from "@/components/reusables/SubHeader";
 import TokensCard from "@/components/reusables/TokensCard";
 import ToolCard from "@/components/reusables/ToolCard";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React, { useState } from "react";
-const resumes = [
-  {
-    name: "Resume Builder",
-    description: "Build a professional resume with AI-powered content.",
-    icon: "/text-line.svg",
-    bgColor: "#E4FBF8",
-    url: "#",
-  },
-  {
-    name: "Resume Optimizer",
-    description: "Upload your resume and get AI suggestions",
-    icon: "/resume-optimizer.svg",
-    bgColor: "#FFF3EB",
-    url: "#",
-  },
-  {
-    name: "Cover Letter Builder",
-    description: "Generate personalized cover letters.",
-    icon: "/cover-letter-builder.svg",
-    bgColor: "#F6F3FF",
-    url: "#",
-  },
-  {
-    name: "Email Writer",
-    description: "Write professional job-related emails.",
-    icon: "/email-writer.svg",
-    bgColor: "#F7F0FC",
-    url: "#",
-  },
-];
-const brand = [
-  {
-    name: "Profile Optimizer",
-    description: "Upload your profile PDF for a full review",
-    icon: "/profile-optimizer.svg",
-    bgColor: "#EBF1FF",
-    url: "#",
-  },
-  {
-    name: "Headline Generator",
-    description: "Generate attention-grabbing headlines",
-    icon: "/headline-generator.svg",
-    bgColor: "#EBF1FF",
-    url: "#",
-  },
-  {
-    name: "Summary Generator",
-    description: "Create a compelling about section on your profile",
-    icon: "/summary-generator.svg",
-    bgColor: "#EBF1FF",
-    url: "#",
-  },
-  {
-    name: "Post Writer",
-    description: "Write engaging posts to build your network",
-    icon: "/post-writer.svg",
-    bgColor: "#EBF1FF",
-    url: "#",
-  },
-];
-const tools = [
-  {
-    name: "Explore Careers",
-    description: "Discover careers and check your fit.",
-    icon: "/explore-careers.svg",
-    bgColor: "#F7F0FC",
-    url: "#",
-  },
-  {
-    name: "Career Roadmap",
-    description: "Get a personalized career roadmap",
-    icon: "/career-roadmap.svg",
-    bgColor: "#EBF1FF",
-    url: "#",
-  },
-  {
-    name: "Interview Prep",
-    description: "Practice with AI generated mock interviews.",
-    icon: "/interview-prep.svg",
-    bgColor: "#E4FBF8",
-    url: "#",
-  },
-  {
-    name: "Salary Analyzer",
-    description: "Get salary insights for your current or targeted role.",
-    icon: "/salary-analyzer.svg",
-    bgColor: "#FFF3EB",
-    url: "#",
-  },
-  {
-    name: "Tax Calculator",
-    description:
-      "Calculate your Nigeria income tax and know how much you earn.",
-    icon: "/tax-calculator.svg",
-    bgColor: "#E0FAEC",
-    url: "#",
-  },
-  {
-    name: "Elevator Pitch",
-    description: "Create a memorable and straight forward 30-sec pitch.",
-    icon: "/elevator-pitch.svg",
-    bgColor: "#FFFAEB",
-    url: "#",
-  },
-  {
-    name: "Personal Brand Audit",
-    description: "Analyze, review and optimize your online presence.",
-    icon: "/personal-brand-audit.svg",
-    bgColor: "#E4FBF8",
-    url: "#",
-  },
-];
+import { useToolTypes, useToolGroups, Tool } from "@/hooks/useCareerTools";
+import { Loader2 } from "lucide-react";
+
+const getToolUrl = (slug: string) => {
+  const routes: Record<string, string> = {
+    "headline-generator": "/career-tools/linkedin/headline-generator",
+    "linkedin-headline-generator": "/career-tools/linkedin/headline-generator",
+    "post-writer": "/career-tools/linkedin/post-writer",
+    "linkedin-post-writer": "/career-tools/linkedin/post-writer",
+    "summary-generator": "/career-tools/linkedin/summary-generator",
+    "linkedin-summary-generator": "/career-tools/linkedin/summary-generator",
+    "cover-letter-builder": "/career-tools/resumes/cover-letter",
+    "email-writer": "/career-tools/resumes/email-writer",
+    "resume-optimizer": "/career-tools/resumes/optimizer",
+    "explore-careers": "/career-tools/growth/explore",
+    "career-roadmap": "/career-tools/growth/roadmap",
+    "salary-analyzer": "/career-tools/growth/salary-analyzer",
+    "personal-brand-audit": "/career-tools/growth/brand-audit",
+    "elevator-pitch": "/career-tools/growth/elevator-pitch",
+  };
+  return routes[slug] || `/career-tools/${slug}`;
+};
+
+const getToolStyle = (slug: string) => {
+  const styles: Record<string, { icon: string; bgColor: string }> = {
+    "resume-builder": { icon: "/text-line.svg", bgColor: "#E4FBF8" },
+    "resume-optimizer": { icon: "/resume-optimizer.svg", bgColor: "#FFF3EB" },
+    "cover-letter-builder": { icon: "/cover-letter-builder.svg", bgColor: "#F6F3FF" },
+    "email-writer": { icon: "/email-writer.svg", bgColor: "#F7F0FC" },
+    "profile-optimizer": { icon: "/profile-optimizer.svg", bgColor: "#EBF1FF" },
+    "headline-generator": { icon: "/headline-generator.svg", bgColor: "#EBF1FF" },
+    "linkedin-headline-generator": { icon: "/headline-generator.svg", bgColor: "#EBF1FF" },
+    "summary-generator": { icon: "/summary-generator.svg", bgColor: "#EBF1FF" },
+    "linkedin-summary-generator": { icon: "/summary-generator.svg", bgColor: "#EBF1FF" },
+    "post-writer": { icon: "/post-writer.svg", bgColor: "#EBF1FF" },
+    "linkedin-post-writer": { icon: "/post-writer.svg", bgColor: "#EBF1FF" },
+    "explore-careers": { icon: "/explore-careers.svg", bgColor: "#F7F0FC" },
+    "career-roadmap": { icon: "/career-roadmap.svg", bgColor: "#EBF1FF" },
+    "interview-prep": { icon: "/interview-prep.svg", bgColor: "#E4FBF8" },
+    "salary-analyzer": { icon: "/salary-analyzer.svg", bgColor: "#FFF3EB" },
+    "tax-calculator": { icon: "/tax-calculator.svg", bgColor: "#E0FAEC" },
+    "elevator-pitch": { icon: "/elevator-pitch.svg", bgColor: "#FFFAEB" },
+    "personal-brand-audit": { icon: "/personal-brand-audit.svg", bgColor: "#E4FBF8" },
+  };
+  return styles[slug] || { icon: "/text-line.svg", bgColor: "#F7F0FC" };
+};
+
 const Page = () => {
   const [activeTab, setActiveTab] = useState("overview");
+
+  const { data: toolTypes, isLoading: isLoadingTypes } = useToolTypes();
+  const { data: toolGroups, isLoading: isLoadingGroups } = useToolGroups(activeTab);
+
+  if (isLoadingTypes) {
+    return (
+      <div className="flex justify-center items-center h-[400px]">
+        <Loader2 className="w-8 h-8 animate-spin text-[#322FEB]" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-3 p-4">
@@ -130,118 +75,54 @@ const Page = () => {
       <TokensCard />
       <section className="space-y-3 pt-4">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="bg-transparent flex gap-2">
+          <TabsList className="bg-transparent flex gap-2 overflow-x-auto no-scrollbar">
             <TabsTrigger
               value="overview"
-              className="data-[state=active]:bg-[#322FEB] data-[state=active]:text-white px-4 py-5 border border-[#E8E8E8] rounded-md transition"
+              className="data-[state=active]:bg-[#322FEB] data-[state=active]:text-white px-4 py-5 border border-[#E8E8E8] rounded-md transition whitespace-nowrap"
             >
               Overview
             </TabsTrigger>
-            <TabsTrigger
-              value="resume"
-              className="data-[state=active]:bg-[#322FEB] data-[state=active]:text-white px-4 py-5 border border-[#E8E8E8] rounded-md transition"
-            >
-              Resume
-            </TabsTrigger>
-            <TabsTrigger
-              value="linkedin"
-              className="data-[state=active]:bg-[#322FEB] data-[state=active]:text-white px-4 py-5 border border-[#E8E8E8] rounded-md transition"
-            >
-              Linkedin
-            </TabsTrigger>
-            <TabsTrigger
-              value="career"
-              className="data-[state=active]:bg-[#322FEB] data-[state=active]:text-white px-4 py-5 border border-[#E8E8E8] rounded-md transition"
-            >
-              Career
-            </TabsTrigger>
+            {toolTypes?.map((type) => (
+              <TabsTrigger
+                key={type.id}
+                value={type.id}
+                className="data-[state=active]:bg-[#322FEB] data-[state=active]:text-white px-4 py-5 border border-[#E8E8E8] rounded-md transition capitalize whitespace-nowrap"
+              >
+                {type.label}
+              </TabsTrigger>
+            ))}
           </TabsList>
-          <TabsContent value="overview" className="space-y-4">
-            <section className="pt-4 space-y-4">
-              <SubHeader
-                title="Resumes and Applications"
-                subtitle="Tools to build and optimize your job applications"
-              />
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {resumes.map((resume) => (
-                  <ToolCard key={resume.name} {...resume} />
-                ))}
+
+          <TabsContent value={activeTab} className="space-y-6 pt-4">
+            {isLoadingGroups ? (
+              <div className="flex justify-center items-center py-12">
+                <Loader2 className="w-6 h-6 animate-spin text-[#322FEB]" />
               </div>
-            </section>
-            <section className="pt-4 space-y-4">
-              <SubHeader
-                title="LinkedIn and Personal Brand"
-                subtitle="Build your brand and grow your presence"
-              />
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {brand.map((item) => (
-                  <ToolCard key={item.name} {...item} />
-                ))}
-              </div>
-            </section>
-            <section className="pt-4 space-y-4">
-              <div className="flex justify-between items-center">
-                <SubHeader
-                  title="Career Development"
-                  subtitle="Plan and advance your career"
-                />
-                <div>
-                  <Button
-                    variant={`ghost`}
-                    className="text-[#5335E9]"
-                    onClick={() => setActiveTab("career")}
-                  >
-                    View all
-                  </Button>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {tools.slice(0, 4).map((tool) => (
-                  <ToolCard key={tool.name} {...tool} />
-                ))}
-              </div>
-            </section>
-          </TabsContent>
-          <TabsContent value="resume" className="space-y-4">
-            <section className="pt-4 space-y-4">
-              <SubHeader
-                title="Resumes and Applications"
-                subtitle="Tools to build and optimize your job applications"
-              />
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {resumes.map((resume) => (
-                  <ToolCard key={resume.name} {...resume} />
-                ))}
-              </div>
-            </section>
-          </TabsContent>
-          <TabsContent value="linkedin" className="space-y-4">
-            <section className="pt-4 space-y-4">
-              <SubHeader
-                title="LinkedIn and Personal Brand"
-                subtitle="Build your brand and grow your presence"
-              />
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {brand.map((item) => (
-                  <ToolCard key={item.name} {...item} />
-                ))}
-              </div>
-            </section>
-          </TabsContent>
-          <TabsContent value="career" className="space-y-4">
-            <section className="pt-4 space-y-4">
-              <div className="flex justify-between items-center">
-                <SubHeader
-                  title="Career Development"
-                  subtitle="Plan and advance your career"
-                />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {tools.map((tool) => (
-                  <ToolCard key={tool.name} {...tool} />
-                ))}
-              </div>
-            </section>
+            ) : (
+              toolGroups?.map((group) => (
+                <section key={group.uid} className="space-y-4">
+                  <SubHeader
+                    title={group.name}
+                    subtitle={group.description}
+                  />
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {group.tools.map((tool) => {
+                      const style = getToolStyle(tool.slug);
+                      return (
+                        <ToolCard
+                          key={tool.uid}
+                          name={tool.name}
+                          description={tool.description}
+                          icon={style.icon}
+                          bgColor={style.bgColor}
+                          url={getToolUrl(tool.slug)}
+                        />
+                      );
+                    })}
+                  </div>
+                </section>
+              ))
+            )}
           </TabsContent>
         </Tabs>
       </section>

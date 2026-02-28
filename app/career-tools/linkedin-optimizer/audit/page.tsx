@@ -41,12 +41,7 @@ const Page = () => {
       <div className="max-w-[1000px] mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
-          <Link href="/career-tools/linkedin-optimizer">
-            <Button variant="outline" size="sm" className="gap-1.5 rounded-[12px]">
-              <Image src="/arrow-left-line.svg" width={16} height={16} alt="back" />
-              Go back
-            </Button>
-          </Link>
+          
           <Button className="gap-2 rounded-[24px] px-6">
             <Image src="/sparkling-line.svg" width={18} height={18} alt="sparkle" className="brightness-0 invert" />
             Generate again (2 tokens)

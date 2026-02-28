@@ -9,7 +9,7 @@ const TrackBar: React.FC<TrackBarProps> = ({ progress }) => {
     <div className="w-full bg-[#E8E8E8] h-2 rounded-full">
       <div
         className="bg-[#322FEB] h-2 rounded-full transition-all duration-300"
-        style={{ width: `${progress}%` }}
+        style={{ width: `${progress}%`, maxWidth: "100%" }}
       />
     </div>
   );
