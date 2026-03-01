@@ -13,15 +13,6 @@ const Events = () => {
         <div className="text-[#161A21] text-[16px] mori-semibold">
           Events You’ll Love
         </div>
-        <div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => router.push("/events")}
-          >
-            See all
-          </Button>
-        </div>
       </div>
       <section className="space-y-3">
         <Event />

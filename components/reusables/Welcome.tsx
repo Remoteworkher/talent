@@ -8,7 +8,7 @@ const Welcome = () => {
   const { data, isLoading } = useUserData();
 
   return (
-    <div className="p-5 rounded-[16px] flex justify-between items-center bg-gradient-to-r from-[#FFF3F9] to-[#FFFFFF]">
+    <div className="p-5 rounded-[16px] flex justify-between items-center bg-gradient-to-r from-[#F3F8FF] to-[#FFFFFF]">
       <div className="flex justify-start items-center gap-4">
         <div>
           <div className="mori-semibold text-[24px] text-[#161A21]">

@@ -1,11 +1,15 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { useResumeBuilderStore, ExperienceEntry, EducationEntry } from "@/lib/store/useResumeBuilderStore";
 import ResumePreviewDocument from "@/components/Tools/ResumeBuilder/ResumePreviewDocument";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import { toast } from "sonner";
 
 /* ─── Resume template data ─────────────────────────────────────────── */
 const resumeTemplates = [
@@ -103,15 +107,7 @@ const BookmarkIcon = () => (
 
 /* ─── Panel: Contact ─────────────────────────────────────────────────── */
 const ContactPanel = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [location, setLocation] = useState("");
-  const [linkedin, setLinkedin] = useState("");
-  const [github, setGithub] = useState("");
-  const [twitter, setTwitter] = useState("");
-  const [dribbble, setDribbble] = useState("");
+  const { firstName, lastName, email, phone, location, linkedinUrl, githubUrl, twitterUrl, dribbbleUrl, setPersonalInfo } = useResumeBuilderStore();
 
   return (
     <div className="px-4 pb-5 space-y-4 pt-3">
@@ -119,31 +115,31 @@ const ContactPanel = () => {
         <Label htmlFor="firstName" className="text-[#161A21] text-[13px] mori-semibold">
           First Name
         </Label>
-        <Input id="firstName" placeholder="Emmanuel" type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+        <Input id="firstName" placeholder="Emmanuel" type="text" value={firstName} onChange={(e) => setPersonalInfo({ firstName: e.target.value })} />
       </div>
       <div className="space-y-1">
         <Label htmlFor="lastName" className="text-[#161A21] text-[13px] mori-semibold">
           Last Name
         </Label>
-        <Input id="lastName" placeholder="ThankGod" type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+        <Input id="lastName" placeholder="ThankGod" type="text" value={lastName} onChange={(e) => setPersonalInfo({ lastName: e.target.value })} />
       </div>
       <div className="space-y-1">
         <Label htmlFor="contact-email" className="text-[#161A21] text-[13px] mori-semibold">
           Email
         </Label>
-        <Input id="contact-email" placeholder="thankgodemmanuel77@gmail.com" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <Input id="contact-email" placeholder="thankgodemmanuel77@gmail.com" type="email" value={email} onChange={(e) => setPersonalInfo({ email: e.target.value })} />
       </div>
       <div className="space-y-1">
         <Label htmlFor="contact-phone" className="text-[#161A21] text-[13px] mori-semibold">
           Phone Number
         </Label>
-        <Input id="contact-phone" placeholder="08189794361" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
+        <Input id="contact-phone" placeholder="08189794361" type="tel" value={phone} onChange={(e) => setPersonalInfo({ phone: e.target.value })} />
       </div>
       <div className="space-y-1">
         <Label htmlFor="contact-location" className="text-[#161A21] text-[13px] mori-semibold">
           Location
         </Label>
-        <Input id="contact-location" placeholder="Lagos, Nigeria" type="text" value={location} onChange={(e) => setLocation(e.target.value)} />
+        <Input id="contact-location" placeholder="Lagos, Nigeria" type="text" value={location} onChange={(e) => setPersonalInfo({ location: e.target.value })} />
       </div>
 
       {/* Social Media */}
@@ -155,7 +151,7 @@ const ContactPanel = () => {
             <span className="text-[11px] text-[#0A66C2] mori-semibold">LinkedIn</span>
             <span className="text-[#E8E8E8] text-[12px]">|</span>
           </div>
-          <Input id="contact-linkedin" placeholder="linkedin.com/in/enter-handle" type="url" value={linkedin} onChange={(e) => setLinkedin(e.target.value)} className="pl-[105px] text-[12px]" />
+          <Input id="contact-linkedin" placeholder="linkedin.com/in/enter-handle" type="url" value={linkedinUrl} onChange={(e) => setPersonalInfo({ linkedinUrl: e.target.value })} className="pl-[105px] text-[12px]" />
         </div>
         <div className="relative">
           <div className="absolute left-3 top-1/2 -translate-y-1/2 z-10 flex items-center gap-1.5">
@@ -163,7 +159,7 @@ const ContactPanel = () => {
             <span className="text-[11px] text-[#161A21] mori-semibold">Github</span>
             <span className="text-[#E8E8E8] text-[12px]">|</span>
           </div>
-          <Input id="contact-github" placeholder="github.com/enter-handle" type="url" value={github} onChange={(e) => setGithub(e.target.value)} className="pl-[88px] text-[12px]" />
+          <Input id="contact-github" placeholder="github.com/enter-handle" type="url" value={githubUrl} onChange={(e) => setPersonalInfo({ githubUrl: e.target.value })} className="pl-[88px] text-[12px]" />
         </div>
         <div className="relative">
           <div className="absolute left-3 top-1/2 -translate-y-1/2 z-10 flex items-center gap-1.5">
@@ -171,7 +167,7 @@ const ContactPanel = () => {
             <span className="text-[11px] text-[#161A21] mori-semibold">X (Twitter)</span>
             <span className="text-[#E8E8E8] text-[12px]">|</span>
           </div>
-          <Input id="contact-twitter" placeholder="twitter.com/enter-handle" type="url" value={twitter} onChange={(e) => setTwitter(e.target.value)} className="pl-[116px] text-[12px]" />
+          <Input id="contact-twitter" placeholder="twitter.com/enter-handle" type="url" value={twitterUrl} onChange={(e) => setPersonalInfo({ twitterUrl: e.target.value })} className="pl-[116px] text-[12px]" />
         </div>
         <div className="relative">
           <div className="absolute left-3 top-1/2 -translate-y-1/2 z-10 flex items-center gap-1.5">
@@ -179,7 +175,7 @@ const ContactPanel = () => {
             <span className="text-[11px] text-[#EA4C89] mori-semibold">Dribbble</span>
             <span className="text-[#E8E8E8] text-[12px]">|</span>
           </div>
-          <Input id="contact-dribbble" placeholder="Dribbble.com/enter-handle" type="url" value={dribbble} onChange={(e) => setDribbble(e.target.value)} className="pl-[100px] text-[12px]" />
+          <Input id="contact-dribbble" placeholder="Dribbble.com/enter-handle" type="url" value={dribbbleUrl} onChange={(e) => setPersonalInfo({ dribbbleUrl: e.target.value })} className="pl-[100px] text-[12px]" />
         </div>
       </div>
     </div>
@@ -188,15 +184,15 @@ const ContactPanel = () => {
 
 /* ─── Panel: Portfolio ───────────────────────────────────────────────── */
 const PortfolioPanel = () => {
-  const [url, setUrl] = useState("");
+  const { portfolioUrl, setPersonalInfo } = useResumeBuilderStore();
   return (
     <div className="px-4 pb-5 pt-3 space-y-2">
       <p className="text-[12px] text-[#95969A]">Add your portfolio link here</p>
       <Textarea
         id="portfolio-url"
         placeholder="https://thankgodemmanuel.framer.website/"
-        value={url}
-        onChange={(e) => setUrl(e.target.value)}
+        value={portfolioUrl}
+        onChange={(e) => setPersonalInfo({ portfolioUrl: e.target.value })}
         rows={3}
         className="rounded-[16px] text-[13px] resize-none focus-visible:border-[#322FEB] focus-visible:ring-[#322FEB]/20"
       />
@@ -206,7 +202,7 @@ const PortfolioPanel = () => {
 
 /* ─── Panel: About ───────────────────────────────────────────────────── */
 const AboutPanel = () => {
-  const [summary, setSummary] = useState("");
+  const { professionalSummary, setPersonalInfo } = useResumeBuilderStore();
   return (
     <div className="px-4 pb-5 pt-3 space-y-2">
       <p className="text-[12px] text-[#95969A] leading-[1.5]">
@@ -215,8 +211,8 @@ const AboutPanel = () => {
       <Textarea
         id="about-summary"
         placeholder="Led design initiatives that increased user engagement by up to 40%..."
-        value={summary}
-        onChange={(e) => setSummary(e.target.value)}
+        value={professionalSummary}
+        onChange={(e) => setPersonalInfo({ professionalSummary: e.target.value })}
         rows={8}
         className="rounded-[16px] text-[13px] resize-none focus-visible:border-[#322FEB] focus-visible:ring-[#322FEB]/20 min-h-[180px]"
       />
@@ -225,39 +221,8 @@ const AboutPanel = () => {
 };
 
 /* ─── Panel: Experience ──────────────────────────────────────────────── */
-interface ExperienceEntry {
-  companyName: string;
-  location: string;
-  jobTitle: string;
-  dateRange: string;
-  achievements: string[];
-}
-
 const ExperiencePanel = () => {
-  const [experiences, setExperiences] = useState<ExperienceEntry[]>([
-    {
-      companyName: "Ajaeq",
-      location: "Atlanta, GA, USA",
-      jobTitle: "Principal Product Designer",
-      dateRange: "Mar '24 – Nov '25",
-      achievements: [
-        "Redesigned end-to-end web and admin interfaces, amplifying usability test completion rates by 30% through structured user flows and intuitive UI elements.",
-        "Redesigned end-to-end web and admin interfaces, amplifying usability test completion rates by 30% through structured user flows and intuitive UI elements.",
-        "Redesigned end-to-end web and admin interfaces, amplifying usability test completion rates by 30% through structured user flows and intuitive UI elements.",
-        "Redesigned end-to-end web and admin interfaces, amplifying usability test completion rates by 30% through structured user flows and intuitive UI elements.",
-      ],
-    },
-    {
-      companyName: "Ajaeq",
-      location: "Atlanta, GA, USA",
-      jobTitle: "Principal Product Designer",
-      dateRange: "Mar '24 – Nov '25",
-      achievements: [
-        "Redesigned end-to-end web and admin interfaces, amplifying usability test completion rates by 30% through structured user flows and intuitive UI elements.",
-        "Redesigned end-to-end web and admin interfaces, amplifying usability test completion rates by 30% through structured user flows and intuitive UI elements.",
-      ],
-    },
-  ]);
+  const { experiences, setExperiences } = useResumeBuilderStore();
 
   const addAchievement = (expIdx: number) => {
     const updated = [...experiences];
@@ -277,23 +242,23 @@ const ExperiencePanel = () => {
         <div key={expIdx} className="space-y-2">
           {/* Experience header info */}
           <div>
-            <p className="text-[13px] mori-semibold text-[#161A21]">{exp.companyName}</p>
-            <p className="text-[11px] text-[#6A6D71]">{exp.location}</p>
-            <p className="text-[11px] text-[#6A6D71]">{exp.jobTitle}</p>
-            <p className="text-[11px] text-[#6A6D71]">{exp.dateRange}</p>
+            <p className="text-[13px] mori-semibold text-[#161A21]">{exp.companyName || "Company Name"}</p>
+            <p className="text-[11px] text-[#6A6D71]">{exp.jobTitle || "Job Title"}</p>
+            <p className="text-[11px] text-[#6A6D71]">{exp.startDate} – {exp.currentlyWorking ? "Present" : exp.endDate}</p>
           </div>
 
           {/* Achievement bullets */}
           <div className="space-y-2">
             {exp.achievements.map((ach, achIdx) => (
-              <Textarea
-                key={achIdx}
-                value={ach}
-                onChange={(e) => updateAchievement(expIdx, achIdx, e.target.value)}
-                rows={3}
-                className="rounded-[16px] text-[12px] resize-none focus-visible:border-[#322FEB] focus-visible:ring-[#322FEB]/20 leading-[1.5]"
-                placeholder="Describe an achievement..."
-              />
+              <div key={achIdx} className="space-y-1">
+                 <Textarea
+                    value={ach}
+                    onChange={(e) => updateAchievement(expIdx, achIdx, e.target.value)}
+                    rows={3}
+                    className="rounded-[16px] text-[12px] resize-none focus-visible:border-[#322FEB] focus-visible:ring-[#322FEB]/20 leading-[1.5]"
+                    placeholder="Describe an achievement..."
+                  />
+              </div>
             ))}
           </div>
 
@@ -317,22 +282,13 @@ const ExperiencePanel = () => {
 };
 
 /* ─── Panel: Education ───────────────────────────────────────────────── */
-interface EducationEntry {
-  location: string;
-  fieldOfStudy: string;
-  degree: string;
-}
-
 const EducationPanel = () => {
-  const [educations, setEducations] = useState<EducationEntry[]>([
-    { location: "Atlanta, GA, USA", fieldOfStudy: "Microbiology", degree: "Bachelor's Degree" },
-    { location: "Atlanta, GA, USA", fieldOfStudy: "Microbiology", degree: "Bachelor's Degree" },
-  ]);
+  const { educations, setEducations } = useResumeBuilderStore();
 
   const addEducation = () => {
     setEducations([
       ...educations,
-      { location: "", fieldOfStudy: "", degree: "" },
+      { institutionName: "", location: "", degree: "", fieldOfStudy: "", graduationYear: "" },
     ]);
   };
 
@@ -348,10 +304,10 @@ const EducationPanel = () => {
             <div className="w-7 h-7 rounded-[8px] bg-[#F0F0F0] flex items-center justify-center shrink-0">
               <BookmarkIcon />
             </div>
-            <span className="text-[12px] mori-semibold text-[#161A21]">{edu.location || "—"}</span>
+            <span className="text-[12px] mori-semibold text-[#161A21]">{edu.institutionName || "—"}</span>
           </div>
           <p className="text-[13px] mori-semibold text-[#161A21] pl-[36px]">{edu.fieldOfStudy || "—"}</p>
-          <p className="text-[12px] text-[#95969A] pl-[36px]">{edu.degree || "—"}</p>
+          <p className="text-[12px] text-[#95969A] pl-[36px]">{edu.degree || "—"} | {edu.graduationYear}</p>
         </div>
       ))}
 
@@ -370,7 +326,7 @@ const EducationPanel = () => {
 
 /* ─── Panel: Skills ──────────────────────────────────────────────────── */
 const SkillsPanel = () => {
-  const [skills, setSkills] = useState(["Adobe", "Agile", "Design Thinking", "DevOps"]);
+  const { skills, setSkills } = useResumeBuilderStore();
   const [newSkill, setNewSkill] = useState("");
 
   const updateSkill = (idx: number, val: string) => {
@@ -397,13 +353,14 @@ const SkillsPanel = () => {
     <div className="px-4 pb-5 pt-3 space-y-2">
       {/* Existing skills */}
       {skills.map((skill, idx) => (
-        <Input
-          key={idx}
-          value={skill}
-          onChange={(e) => updateSkill(idx, e.target.value)}
-          className="text-[13px]"
-          placeholder="Skill name"
-        />
+         <div key={idx} className="flex gap-2">
+            <Input
+                value={skill}
+                onChange={(e) => updateSkill(idx, e.target.value)}
+                className="text-[13px]"
+                placeholder="Skill name"
+            />
+         </div>
       ))}
 
       {/* New Skill input */}
@@ -447,32 +404,55 @@ const SectionPanel = ({ label }: { label: string }) => {
 
 /* ─── Main Page ──────────────────────────────────────────────────────── */
 const Page = () => {
-  const [selectedTemplate, setSelectedTemplate] = useState("classic");
+  const { 
+    template: selectedTemplate, setTemplate, setThemeColor, 
+    firstName, lastName, targetRole, location, phone, email, portfolioUrl, linkedinUrl, professionalSummary,
+    experiences, educations, skills, themeColor
+  } = useResumeBuilderStore();
   const [openSection, setOpenSection] = useState<string | null>(null);
+  const resumeRef = useRef<HTMLDivElement>(null);
 
   const toggleSection = (label: string) => {
     setOpenSection((prev) => (prev === label ? null : label));
   };
 
+  const handleTemplateSelect = (template: typeof resumeTemplates[0]) => {
+     setTemplate(template.value);
+     // Default to third color as theme color
+     if (template.colors.length >= 3) {
+        setThemeColor(template.colors[2]);
+     }
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
     <div className="-m-4 bg-[#FFFCFD] min-h-[calc(100vh-80px)] flex flex-col">
       {/* Page Top Bar */}
-      <div className="w-full flex justify-between items-center py-8 px-4 md:px-8 border-b border-[#E8E8E8] bg-white">
-        <div className="flex items-center gap-4">
-          <h1 className="sora-semibold text-[#161A21] text-[18px] md:text-[22px]">
-            Your resume is ready!
-          </h1>
+      <div className="w-full border-b border-[#E8E8E8] bg-white sticky top-0 z-40">
+        {/* Desktop Header */}
+        <div className="hidden md:flex justify-between items-center py-8 px-4 md:px-8">
+          <div className="flex items-center gap-4">
+            <h1 className="sora-semibold text-[#161A21] text-[18px] md:text-[22px]">
+              Your resume is ready!
+            </h1>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button variant="outline" className="gap-2 text-[14px] flex">
+              <Image src="/reset-right-line.svg" width={18} height={18} alt="regenerate" />
+              Regenerate resume
+            </Button>
+            <Button onClick={handlePrint} className="gap-2 text-[14px]">
+              <Image src="/download-line.svg" width={18} height={18} alt="download" className="brightness-[10]" />
+              Download PDF
+            </Button>
+          </div>
         </div>
-        <div className="flex items-center gap-3">
-          <Button variant="outline" className="gap-2 text-[14px] hidden md:flex">
-            <Image src="/reset-right-line.svg" width={18} height={18} alt="regenerate" />
-            Regenerate resume
-          </Button>
-          <Button className="gap-2 text-[14px]">
-            <Image src="/download-line.svg" width={18} height={18} alt="download" className="brightness-[10]" />
-            Download PDF
-          </Button>
-        </div>
+        
+        {/* Mobile Header */}
+        
       </div>
 
       {/* Three-column layout */}
@@ -516,9 +496,17 @@ const Page = () => {
         </aside>
 
         {/* ── Center: Resume Preview ── */}
-        <main className="flex-1 overflow-y-auto py-6 px-4 md:px-8 flex justify-center items-start">
+        <main className="flex-1 overflow-y-auto py-6 px-4 md:px-8 flex flex-col items-center print:p-0 print:m-0 print:bg-white bg-[#F9F9F9] md:bg-inherit transition-colors">
+          
+          {/* Mobile Title */}
+          <div className="md:hidden py-4 text-center mb-4">
+             <h1 className="text-[20px] sora-semibold text-[#161A21]">Your resume is ready!</h1>
+          </div>
+
           <div
-            className="w-full w-[916px] border border-[#E8E8E8] overflow-hidden"
+            ref={resumeRef}
+            id="resume-to-print"
+            className="w-full max-w-[360px] md:max-w-[860px] border border-[#E8E8E8] bg-white rounded-[16px] md:rounded-none overflow-hidden print:border-none print:shadow-none print:max-w-none print:rounded-none"
             style={{
               boxShadow: `
                 0px 96px 96px -32px #3333330F,
@@ -532,10 +520,45 @@ const Page = () => {
               `,
             }}
           >
-            <ResumePreviewDocument />
+            {/* Wrapper for responsive scaling on mobile */}
+            <div className="w-full overflow-hidden origin-top scale-[0.95] xs:scale-100 transition-transform">
+              <ResumePreviewDocument 
+                 fullName={`${firstName} ${lastName}`}
+                 jobTitle={targetRole}
+                 location={location}
+                 phoneNumber={phone}
+                 email={email}
+                 portfolio={portfolioUrl}
+                 linkedinUrl={linkedinUrl}
+                 professionalSummary={professionalSummary}
+                 experiences={experiences}
+                 educations={educations}
+                 skills={skills}
+                 themeColor={themeColor}
+                 template={selectedTemplate}
+                 highlightSection={openSection}
+               />
+            </div>
+          </div>
+
+          {/* Mobile Template Preview Thumbnail (as seen in the guide image) */}
+          <div className="md:hidden mt-10 mb-20 w-full flex justify-center">
+            <div className="bg-white p-3 rounded-[16px] border-[2px] border-[#322FEB] w-[280px] relative">
+               <div className="absolute top-2 right-2 w-5 h-5 bg-[#322FEB] rounded-full flex items-center justify-center">
+                  <span className="text-white text-[12px]">✓</span>
+               </div>
+               <div className="bg-[#F7F7F7] p-1 rounded-lg">
+                  <Image 
+                    src={resumeTemplates.find(t => t.value === selectedTemplate)?.image || "/resume1.svg"} 
+                    width={200} 
+                    height={200} 
+                    className="w-full object-cover rounded-[10px]" 
+                    alt="current template" 
+                  />
+               </div>
+            </div>
           </div>
         </main>
-
         {/* ── Right Panel: Template Selector ── */}
         <aside className="hidden lg:flex flex-col w-[210px] shrink-0 border-l border-[#E8E8E8] bg-white overflow-y-auto py-4">
           <div className="flex flex-col gap-4 px-3">
@@ -543,7 +566,7 @@ const Page = () => {
               <button
                 key={template.value}
                 type="button"
-                onClick={() => setSelectedTemplate(template.value)}
+                onClick={() => handleTemplateSelect(template)}
                 className="text-left focus:outline-none"
               >
                 <div
@@ -587,10 +610,14 @@ const Page = () => {
                       <span className="text-[9px] text-[#6A6D71]">Classic</span>
                     </div>
                     <div className="flex items-center gap-[3px] mt-1.5 flex-wrap">
-                      {template.colors.map((color, ci) => (
+                      {template.colors.map((color: string, ci: number) => (
                         <div
                           key={ci}
-                          className={`w-[13px] h-[13px] rounded-[3px] ${ci === 0 ? "border border-[#5335E9]" : ""}`}
+                          onClick={(e) => {
+                             e.stopPropagation();
+                             setThemeColor(color);
+                          }}
+                          className={`w-[13px] h-[13px] rounded-[3px] cursor-pointer hover:scale-110 transition-transform ${themeColor === color ? "border-[2px] border-[#322FEB]" : ci === 0 ? "border border-[#5335E9]" : ""}`}
                           style={{ backgroundColor: color }}
                         />
                       ))}
@@ -602,8 +629,56 @@ const Page = () => {
           </div>
         </aside>
       </div>
+
+      {/* Mobile Sticky Footer (as seen in the guide image) */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-[#E8E8E8] p-4 flex flex-col gap-3 z-50">
+         <Button onClick={handlePrint} className="w-full bg-[#322FEB] hover:bg-[#322FEB]/90 h-[56px] rounded-[16px] gap-2 text-[15px] mori-semibold uppercase tracking-wide">
+            <Image src="/download-line.svg" width={20} height={20} alt="download" className="brightness-[10]" />
+            Download PDF
+         </Button>
+         <Button variant="outline" className="w-full border-[#E8E8E8] h-[56px] rounded-[16px] text-[#161A21] gap-2 text-[15px] mori-semibold uppercase tracking-wide bg-white">
+            <Image src="/reset-right-line.svg" width={20} height={20} alt="regenerate" />
+            Regenerate resume
+         </Button>
+      </div>
     </div>
   );
 };
 
-export default Page;
+/* ─── Styles for Printing ─── */
+const printStyles = `
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #resume-to-print, #resume-to-print * {
+    visibility: visible;
+  }
+  #resume-to-print {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 210mm;
+    height: 297mm;
+    margin: 0;
+    padding: 0;
+    border: none !important;
+    box-shadow: none !important;
+    background: white !important;
+    z-index: 9999;
+  }
+  @page {
+    size: A4;
+    margin: 0;
+  }
+}
+`;
+
+export default function ResumeBuilderPage() {
+  return (
+    <>
+      <style dangerouslySetInnerHTML={{ __html: printStyles }} />
+      <Page />
+    </>
+  );
+}

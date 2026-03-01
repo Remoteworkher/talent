@@ -59,8 +59,7 @@ const Page = () => {
 
         {/* Text Content */}
         <div className="sora-semibold text-[22px] md:text-[32px] leading-[32px] md:leading-[40px] pt-8 text-[#161A21] text-center">
-          Welcome to Remote Work
-          <span className="sora-semibold text-[#322FEB]">her</span>!
+          Welcome to Compass!
         </div>
         <div className="text-center text-[#6A6D71] text-[15px] md:text-[16px] mt-2">
           Hey Adeife! 🎉 Let’s personalize your experience.

@@ -21,6 +21,9 @@ import {
 } from "@/components/ui/select";
 import { useUserData } from "@/hooks/userData";
 import { usePlans } from "@/hooks/usePlans";
+import { useTokens } from "@/hooks/useTokens";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 interface GetTokensDialogProps {
   open: boolean;
@@ -30,7 +33,9 @@ interface GetTokensDialogProps {
 const GetTokensDialog: React.FC<GetTokensDialogProps> = ({ open, onOpenChange }) => {
   const { data: userData } = useUserData();
   const { data: plans } = usePlans();
+  const { tokenPlans, buyTokensMutation, isLoadingTokenPlans } = useTokens();
   const [selectedOption, setSelectedOption] = useState("upgrade");
+  const [selectedTokenPlanUid, setSelectedTokenPlanUid] = useState<string>("");
 
   // Determine current and next plan for "Upgrade" section
   const allMonthlyPlans = plans?.monthly || [];
@@ -121,14 +126,20 @@ const GetTokensDialog: React.FC<GetTokensDialogProps> = ({ open, onOpenChange })
               </div>
               <p className="text-[12px] text-[#6A6D71] mb-6">Buy tokens on demand. Valid for 2 months</p>
               
-              <Select disabled={selectedOption !== "topup"}>
+              <Select 
+                disabled={selectedOption !== "topup" || isLoadingTokenPlans}
+                value={selectedTokenPlanUid}
+                onValueChange={setSelectedTokenPlanUid}
+              >
                 <SelectTrigger className="h-12 rounded-xl border-[#E8E8E8] bg-white">
-                  <SelectValue placeholder="Select an amount" />
+                  <SelectValue placeholder={isLoadingTokenPlans ? "Loading plans..." : "Select an amount"} />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl">
-                  <SelectItem value="50">50 Tokens - ₦2,500</SelectItem>
-                  <SelectItem value="100">100 Tokens - ₦4,500</SelectItem>
-                  <SelectItem value="200">200 Tokens - ₦8,000</SelectItem>
+                  {tokenPlans?.data?.map((plan: any) => (
+                    <SelectItem key={plan.uid} value={plan.uid}>
+                      {plan.tokens} Tokens - {formatCurrency(plan.price)}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -145,12 +156,34 @@ const GetTokensDialog: React.FC<GetTokensDialogProps> = ({ open, onOpenChange })
           </Button>
           <Button 
             className="flex-1 h-14 rounded-full bg-[#322FEB] hover:bg-[#2826c8] text-white text-[16px] font-medium shadow-[0px_8px_16px_0px_#322FEB4D]"
+            disabled={buyTokensMutation.isPending || (selectedOption === "topup" && !selectedTokenPlanUid)}
             onClick={() => {
-              // Handle payment logic
-              onOpenChange(false);
+              const uidToUse = selectedOption === "topup" ? selectedTokenPlanUid : nextPlan?.uid;
+              
+              if (!uidToUse) {
+                toast.error(selectedOption === "topup" ? "Please select a token plan" : "No upgrade plan available.");
+                return;
+              }
+
+              buyTokensMutation.mutate(uidToUse, {
+                onSuccess: (data: any) => {
+                  if (data.authorization_url) {
+                    window.location.href = data.authorization_url;
+                  } else {
+                    toast.error("Failed to initiate payment. Please try again.");
+                  }
+                },
+                onError: () => {
+                  toast.error("Something went wrong. Please try again.");
+                }
+              });
             }}
           >
-            {selectedOption === "upgrade" ? "Upgrade plan" : "Top up now"}
+            {buyTokensMutation.isPending ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              selectedOption === "upgrade" ? "Upgrade plan" : "Top up now"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>

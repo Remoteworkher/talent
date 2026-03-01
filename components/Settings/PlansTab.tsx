@@ -5,19 +5,29 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { usePlans, Plan } from "@/hooks/usePlans";
 import { useUserData } from "@/hooks/userData";
+import { useTokens } from "@/hooks/useTokens";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface PlanCardProps {
   plan: Plan;
   isCurrent?: boolean;
+  onSelect: (uid: string) => void;
+  isPending?: boolean;
 }
 
 const PlanCard = ({ 
   plan, 
   isCurrent, 
+  onSelect,
+  isPending
 }: PlanCardProps) => {
   const isRecommended = plan.tag === "recommended";
-  const buttonLabel = isCurrent ? "Current plan" : (plan.name.toLowerCase() === 'pro' ? "Go PRO" : "Select plan");
+  const buttonLabel = isCurrent 
+    ? "Current plan" 
+    : isPending 
+      ? "Processing..." 
+      : (plan.name.toLowerCase() === 'pro' ? "Go PRO" : "Select plan");
   
   return (
     <div className={`p-8 rounded-[24px] border ${isCurrent ? 'border-[#E8E8E8] bg-[#F9F9FB]' : 'border-[#E8E8E8] bg-white'} flex flex-col items-center text-center space-y-6 flex-1 relative`}>
@@ -43,8 +53,10 @@ const PlanCard = ({
             ? 'bg-[#E8E8E8] text-[#95969A] cursor-not-allowed hover:bg-[#E8E8E8]' 
             : 'bg-[#322FEB] text-white hover:bg-[#2826c8]'
         }`}
-        disabled={isCurrent}
+        disabled={isCurrent || isPending}
+        onClick={() => onSelect(plan.uid)}
       >
+        {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
         {buttonLabel}
       </Button>
 
@@ -63,6 +75,22 @@ const PlanCard = ({
 const PlansTab = () => {
   const { data: plansData, isLoading: plansLoading } = usePlans();
   const { data: userData, isLoading: userLoading } = useUserData();
+  const { buyTokensMutation } = useTokens();
+
+  const handlePlanSelect = (uid: string) => {
+    buyTokensMutation.mutate(uid, {
+      onSuccess: (data: any) => {
+        if (data.authorization_url) {
+          window.location.href = data.authorization_url;
+        } else {
+          toast.error("Failed to initiate payment. Please try again.");
+        }
+      },
+      onError: () => {
+        toast.error("Something went wrong. Please try again.");
+      }
+    });
+  };
 
   if (plansLoading || userLoading) {
     return (
@@ -86,6 +114,8 @@ const PlansTab = () => {
             key={plan.uid} 
             plan={plan} 
             isCurrent={userData?.plan_uid === plan.uid} 
+            onSelect={handlePlanSelect}
+            isPending={buyTokensMutation.isPending && buyTokensMutation.variables === plan.uid}
           />
         ))}
         

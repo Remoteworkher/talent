@@ -246,7 +246,7 @@ const Page = () => {
       </div>
       <section className="pt-10 w-full md:w-[540px] mx-auto">
         <div className="sora-semibold text-[24px] md:text-[32px] leading-[32px] md:leading-[40px] pt-8 text-[#161A21] text-center">
-          Create your Remote Workher
+          Create your Compass
           <span className="sora-semibold text-[#322FEB]"> her </span>
           account
         </div>
@@ -367,7 +367,7 @@ const Page = () => {
             <div className="text-[#6A6D71] text-[14px] font-normal cursor-pointer">
               Yes I understand and agree to the{" "}
               <span className="text-[#161A21] underline">
-                Remote WorkHer Terms of Service{" "}
+                Compass Terms of Service{" "}
               </span>
               including{" "}
               <span className="text-[#161A21] underline">User Agreement</span>{" "}
