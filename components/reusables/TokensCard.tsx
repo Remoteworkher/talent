@@ -22,7 +22,8 @@ const TokensCard = () => {
   ] as any[];
   const userPlan = allPlans.find((p: any) => p.uid === userData?.plan_uid);
   
-  const maxTokens = userPlan ? parseInt(userPlan.tokens) : 150;
+  const planTokens = userPlan ? parseInt(userPlan.tokens) : 150;
+  const maxTokens = Math.max(planTokens, currentTokens);
   const progress = (currentTokens / maxTokens) * 100;
 
   return (

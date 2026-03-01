@@ -100,6 +100,7 @@ const GetTokensDialog: React.FC<GetTokensDialogProps> = ({ open, onOpenChange })
             await loadPaystackScript();
 
             const popup = new (window as any).PaystackPop();
+            onOpenChange(false);
             popup.resumeTransaction(data.access_code, {
               onSuccess: (transaction: any) => {
                 // Payment completed — verify with reference
