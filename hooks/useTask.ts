@@ -14,6 +14,7 @@ export interface Task {
   id?: number;
   difficulty?: "beginner" | "intermediate" | "advanced";
   route?: string;
+  button_text?: string;
   assigned_at?: string;
   completed_at?: string | null;
   due_date?: string | null;

@@ -6,9 +6,7 @@ export default function CareerRoadmapResultPage() {
     <BaseResultPage
       slug="career-roadmap"
       formPath="/career-tools/career/roadmap"
-      downloadPdf={(output) => {
-          console.log("Downloading PDF for Career Roadmap", output);
-      }}
+      headerTitle="Your Career Progression Map"
     />
   );
 }

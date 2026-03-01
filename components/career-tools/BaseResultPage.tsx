@@ -75,7 +75,7 @@ export const BaseResultPage: React.FC<BaseResultPageProps> = ({
                   className="gap-2 bg-[#322FEB] hover:bg-[#322FEB]/90 rounded-xl h-11 px-6 shadow-md w-full sm:w-auto"
                 >
                   <Image src="/sparkling-line.svg" width={16} height={16} alt="gen" className="brightness-[10]" />
-                  Generate again {tool?.generate_token_cost ? `(${tool.generate_token_cost} tokens)` : ""}
+                  Regenerate {tool?.generate_token_cost ? `(${tool.generate_token_cost} tokens)` : ""}
                 </Button>
               )}
            </div>

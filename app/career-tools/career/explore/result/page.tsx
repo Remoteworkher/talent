@@ -6,9 +6,6 @@ export default function ExploreCareersResultPage() {
     <BaseResultPage
       slug="explore-careers"
       formPath="/career-tools/career/explore"
-      downloadPdf={(output) => {
-          console.log("Downloading PDF for Career Insight", output);
-      }}
     />
   );
 }

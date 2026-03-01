@@ -39,6 +39,12 @@ const Task = ({ task }: { task: TaskType }) => {
   const { sendOTP } = useEmailVerification();
   const [isTriggering, setIsTriggering] = useState(false);
 
+  const taskRoute = task.route || (
+    task.task_type === "onboarding" ? "/settings/onboarding" : 
+    task.task_type === "email_verification" ? "/settings/verify-email" : task.task_type === "avatar_upload" ? "/settings" : 
+    null
+  );
+
   const handleAction = async (e: React.MouseEvent) => {
     if (task.task_type === "email_verification") {
       e.preventDefault();
@@ -56,19 +62,11 @@ const Task = ({ task }: { task: TaskType }) => {
         toast.error("An error occurred. Please try again.");
         setIsTriggering(false);
       }
-    } else if (task.task_type === "onboarding") {
-      router.push("/settings/onboarding");
     } else if (taskRoute) {
       router.push(taskRoute);
     }
   };
 
-  // Handle fallback routes if missing from API
-  const taskRoute = task.route || (
-    task.task_type === "onboarding" ? "/register/onboarding" : 
-    task.task_type === "email_verification" ? "/settings/verify-email" : 
-    null
-  );
 
   return (
     <div className="border border-[#E8E8E8] rounded-[12px] p-4 relative group hover:border-[#322FEB] transition-all bg-white">
@@ -102,19 +100,12 @@ const Task = ({ task }: { task: TaskType }) => {
             </div>
           </div>
           <div className="md:col-span-2 flex md:justify-end items-center">
-            {taskRoute && (
               <Button 
                 onClick={handleAction} 
                 className="px-6 rounded-full bg-[#322FEB] hover:bg-[#2826c8] flex items-center gap-2"
                 disabled={isTriggering}
               >
-                {task.task_type === "onboarding"
-                  ? "Onboarding"
-                  : task.task_type === "email_verification"
-                  ? "Verify"
-                  : task.task_type === "library"
-                  ? "View"
-                  : "Action"}
+                {task.button_text ? task.button_text : "Action"}
                 <Image
                   src={`/apply-icon.svg`}
                   width={18}
@@ -122,7 +113,6 @@ const Task = ({ task }: { task: TaskType }) => {
                   alt="arrow"
                 />
               </Button>
-            )}
           </div>
         </div>
       </section>

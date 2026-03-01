@@ -2,6 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import { toast } from "sonner";
+import { Copy } from "lucide-react";
 import ToolResultCard from "@/components/reusables/ToolResultCard";
 
 export const ScoreCard = ({ title, score, max = 100 }: { title: string; score: number; max?: number }) => (
@@ -120,10 +121,205 @@ export const ToolResultRenderer = ({ slug, output }: { slug: string; output: any
     );
   }
 
-  // 4. Explore Careers / Salary Analyzer
-  if (s.includes("explore-careers") || s.includes("salary-analyzer")) {
-    const isExplore = s.includes("explore-careers");
-    
+  // 4a. Salary Analyzer (dedicated renderer)
+  if (s.includes("salary-analyzer")) {
+    return (
+      <div className="w-full space-y-10 text-left animate-in fade-in slide-in-from-top-4 duration-700">
+        {/* Header */}
+        <div className="space-y-2">
+          <p className="text-[15px] text-[#6A6D71]">
+            {output.subtitle || "Discover detailed information about any career and see how well you fit based on your skills"}
+          </p>
+        </div>
+
+        {/* Salary Overview - 3 column cards */}
+        <section className="space-y-4">
+          <h3 className="font-bold text-[20px] text-[#161A21]">Salary Overview</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-[#E8E8E8] rounded-[16px] overflow-hidden border border-[#E8E8E8]">
+            <div className="bg-white p-5 space-y-1">
+              <p className="text-[12px] text-[#6A6D71] font-medium">Average Salary</p>
+              <p className="text-[22px] font-bold text-[#161A21]">{output.average_salary || "—"}</p>
+            </div>
+            <div className="bg-white p-5 space-y-1">
+              <p className="text-[12px] text-[#6A6D71] font-medium">Salary Range</p>
+              <p className="text-[22px] font-bold text-[#161A21]">{output.salary_range || "—"}</p>
+            </div>
+            <div className="bg-white p-5 space-y-1">
+              <p className="text-[12px] text-[#6A6D71] font-medium">Experience Level</p>
+              <p className="text-[22px] font-bold text-[#161A21]">{output.experience_level || "—"}</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Salary by Company Type */}
+        {output.salary_by_company_type && (
+          <section className="space-y-4">
+            <h3 className="font-bold text-[18px] text-[#161A21]">Salary by Company Type</h3>
+            {output.salary_by_company_type_description && (
+              <p className="text-[14px] text-[#6A6D71] leading-relaxed">{output.salary_by_company_type_description}</p>
+            )}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {(Array.isArray(output.salary_by_company_type) ? output.salary_by_company_type : []).map((company: any, ci: number) => (
+                <div key={ci} className="space-y-2">
+                  <p className="font-bold text-[14px] text-[#161A21]">{company.type}</p>
+                  <div className="space-y-1.5">
+                    {company.levels?.map((level: any, li: number) => (
+                      <div key={li} className="flex justify-between items-center bg-[#F6F3FF] rounded-lg px-3 py-2">
+                        <span className="text-[12px] text-[#6A6D71] font-medium">{level.level}</span>
+                        <span className="text-[12px] font-bold text-[#161A21]">{level.salary}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* What Drives Higher Pay */}
+        {output.what_drives_higher_pay && output.what_drives_higher_pay.length > 0 && (
+          <section className="space-y-5">
+            <h3 className="font-bold text-[18px] text-[#161A21]">What Drives Higher Pay</h3>
+            <div className="space-y-5">
+              {output.what_drives_higher_pay.map((driver: any, di: number) => (
+                <div key={di} className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-[#F6F3FF] flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-[#322FEB] text-[14px]">⊕</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="font-bold text-[15px] text-[#161A21]">{typeof driver === "string" ? driver : driver.title}</p>
+                      {driver.percentage && (
+                        <span className="shrink-0 text-[#059669] font-bold text-[14px]">{driver.percentage}</span>
+                      )}
+                    </div>
+                    {driver.description && (
+                      <p className="text-[13px] text-[#6A6D71] mt-0.5 leading-relaxed">{driver.description}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Negotiation Strategy */}
+        {output.negotiation_strategy && (
+          <section className="space-y-5">
+            <h3 className="font-bold text-[18px] text-[#161A21]">Negotiation Strategy</h3>
+            <div className="space-y-4">
+              {output.negotiation_strategy.anchor_high && (
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-[#F6F3FF] flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-[14px]">⊙</span>
+                  </div>
+                  <div>
+                    <p className="font-bold text-[15px] text-[#161A21]">Anchor High</p>
+                    <p className="text-[14px] text-[#6A6D71]">{output.negotiation_strategy.anchor_high}</p>
+                  </div>
+                </div>
+              )}
+              {output.negotiation_strategy.walk_away_point && (
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-[#FEF3F2] flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-[14px]">⊘</span>
+                  </div>
+                  <div>
+                    <p className="font-bold text-[15px] text-[#161A21]">Walk Away Point</p>
+                    <p className="text-[14px] text-[#6A6D71]">{output.negotiation_strategy.walk_away_point}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* Leverage Points */}
+        {output.leverage_points && output.leverage_points.length > 0 && (
+          <section className="space-y-4">
+            <h3 className="font-bold text-[18px] text-[#161A21]">Leverage Points</h3>
+            <ul className="space-y-2">
+              {output.leverage_points.map((point: string, pi: number) => (
+                <li key={pi} className="flex items-start gap-2 text-[14px] text-[#444]">
+                  <span className="text-[#6A6D71] mt-1 shrink-0">·</span>
+                  {point}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {/* Scripts to Use */}
+        {output.scripts && output.scripts.length > 0 && (
+          <section className="space-y-5">
+            <h3 className="font-bold text-[18px] text-[#161A21]">Script to Use</h3>
+            <div className="space-y-4">
+              {output.scripts.map((script: any, si: number) => {
+                const scriptText = typeof script === "string" ? script : script.text;
+                return (
+                  <div key={si} className="bg-[#F6F3FF] border border-[#E0D9FC] rounded-[16px] p-5 relative">
+                    <p className="text-[#5335E9] text-[13px] font-bold mb-2 flex items-center gap-1">
+                      <span>✦</span> Script {si + 1}
+                    </p>
+                    <p className="text-[14px] text-[#444] italic leading-relaxed pr-8">
+                      &ldquo;{scriptText}&rdquo;
+                    </p>
+                    <button
+                      className="absolute top-4 right-4 w-8 h-8 rounded-lg bg-white border border-[#E0D9FC] flex items-center justify-center hover:bg-[#F0EEFF] transition-colors"
+                      onClick={() => {
+                        navigator.clipboard.writeText(scriptText);
+                        toast.success("Script copied!");
+                      }}
+                    >
+                      <Copy className="w-3.5 h-3.5 text-[#5335E9]" />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
+        {/* Hidden Compensation */}
+        {output.hidden_compensation && output.hidden_compensation.length > 0 && (
+          <section className="space-y-5">
+            <h3 className="font-bold text-[18px] text-[#161A21]">Hidden Compensation</h3>
+            <div className="space-y-4">
+              {output.hidden_compensation.map((comp: any, ci: number) => (
+                <div key={ci} className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-[#F6F3FF] flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-[14px]">⊙</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="font-bold text-[15px] text-[#161A21]">{comp.title}</p>
+                      {comp.value && (
+                        <span className="shrink-0 font-bold text-[14px] text-[#161A21]">{comp.value}</span>
+                      )}
+                    </div>
+                    {comp.description && (
+                      <p className="text-[13px] text-[#6A6D71] mt-0.5 leading-relaxed">{comp.description}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Industry Outlook fallback */}
+        {output.industry_outlook && (
+          <section className="space-y-3 pt-6 border-t border-[#E8E8E8]">
+            <h3 className="font-bold text-[18px] text-[#161A21]">Industry Outlook</h3>
+            <p className="text-[#444] text-[15px] leading-[1.8] whitespace-pre-wrap">{output.industry_outlook}</p>
+          </section>
+        )}
+      </div>
+    );
+  }
+
+  // 4b. Explore Careers
+  if (s.includes("explore-careers")) {
     return (
       <div className="w-full space-y-12 text-left animate-in fade-in slide-in-from-top-4 duration-700">
         <div className="space-y-4">
@@ -464,57 +660,317 @@ export const ToolResultRenderer = ({ slug, output }: { slug: string; output: any
 
   // 6. Career Roadmap
   if (s.includes("roadmap")) {
-    return (
-      <div className="w-full space-y-10 text-left">
-        <div className="text-center space-y-2">
-          <h2 className="text-[28px] font-bold text-[#161A21]">{output.header_title}</h2>
-          <p className="text-[#6A6D71]">{output.header_subtitle}</p>
-        </div>
+    const RoadmapTabs = () => {
+      const [activeTab, setActiveTab] = React.useState<"paths" | "gems" | "start">("paths");
+      const [selectedPathIdx, setSelectedPathIdx] = React.useState(0);
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-4 text-left">
-            <h3 className="font-bold text-[#161A21]">Career Tracks</h3>
-            <div className="space-y-3">
-              {output.career_paths?.map((path: any, i: number) => (
-                <div key={i} className="bg-white border border-[#E8E8E8] p-4 rounded-[16px] shadow-sm">
-                  <p className="text-[#5335E9] text-[12px] font-bold tracking-wider uppercase mb-1">{path.label}</p>
-                  <p className="font-bold text-[#161A21]">{path.track_title}</p>
-                  <p className="text-[13px] text-[#6A6D71]">{path.track_role}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="space-y-8">
-            <ListSection title="Hidden Gems" items={output.hidden_gems} />
-            <ListSection title="Actions to Start Now" items={output.start_now} />
-          </div>
-        </div>
+      const tabs = [
+        { key: "paths" as const, label: "Career Paths" },
+        { key: "gems" as const, label: "Hidden Gems" },
+        { key: "start" as const, label: "Start Now" },
+      ];
 
-        <div className="relative">
-          <div className="absolute left-4 top-0 bottom-0 w-[2px] bg-[#5335E920]" />
-          <div className="space-y-8 pl-10">
-            {output.selected_path_detail?.steps?.map((step: any, i: number) => (
-              <div key={i} className="relative bg-white border border-[#E8E8E8] rounded-[24px] p-6 shadow-md">
-                <div className="absolute -left-[31px] top-6 w-10 h-10 rounded-full bg-[#5335E9] text-white flex items-center justify-center border-4 border-[#FFFCFD]">
-                  {step.step_number}
-                </div>
-                <div className="flex justify-between items-start mb-4">
-                  <h4 className="font-bold text-[#161A21] text-[18px]">{step.role_title}</h4>
-                  <span className="bg-[#F0F0FF] text-[#5335E9] px-3 py-1 rounded-full text-[12px] font-bold">{step.duration}</span>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                   <ListSection title="Key Milestones" items={step.key_milestones} />
-                   <div className="bg-[#F9FAFB] p-4 rounded-[16px] text-left">
-                     <p className="text-[12px] font-bold text-[#6A6D71] uppercase mb-2">Pro Tip</p>
-                     <p className="text-[14px] text-[#444] italic">"{step.pro_tip}"</p>
-                   </div>
-                </div>
-              </div>
+      const selectedPath = output.career_paths?.[selectedPathIdx];
+
+      return (
+        <div className="w-full space-y-8 text-left animate-in fade-in slide-in-from-top-4 duration-700">
+          {/* Subtitle */}
+          <p className="text-[15px] text-[#6A6D71]">
+            {output.header_subtitle || `${output.current_role || "Your Role"} → Multiple possibilities`}
+          </p>
+
+          {/* Tabs */}
+          <div className="flex gap-6 border-b border-[#E8E8E8]">
+            {tabs.map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={`pb-3 text-[14px] font-medium transition-all border-b-2 ${
+                  activeTab === tab.key
+                    ? "border-[#322FEB] text-[#161A21]"
+                    : "border-transparent text-[#6A6D71] hover:text-[#161A21]"
+                }`}
+              >
+                {tab.label}
+              </button>
             ))}
           </div>
+
+          {/* ─── TAB 1: Career Paths ─── */}
+          {activeTab === "paths" && (
+            <div className="space-y-10">
+              {/* Path summary cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {output.career_paths?.map((path: any, i: number) => {
+                  const isSelected = selectedPathIdx === i;
+                  const tagColors: Record<string, { bg: string; text: string; border: string }> = {
+                    ambitious: { bg: "#F6F3FF", text: "#5335E9", border: "#C3BCFC" },
+                    challenging: { bg: "#ECFDF5", text: "#059669", border: "#A7F3D0" },
+                    practical: { bg: "#FFF7ED", text: "#D97706", border: "#FDE68A" },
+                  };
+                  const tagLabel = (path.label || "").toLowerCase();
+                  const colors = tagColors[tagLabel] || tagColors.ambitious;
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => setSelectedPathIdx(i)}
+                      className={`text-left w-full p-5 rounded-[16px] border-2 transition-all ${
+                        isSelected
+                          ? "border-[#322FEB] bg-white"
+                          : "border-[#E8E8E8] bg-white hover:border-[#322FEB40]"
+                      }`}
+                    >
+                      <span
+                        className="inline-block px-3 py-1 rounded-full text-[12px] font-bold mb-3"
+                        style={{ backgroundColor: colors.bg, color: colors.text, border: `1px solid ${colors.border}` }}
+                      >
+                        {path.label}
+                      </span>
+                      <p className="font-bold text-[#161A21] text-[16px] mb-1">{path.track_title}</p>
+                      <p className="text-[13px] text-[#6A6D71] mb-3">{path.track_role}</p>
+                      {path.income_multiplier && (
+                        <p className="text-[13px] text-[#322FEB] font-semibold flex items-center gap-1">
+                          <span>↗</span> {path.income_multiplier}
+                        </p>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Selected path detail */}
+              {selectedPath && (
+                <div className="space-y-8">
+                  <h3 className="text-[24px] font-bold text-[#161A21]">{selectedPath.track_title}</h3>
+                  {selectedPath.description && (
+                    <p className="text-[15px] text-[#6A6D71] leading-relaxed">{selectedPath.description}</p>
+                  )}
+
+                  {/* Destination bar */}
+                  {(selectedPath.destination_role || selectedPath.track_role) && (
+                    <div className="bg-[#1E1B3A] text-white rounded-[12px] px-5 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                      <div className="flex items-center gap-3">
+                        <span className="bg-white/20 px-3 py-1 rounded-md text-[12px] font-bold">Destination</span>
+                        <span className="text-[14px]">
+                          {selectedPath.destination_role || selectedPath.track_role}
+                          {selectedPath.destination_income ? ` ${selectedPath.destination_income}` : ""}
+                        </span>
+                      </div>
+                      {selectedPath.destination_timeline && (
+                        <span className="flex items-center gap-1 text-[13px] text-white/80 shrink-0">
+                          ⏱ {selectedPath.destination_timeline}
+                        </span>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Steps timeline */}
+                  <div className="space-y-8">
+                    {(selectedPath.steps || output.selected_path_detail?.steps)?.map((step: any, i: number) => (
+                      <div key={i} className="relative pl-14">
+                        {/* Step number circle */}
+                        <div className="absolute left-0 top-0 w-10 h-10 rounded-full bg-[#F6F3FF] border-2 border-[#C3BCFC] text-[#322FEB] flex items-center justify-center font-bold text-[16px]">
+                          {step.step_number || i + 1}
+                        </div>
+
+                        <div className="space-y-4">
+                          {/* Step header */}
+                          <div>
+                            <h4 className="font-bold text-[#161A21] text-[18px]">{step.role_title}</h4>
+                            <p className="text-[13px] text-[#6A6D71]">{step.duration}</p>
+                          </div>
+
+                          {/* Milestones + Skills grid */}
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Key Milestones */}
+                            {step.key_milestones && step.key_milestones.length > 0 && (
+                              <div className="space-y-3">
+                                <p className="text-[13px] font-bold text-[#161A21]">Key Milestones</p>
+                                {step.key_milestones.map((m: string, mi: number) => (
+                                  <div key={mi} className="flex items-start gap-2">
+                                    <span className="text-[#059669] mt-0.5 shrink-0">✓</span>
+                                    <span className="text-[14px] text-[#444]">{m}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+
+                            {/* Skills to Stack */}
+                            {step.skills_to_stack && step.skills_to_stack.length > 0 && (
+                              <div className="space-y-3">
+                                <p className="text-[13px] font-bold text-[#161A21]">Skills to Stack</p>
+                                {step.skills_to_stack.map((skill: any, si: number) => {
+                                  const priorityColors: Record<string, { bg: string; text: string }> = {
+                                    critical: { bg: "#FFF7ED", text: "#D97706" },
+                                    important: { bg: "#F6F3FF", text: "#5335E9" },
+                                  };
+                                  const priority = (typeof skill === "string") ? "" : (skill.priority || "").toLowerCase();
+                                  const pColors = priorityColors[priority] || priorityColors.important;
+                                  return (
+                                    <div key={si} className="flex items-start gap-2">
+                                      {typeof skill === "string" ? (
+                                        <>
+                                          <span className="text-[#D97706] mt-0.5 shrink-0">✕</span>
+                                          <span className="text-[14px] text-[#444]">{skill}</span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <span
+                                            className="shrink-0 px-2 py-0.5 rounded text-[11px] font-bold mt-0.5"
+                                            style={{ backgroundColor: pColors.bg, color: pColors.text, border: `1px solid ${pColors.text}30` }}
+                                          >
+                                            {skill.priority || "Important"}
+                                          </span>
+                                          <div>
+                                            <p className="text-[14px] font-semibold text-[#161A21]">{skill.name}</p>
+                                            {skill.resource && <p className="text-[12px] text-[#6A6D71]">{skill.resource}</p>}
+                                          </div>
+                                        </>
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Pro tip */}
+                          {step.pro_tip && (
+                            <div className="flex items-start gap-3 bg-[#FFF9F0] border border-[#FFE4B5] rounded-[12px] px-5 py-3.5">
+                              <span className="text-[18px] shrink-0">💡</span>
+                              <p className="text-[14px] text-[#6A6D71]">
+                                <span className="font-bold text-[#161A21]">Pro tip </span>
+                                {step.pro_tip}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ─── TAB 2: Hidden Gems ─── */}
+          {activeTab === "gems" && (
+            <div className="space-y-6">
+              {/* Header */}
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-full bg-[#F6F3FF] flex items-center justify-center text-[18px] shrink-0">🔍</div>
+                <div>
+                  <p className="font-bold text-[#161A21] text-[16px]">Roles You Probably Don&apos;t Know About</p>
+                  <p className="text-[13px] text-[#6A6D71]">These are perfect for your background but often overlooked</p>
+                </div>
+              </div>
+
+              {/* Hidden gem cards */}
+              {(output.hidden_gems || []).map((gem: any, i: number) => {
+                if (typeof gem === "string") {
+                  return (
+                    <div key={i} className="bg-white border border-[#E8E8E8] rounded-[16px] p-6">
+                      <p className="text-[15px] text-[#161A21]">{gem}</p>
+                    </div>
+                  );
+                }
+                return (
+                  <div key={i} className="bg-white border border-[#E8E8E8] rounded-[16px] p-6 space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
+                      <h4 className="font-bold text-[#161A21] text-[16px]">{gem.title || gem.role}</h4>
+                      {gem.salary && (
+                        <p className="text-[18px] font-bold text-[#161A21] shrink-0">{gem.salary}</p>
+                      )}
+                    </div>
+                    {gem.description && <p className="text-[14px] text-[#6A6D71]">{gem.description}</p>}
+                    
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {gem.skills_to_add && gem.skills_to_add.length > 0 && (
+                        <div className="space-y-2">
+                          <p className="text-[13px] font-bold text-[#161A21]">Skills to add:</p>
+                          <div className="flex flex-wrap gap-2">
+                            {gem.skills_to_add.map((sk: string, si: number) => (
+                              <span key={si} className="px-3 py-1.5 rounded-full border border-[#C3BCFC] text-[#5335E9] text-[12px] font-medium bg-[#F6F3FF]">
+                                {sk}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {gem.top_employers && gem.top_employers.length > 0 && (
+                        <div className="space-y-2">
+                          <p className="text-[13px] font-bold text-[#161A21]">Top Employers</p>
+                          <div className="flex flex-wrap gap-2">
+                            {gem.top_employers.map((emp: string, ei: number) => (
+                              <span key={ei} className="px-3 py-1.5 rounded-full border border-[#E8E8E8] text-[#161A21] text-[12px] font-medium bg-white">
+                                {emp}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* ─── TAB 3: Start Now ─── */}
+          {activeTab === "start" && (
+            <div className="space-y-6">
+              {/* Header */}
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-full bg-[#F6F3FF] flex items-center justify-center text-[18px] shrink-0">🎯</div>
+                <div>
+                  <p className="font-bold text-[#161A21] text-[16px]">Start This Week</p>
+                  <p className="text-[13px] text-[#6A6D71]">Concrete actions to begin your career progression</p>
+                </div>
+              </div>
+
+              {/* Action items */}
+              {(output.start_now || []).map((action: any, i: number) => {
+                const actionText = typeof action === "string" ? action : action.title || action.action;
+                const actionTime = typeof action === "string" ? null : action.time;
+                const actionImpact = typeof action === "string" ? null : action.impact;
+                return (
+                  <div key={i} className="bg-white border border-[#E8E8E8] rounded-[16px] p-5 flex items-center gap-4">
+                    {/* Number */}
+                    <div className="w-10 h-10 rounded-full bg-[#F6F3FF] border-2 border-[#C3BCFC] text-[#322FEB] flex items-center justify-center font-bold text-[16px] shrink-0">
+                      {i + 1}
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[14px] text-[#161A21] font-medium">{actionText}</p>
+                      <div className="flex items-center gap-3 mt-1">
+                        {actionTime && (
+                          <span className="text-[12px] text-[#6A6D71] flex items-center gap-1">
+                            ⏱ {actionTime}
+                          </span>
+                        )}
+                        {actionImpact && (
+                          <span className="text-[12px] text-[#059669] font-semibold flex items-center gap-1">
+                            ↗ {actionImpact}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Start Now button */}
+                    <button className="shrink-0 px-5 py-2.5 bg-[#161A21] text-white rounded-full text-[13px] font-semibold hover:bg-[#2a2e35] transition-colors">
+                      Start Now
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
-      </div>
-    );
+      );
+    };
+
+    return <RoadmapTabs />;
   }
 
   // 7. LinkedIn Post Writer
