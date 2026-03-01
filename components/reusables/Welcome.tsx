@@ -16,12 +16,14 @@ const Welcome = () => {
               ? "Welcome back!"
               : `Welcome back! ${data?.first_name ?? ""} 👋`}
           </div>
-          <div className="text-[14px] text-[#161A21]">
-            {/* You can fetch and display user goal/role/salary here if available in backend */}
-            Your goal: Land a{" "}
-            <span className="mori-semibold">Product Designer</span> role at{" "}
-            <span className="text-[#322FEB] mori-semibold">₦200K/month</span>
-          </div>
+          {data?.goal && (
+            <div className="text-[14px] text-[#161A21]">
+              {/* You can fetch and display user goal/role/salary here if available in backend */}
+              Your goal:{" "}
+              <span className="mori-semibold capitalize">{data?.goal?.replaceAll("-", " ") ?? ""}</span> 
+              {/* <span className="text-[#322FEB] mori-semibold">₦{data?.salary ?? ""}/month</span>  */}
+            </div>
+          )}
         </div>
       </div>
     </div>

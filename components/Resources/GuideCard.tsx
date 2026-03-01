@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Gift } from "lucide-react";
+import { Gift, Loader2 } from "lucide-react";
 import Image from "next/image";
 
 interface GuideCardProps {
@@ -11,6 +11,7 @@ interface GuideCardProps {
   tokenCost: number;
   buttonLabel: string;
   meta?: string;
+  isLoading?: boolean;
   onAction?: () => void;
 }
 
@@ -20,6 +21,7 @@ const GuideCard = ({
   tokenCost,
   buttonLabel,
   meta,
+  isLoading,
   onAction
 }: GuideCardProps) => {
   return (
@@ -44,9 +46,11 @@ const GuideCard = ({
       </div>
 
       <Button 
-        className="w-full rounded-full bg-[#322FEB] hover:bg-[#2826c8] text-white font-medium"
+        className="w-full rounded-full bg-[#322FEB] hover:bg-[#2826c8] text-white font-medium flex items-center justify-center gap-2"
         onClick={onAction}
+        disabled={isLoading}
       >
+        {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
         {buttonLabel}
       </Button>
     </div>

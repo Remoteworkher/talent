@@ -14,6 +14,11 @@ type MenuItemType = {
 
 const mainMenu: MenuItemType[] = [
   {
+    label: "90 Days Roadmap",
+    icon: "/atom.svg",
+    href: "/",
+  },
+  {
     label: "Home",
     icon: "/home-icon.svg",
     href: "/",
@@ -90,7 +95,7 @@ const MenuSidebar = ({
     <div className="border-r border-[#E8E8E8] h-screen flex flex-col relative transition-all duration-300 w-full">
       <div className="flex-1 flex flex-col overflow-hidden">
         <div
-          className={`${isCollapsed ? "p-2" : "px-4 pb-4 pt-2"} transition-all duration-300 flex justify-center items-center`}
+          className={`${isCollapsed ? "px-2 py-5" : "mx-4 py-5"} transition-all duration-300 border-b border-[#E8E8E8] flex justify-center items-center`}
         >
           {isCollapsed ? (
             <Image src={`/logo-icon.svg`} alt="logo" width={40} height={40} className=""/>

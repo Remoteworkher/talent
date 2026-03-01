@@ -7,6 +7,7 @@ interface UserData {
   email: string;
   phone: string;
   tokens: number;
+  goal: string;
   ai_tokens?: number; // Keep for backward compatibility if any
   email_verified: boolean;
   plan_uid: string;

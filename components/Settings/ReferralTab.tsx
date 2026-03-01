@@ -5,10 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Star, Users, Zap, Link2, Copy, User, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useReferrals } from "@/hooks/useReferrals";
+import { toast } from "sonner";
 
 const ReferralTab = () => {
   const { data, isLoading, isError } = useReferrals();
   
+  const handleCopy = (link: string) => {
+    navigator.clipboard.writeText(link);
+    toast.success("Link copied to clipboard!");
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center py-20">
@@ -26,12 +32,11 @@ const ReferralTab = () => {
   }
 
   const { referral_count, commission, referral_code, referrals } = data;
-  const referralLink = `https://remoteworkher.com/register?ref=${referral_code}`;
+  const referralLink = `https://talent.usecompass.co/register?ref=${referral_code}`;
 
   return (
     <div className="space-y-8">
-      <div className="space-y-2">
-        <h2 className="sora-semibold text-[24px] text-[#161A21]">Referral Program</h2>
+      <div className="">
         <p className="text-[#6A6D71] text-[14px]">Manage your preferences and configure various options.</p>
       </div>
 
@@ -41,7 +46,7 @@ const ReferralTab = () => {
           <Image src="/star-line.svg" alt="Star" width={24} height={24} />
         </div>
         <div className="space-y-0.5">
-          <h3 className="mori-semibold text-[18px] text-[#322FEB]">Compass Referral</h3>
+          <h3 className="mori-semibold text-[18px] text-[#322FEB]">Compass Ambassador Program </h3>
           <p className="text-[#161A21] text-[16px]">
             Get instant job alerts, career tips, and exclusive updates delivered straight to your phone
           </p>
@@ -54,7 +59,7 @@ const ReferralTab = () => {
           <Image src="/group-line.svg" alt="Group" width={24} height={24} />
           <div className="space-y-1">
             <div className="text-[24px] sora-semibold text-[#161A21]">{referral_count.toLocaleString()}</div>
-            <p className="text-[#6A6D71] text-[14px]">Referrals</p>
+            <p className="text-[#6A6D71] text-[14px]">Ambassador Programs</p>
           </div>
         </div>
 
@@ -70,7 +75,7 @@ const ReferralTab = () => {
       {/* Referral Link Section */}
       <div className="rounded-[16px] p-3 border border-[#E8E8E8] bg-white overflow-hidden">
         <div className="border-b border-[#E8E8E8]">
-          <h4 className="mori-semibold text-[16px] text-[#161A21]">Referral Link</h4>
+          <h4 className="mori-semibold text-[16px] text-[#161A21]">Ambassador Program Link</h4>
         </div>
         <div className="flex items-center py-3 justify-between gap-4">
           <div className="flex items-center gap-4">
@@ -78,12 +83,16 @@ const ReferralTab = () => {
               <Link2 className="w-5 h-5 text-[#6A6D71]" />
             </div>
             <div className="space-y-0.5">
-              <p className="text-[14px] font-semibold text-[#161A21]">Copy your referral link</p>
+              <p className="text-[14px] font-semibold text-[#161A21]">Copy your Ambassador Program link</p>
               <p className="text-[14px] text-[#6A6D71] break-all">{referralLink}</p>
             </div>
           </div>
-          <Button variant="outline" className="h-[44px] px-6 rounded-xl border-[#E8E8E8] flex items-center gap-2 text-[#161A21] font-medium shrink-0">
-            <Copy className="w-4 h-4" />
+          <Button 
+            onClick={() => handleCopy(referralLink)}
+            variant="outline" 
+            className="h-[44px] px-6 rounded-full border-[#E8E8E8] flex items-center gap-2 text-[#161A21] font-medium shrink-0"
+          >
+            <Image src="/file-copy-line.svg" alt="Copy" width={24} height={24} />
             Copy link
           </Button>
         </div>

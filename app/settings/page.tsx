@@ -20,10 +20,10 @@ export default function SettingsPage() {
 
         <Tabs defaultValue="account" className="w-full">
           <TabsList className="bg-transparent h-auto p-0 flex justify-start gap-8 border-b border-[#E8E8E8] rounded-none overflow-x-auto scrollbar-hide">
-            {["Account", "Preferences", "Plans", "Billings", "Referral Program"].map((tab) => (
+            {["Account", "Preferences", "Plans", "Billings", "Ambassador Program"].map((tab) => (
               <TabsTrigger
-                key={tab.toLowerCase()}
-                value={tab.toLowerCase()}
+                key={tab.toLowerCase().replace(" ", "-")}
+                value={tab.toLowerCase().replace(" ", "-")}
                 className="px-0 py-4 data-[state=active]:border-b-[#322FEB] data-[state=active]:text-[#322FEB] text-[#6A6D71] transition-all text-[15px] font-medium h-auto rounded-none bg-transparent border-x-0"
               >
                 {tab}
@@ -44,7 +44,7 @@ export default function SettingsPage() {
             <TabsContent value="billings">
               <BillingsTab />
             </TabsContent>
-            <TabsContent value="referral program">
+            <TabsContent value="ambassador-program">
               <ReferralTab />
             </TabsContent>
           </div>
