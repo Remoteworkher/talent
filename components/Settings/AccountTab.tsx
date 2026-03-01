@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useUserData } from "@/hooks/userData";
 import { useEmailVerification } from "@/hooks/useEmailVerification";
 import { toast } from "sonner";
-import { Loader2, AlertTriangle, Info } from "lucide-react";
+import { Loader2, AlertTriangle, Info, Upload, FileText, X } from "lucide-react";
 
 import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
 
@@ -26,6 +26,8 @@ const AccountTab = () => {
   const [jobTitle, setJobTitle] = useState("");
   const [biography, setBiography] = useState("");
   const [avatar, setAvatar] = useState<string | File>("");
+  const [resume, setResume] = useState<File | null>(null);
+  const [resumeName, setResumeName] = useState<string>("");
 
   useEffect(() => {
     if (profileData) {
@@ -59,6 +61,28 @@ const AccountTab = () => {
     }
   };
 
+  const handleResumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+      if (!validTypes.includes(file.type)) {
+        toast.error('Please upload a PDF or DOCX file.');
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('File must be less than 5MB.');
+        return;
+      }
+      setResume(file);
+      setResumeName(file.name);
+    }
+  };
+
+  const handleRemoveResume = () => {
+    setResume(null);
+    setResumeName("");
+  };
+
   const handleApplyChanges = async () => {
     try {
       const formData = new FormData();
@@ -70,6 +94,9 @@ const AccountTab = () => {
       
       if (avatar instanceof File) {
         formData.append("avatar", avatar);
+      }
+      if (resume) {
+        formData.append("resume", resume);
       }
 
       await updateProfileMutation.mutateAsync(formData);
@@ -87,6 +114,8 @@ const AccountTab = () => {
       setJobTitle(profileData.job_title || "");
       setBiography(profileData.bio || "");
       setAvatar(profileData.avatar || "");
+      setResume(null);
+      setResumeName("");
     }
   };
 
@@ -104,7 +133,8 @@ const AccountTab = () => {
     phone !== profileData?.phone ||
     jobTitle !== (profileData?.job_title || "") ||
     biography !== (profileData?.bio || "") ||
-    avatar instanceof File;
+    avatar instanceof File ||
+    resume !== null;
 
   return (
     <div className="space-y-10">
@@ -135,25 +165,25 @@ const AccountTab = () => {
       {/* Form Fields */}
       <div className="space-y-8">
         {/* Full Name */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start pb-6 border-b border-[#F0F0F0]">
-          <div className="space-y-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start pb-6 border-b border-[#F0F0F0]">
+          <div className="space-y-1 lg:col-span-1">
             <h4 className="mori-semibold text-[15px] text-[#161A21]">Full Name</h4>
             <p className="text-[#95969A] text-[13px]">Manage your preferences and configure various options.</p>
           </div>
           <Input 
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="h-[44px] border-[#E8E8E8] bg-white px-4 text-[15px]"
+            className="h-[44px] border-[#E8E8E8] bg-white px-4 text-[15px] lg:col-span-2"
           />
         </div>
 
         {/* Email Address */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start pb-6 border-b border-[#F0F0F0]">
-          <div className="space-y-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start pb-6 border-b border-[#F0F0F0]">
+          <div className="space-y-1 lg:col-span-1">
             <h4 className="mori-semibold text-[15px] text-[#161A21]">Email Address</h4>
             <p className="text-[#95969A] text-[13px]">Manage your preferences and configure various options.</p>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-2 lg:col-span-2">
             <div className="relative">
               <Input 
                 value={email}
@@ -187,8 +217,8 @@ const AccountTab = () => {
         </div>
 
         {/* Phone Number */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start pb-6 border-b border-[#F0F0F0]">
-          <div className="space-y-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start pb-6 border-b border-[#F0F0F0]">
+          <div className="space-y-1 lg:col-span-1">
             <h4 className="mori-semibold text-[15px] text-[#161A21]">Phone Number</h4>
             <p className="text-[#95969A] text-[13px]">Manage your phone number for account security.</p>
           </div>
@@ -196,13 +226,13 @@ const AccountTab = () => {
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="08012345678"
-            className="h-[44px] border-[#E8E8E8] bg-white px-4 text-[15px]"
+            className="h-[44px] border-[#E8E8E8] bg-white px-4 text-[15px] lg:col-span-2"
           />
         </div>
 
         {/* Job Title */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start pb-6 border-b border-[#F0F0F0]">
-          <div className="space-y-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start pb-6 border-b border-[#F0F0F0]">
+          <div className="space-y-1 lg:col-span-1">
             <h4 className="mori-semibold text-[15px] text-[#161A21]">Job Title</h4>
             <p className="text-[#95969A] text-[13px]">Manage your preferences and configure various options.</p>
           </div>
@@ -210,17 +240,17 @@ const AccountTab = () => {
             placeholder="UI/UX Designer"
             value={jobTitle}
             onChange={(e) => setJobTitle(e.target.value)}
-            className="h-[44px] border-[#E8E8E8] bg-white px-4 text-[15px]"
+            className="h-[44px] border-[#E8E8E8] bg-white px-4 text-[15px] lg:col-span-2"
           />
         </div>
 
         {/* Biography */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start pb-6 border-b border-[#F0F0F0]">
-          <div className="space-y-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start pb-6 border-b border-[#F0F0F0]">
+          <div className="space-y-1 lg:col-span-1">
             <h4 className="mori-semibold text-[15px] text-[#161A21]">Biography</h4>
             <p className="text-[#95969A] text-[13px]">Manage your preferences and configure various options.</p>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-2 lg:col-span-2">
             <div className="flex justify-between items-center text-[13px] text-[#161A21]">
               <span className="font-medium">Biography <span className="text-[#95969A] font-normal">(Optional)</span></span>
             </div>
@@ -242,6 +272,51 @@ const AccountTab = () => {
             </div>
           </div>
         </div>
+        {/* Resume  */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start pb-6 border-b border-[#F0F0F0]">
+          <div className="space-y-1 lg:col-span-1">
+            <h4 className="mori-semibold text-[15px] text-[#161A21]">Resume</h4>
+            <p className="text-[#95969A] text-[13px]">Manage your preferences and configure various options.</p>
+          </div>
+          <div className="space-y-3 lg:col-span-2">
+            {resume || resumeName ? (
+              <div className="flex items-center justify-between p-3 rounded-xl border border-[#E8E8E8] bg-[#F9F9FB]">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-[#F0EEFF] flex items-center justify-center">
+                    <FileText className="w-5 h-5 text-[#322FEB]" />
+                  </div>
+                  <div>
+                    <p className="text-[14px] text-[#161A21] font-medium truncate max-w-[200px]">{resumeName}</p>
+                    <p className="text-[12px] text-[#95969A]">{resume ? (resume.size / 1024).toFixed(0) + ' KB' : 'Uploaded'}</p>
+                  </div>
+                </div>
+                <button onClick={handleRemoveResume} className="p-1.5 hover:bg-red-50 rounded-full transition-colors">
+                  <X className="w-4 h-4 text-[#95969A] hover:text-red-500" />
+                </button>
+              </div>
+            ) : (
+              <label className="cursor-pointer block">
+                <div className="border-2 border-dashed border-[#E8E8E8] rounded-xl p-6 flex flex-col items-center justify-center gap-2 hover:border-[#322FEB] hover:bg-[#FAFAFE] transition-all">
+                  <div className="w-10 h-10 rounded-full bg-[#F0EEFF] flex items-center justify-center">
+                    <Upload className="w-5 h-5 text-[#322FEB]" />
+                  </div>
+                  <p className="text-[14px] text-[#161A21] font-medium">Click to upload resume</p>
+                  <p className="text-[12px] text-[#95969A]">PDF or DOCX, max 5MB</p>
+                </div>
+                <input 
+                  type="file" 
+                  className="hidden" 
+                  accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" 
+                  onChange={handleResumeChange} 
+                />
+              </label>
+            )}
+            <div className="flex items-start gap-2 text-[#95969A] text-[12px]">
+              <Info className="w-3.5 h-3.5 mt-0.5" />
+              <span>Your resume will be used for job applications.</span>
+            </div>
+          </div>
+        </div>  
       </div>
 
       {/* Action Buttons */}

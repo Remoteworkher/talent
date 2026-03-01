@@ -22,7 +22,7 @@ const mainMenu: MenuItemType[] = [
   {
     label: "90 Days Roadmap",
     icon: "/atom.svg",
-    href: "/",
+    href: "/90-days-roadmap",
   },
 ];
 const career: MenuItemType[] = [

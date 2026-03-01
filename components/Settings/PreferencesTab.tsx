@@ -30,7 +30,7 @@ const PreferencesTab = () => {
           title="Onboarding Questions" 
           onClick={() => router.push("/settings/onboarding")} 
         />
-        <PreferenceItem title="Event Preferences" />
+        {/* <PreferenceItem title="Event Preferences" /> */}
         <PreferenceItem title="Notifications" />
       </div>
 
