@@ -79,7 +79,7 @@ export const BaseToolPage: React.FC<BaseToolPageProps> = ({
   }
 
   return (
-    <div className="bg-[#FFFCFD] min-h-screen px-4 md:px-8 py-8 flex flex-col items-center">
+    <div className="bg-[#FFFCFD] min-h-screen md:px-8 py-8 flex flex-col items-center">
       <div className="w-full max-w-[1000px]">
         <ToolFormWrapper
           icon={icon || tool.icon_url || "/sparkling-line.svg"}
@@ -106,7 +106,13 @@ export const BaseToolPage: React.FC<BaseToolPageProps> = ({
                 ) : (
                   <Image src="/sparkling-line.svg" width={20} height={20} alt="gen" className="brightness-[10]" />
                 )}
-                {generateMutation.isPending ? "Generating Content..." : (submitButtonText ? `${submitButtonText} (${tool.generate_token_cost || 0} tokens)` : `Generate ${tool.name} (${tool.generate_token_cost || 0} tokens)`)}
+                {generateMutation.isPending 
+                  ? "Generating..." 
+                  : (<>
+                      <span className="sm:hidden">{submitButtonText || "Generate"} ({tool.generate_token_cost || 0} tokens)</span>
+                      <span className="hidden sm:inline">{submitButtonText ? `${submitButtonText} (${tool.generate_token_cost || 0} tokens)` : `Generate ${tool.name} (${tool.generate_token_cost || 0} tokens)`}</span>
+                    </>)
+                }
               </Button>
             </div>
           </form>

@@ -17,7 +17,7 @@ const ToolFormWrapper: React.FC<ToolFormWrapperProps> = ({
   return (
     <div className="flex justify-center px-0 md:px-4 py-6">
       <div
-        className="w-full max-w-[600px] bg-white border border-[#E8E8E8] rounded-[24px] p-4 sm:p-6 md:p-10"
+        className="w-full max-w-[600px] bg-white border border-[#E8E8E8] rounded-[20px] p-4 sm:p-6 md:p-10"
         style={{
           boxShadow: `
             0px 96px 96px -32px #3333330F,

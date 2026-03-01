@@ -61,10 +61,10 @@ export default function CoverLetterPage() {
     return (
       <div className="bg-[#FFFCFD] min-h-screen px-4 md:px-8 py-8 flex flex-col items-center">
         <div className="w-full max-w-[1000px]">
-          <div className="mb-12" />
+          <div className="mb-6 md:mb-12" />
 
           <div className="text-center mb-12">
-            <h1 className="text-[32px] font-bold text-[#161A21]">Choose your template</h1>
+            <h1 className="text-[24px] md:text-[32px] sora-semibold text-[#161A21]">Choose your template</h1>
             <p className="text-[#6A6D71] mt-2">Choose a template and generate a personalized cover letter</p>
           </div>
 
@@ -161,7 +161,8 @@ export default function CoverLetterPage() {
               <div className="relative">
                 <Textarea 
                     value={form.job_description} 
-                    onChange={(e) => updateLocal("job_description", e.target.value.slice(0, 200))} 
+                    onChange={(e) => updateLocal("job_description", e.target.value.slice(0, 200))}
+                    className="h-[112px]" 
                     rows={4} 
                     placeholder="Paste the job description here for a more tailored cover letter..." 
                 />
@@ -176,7 +177,8 @@ export default function CoverLetterPage() {
               <div className="relative">
                 <Textarea 
                     value={form.relevant_experience} 
-                    onChange={(e) => updateLocal("relevant_experience", e.target.value.slice(0, 200))} 
+                    onChange={(e) => updateLocal("relevant_experience", e.target.value.slice(0, 200))}
+                    className="h-[112px]"  
                     rows={4} 
                     placeholder="Briefly describe your relevant experience and achievements..." 
                 />

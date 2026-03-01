@@ -61,6 +61,7 @@ export default function EmailWriterPage() {
                   value={formData.context_details} 
                   onChange={(e) => handleInputChange("context_details", e.target.value.slice(0, 200))} 
                   rows={4} 
+                  className="h-[180px]"
                   placeholder="Provide details about the situation, what you want to communicate, the job you're applying for, etc..." 
                 />
                 <div className="absolute bottom-2 right-2 text-[10px] text-gray-400">
