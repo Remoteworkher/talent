@@ -3,13 +3,14 @@ import React, { useState } from "react";
 import TrackBar from "./TrackBar";
 import { Button } from "../ui/button";
 import { useUserData } from "@/hooks/userData";
-import { usePlans } from "@/hooks/usePlans";
+import { useTokens } from "@/hooks/useTokens";
 import GetTokensDialog from "./GetTokensDialog";
 
 const TokensCard = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { data: userData } = useUserData();
-  const { data: plans } = usePlans();
+  const { subscriptionPlans } = useTokens();
+  const plans = subscriptionPlans.data;
 
   const currentTokens = userData?.tokens ?? 0;
   
@@ -18,8 +19,8 @@ const TokensCard = () => {
     ...(plans?.monthly || []),
     ...(plans?.quarterly || []),
     ...(plans?.yearly || []),
-  ];
-  const userPlan = allPlans.find((p) => p.uid === userData?.plan_uid);
+  ] as any[];
+  const userPlan = allPlans.find((p: any) => p.uid === userData?.plan_uid);
   
   const maxTokens = userPlan ? parseInt(userPlan.tokens) : 150;
   const progress = (currentTokens / maxTokens) * 100;

@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import { usePlans } from "@/hooks/usePlans";
+import { useTokens } from "@/hooks/useTokens";
 import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "next/navigation";
 import Loader from "./Loader";
@@ -99,17 +99,13 @@ type PlansByPeriod = {
 };
 
 const PricingTab = () => {
+  const { subscriptionPlans } = useTokens();
   const {
     data: plans,
     isLoading,
     isError,
     refetch,
-  } = usePlans() as {
-    data: PlansByPeriod;
-    isLoading: boolean;
-    isError: boolean;
-    refetch: () => void;
-  };
+  } = subscriptionPlans as any;
   const setSelectedPlan = useAuthStore((state) => state.setSelectedPlanId);
   const router = useRouter();
 

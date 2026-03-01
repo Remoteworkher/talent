@@ -3,14 +3,13 @@
 import React from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { usePlans, Plan } from "@/hooks/usePlans";
 import { useUserData } from "@/hooks/userData";
 import { useTokens } from "@/hooks/useTokens";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface PlanCardProps {
-  plan: Plan;
+  plan: any;
   isCurrent?: boolean;
   onSelect: (uid: string) => void;
   isPending?: boolean;
@@ -50,8 +49,8 @@ const PlanCard = ({
       <Button 
         className={`w-full h-[52px] rounded-full text-[15px] font-semibold ${
           isCurrent 
-            ? 'bg-[#E8E8E8] text-[#95969A] cursor-not-allowed hover:bg-[#E8E8E8]' 
-            : 'bg-[#322FEB] text-white hover:bg-[#2826c8]'
+        ? 'bg-[#E8E8E8] text-[#95969A] cursor-not-allowed hover:bg-[#E8E8E8]' 
+          : 'bg-[#322FEB] text-white hover:bg-[#2826c8]'
         }`}
         disabled={isCurrent || isPending}
         onClick={() => onSelect(plan.uid)}
@@ -61,7 +60,7 @@ const PlanCard = ({
       </Button>
 
       <div className="w-full pt-4 space-y-4">
-        {plan.features.map((feature, idx) => (
+        {(plan.features as string[]).map((feature, idx) => (
           <div key={idx} className="flex items-start gap-3 text-left">
             <Image src="/check-fill.svg" alt="check" width={18} height={18} className="mt-1 shrink-0 text-[#322FEB]" />
             <span className="text-[#161A21] text-[14px] leading-tight">{feature}</span>
@@ -73,9 +72,10 @@ const PlanCard = ({
 };
 
 const PlansTab = () => {
-  const { data: plansData, isLoading: plansLoading } = usePlans();
+  const { subscriptionPlans, buyTokensMutation } = useTokens();
+  const plansData = subscriptionPlans.data;
+  const plansLoading = subscriptionPlans.isLoading;
   const { data: userData, isLoading: userLoading } = useUserData();
-  const { buyTokensMutation } = useTokens();
 
   const handlePlanSelect = (uid: string) => {
     buyTokensMutation.mutate(uid, {
@@ -109,7 +109,7 @@ const PlansTab = () => {
   return (
     <div className="space-y-8">
       <div className="flex flex-col lg:flex-row gap-6">
-        {monthlyPlans.map((plan) => (
+        {monthlyPlans.map((plan: any) => (
           <PlanCard 
             key={plan.uid} 
             plan={plan} 

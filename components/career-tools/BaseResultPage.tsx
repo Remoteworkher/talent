@@ -53,7 +53,7 @@ export const BaseResultPage: React.FC<BaseResultPageProps> = ({
               <Button 
                 onClick={() => {
                   const latest = results[0]?.payload?.output;
-                  const text = latest?.email_body || latest?.cover_letter_text || latest?.post_text || latest?.summary_text || latest?.content || (Array.isArray(latest) ? latest.join('\n') : JSON.stringify(latest));
+                  const text = latest?.email_body || latest?.cover_letter_text || latest?.post_text || latest?.summary_text || latest?.optimized_headline || latest?.about_description || latest?.content || (Array.isArray(latest) ? latest.join('\n') : JSON.stringify(latest));
                   navigator.clipboard.writeText(text);
                   toast.success("Copied to clipboard!");
                 }} 

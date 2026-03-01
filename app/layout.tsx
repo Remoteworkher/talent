@@ -8,7 +8,9 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/utils/queryClient";
 import { usePathname } from "next/navigation";
 import { Toaster } from "@/components/ui/sonner";
-import React from "react";
+import { useTokens } from "@/hooks/useTokens";
+import { PaymentVerifier } from "@/components/reusables/PaymentVerifier";
+import React, { useState, useEffect, Suspense } from "react";
 
 export default function RootLayout({
   children,
@@ -39,6 +41,9 @@ export default function RootLayout({
       <body className="flex bg-white">
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
+            <Suspense fallback={null}>
+               <PaymentVerifier />
+            </Suspense>
             {!hideLayout && (
               <>
                 {/* Sidebar */}

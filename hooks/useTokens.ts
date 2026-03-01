@@ -13,6 +13,16 @@ const fetchTokenPlans = async (): Promise<TokenPlan[]> => {
   return res.data.data;
 };
 
+export const useSubscriptionPlans = () => {
+  return useQuery({
+    queryKey: ["subscription-plans"],
+    queryFn: async () => {
+      const res = await axios.get("/api/talent/plans");
+      return res.data.data;
+    },
+  });
+};
+
 export const useTokenPlans = () => {
   return useQuery<TokenPlan[]>({
     queryKey: ["token-plans"],
@@ -42,13 +52,17 @@ export const useVerifyTokenTransaction = () => {
 
 export const useTokens = () => {
   const tokenPlans = useTokenPlans();
+  const subscriptionPlans = useSubscriptionPlans();
   const buyTokensMutation = useBuyTokens();
   const verifyTokenMutation = useVerifyTokenTransaction();
   
   return {
     tokenPlans,
+    subscriptionPlans,
     buyTokensMutation,
     verifyTokenMutation,
-    isLoadingTokenPlans: tokenPlans.isLoading
+    isLoading: tokenPlans.isLoading || subscriptionPlans.isLoading,
+    // Explicitly providing the fetch function if needed for manual refetching
+    refetchTokenPlans: tokenPlans.refetch
   };
 };
