@@ -40,7 +40,11 @@ const ResourceDetail = ({
 
     buy(uid, {
       onSuccess: () => {
-        toast.success("Resource purchased successfully!");
+        toast.success("Resource purchased! Starting download...");
+        download(uid, {
+          onSuccess: () => toast.success("Download started!"),
+          onError: () => toast.error("Purchase succeeded but download failed. Try downloading again.")
+        });
       },
       onError: (error: any) => {
         toast.error(error.response?.data?.message || "Purchase failed.");
@@ -64,7 +68,7 @@ const ResourceDetail = ({
             <h1 className="sora-semibold text-[20px] md:text-[24px] text-[#161A21]">{title}</h1>
             <p className="text-[#95969A] text-[14px]">{type}</p>
           </div>
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Main Content (Resource Preview) */}
         <div className="lg:col-span-8 space-y-8">
           <div className="bg-white border border-[#E8E8E8] p-6 md:p-10 min-h-[800px] flex justify-center items-start">
@@ -116,17 +120,23 @@ const ResourceDetail = ({
                   className="w-full rounded-full bg-[#322FEB] hover:bg-[#2826c8] text-white font-semibold flex items-center justify-center gap-2"
                 >
                   {isDownloading && <Loader2 className="w-5 h-5 animate-spin" />}
-                  Download now
+                  {isDownloading ? "Downloading..." : "Download now"}
                 </Button>
               ) : (
                 <Button 
                   onClick={handleBuy}
-                  disabled={isBuying}
+                  disabled={isBuying || tokensAvailable < tokenCost}
                   className="w-full rounded-full bg-[#322FEB] hover:bg-[#2826c8] text-white font-semibold flex items-center justify-center gap-2"
                 >
                   {isBuying && <Loader2 className="w-5 h-5 animate-spin" />}
-                  Buy now ({tokenCost} token)
+                  {isBuying ? "Purchasing..." : `Buy now (${tokenCost} token)`}
                 </Button>
+              )}
+
+              {!isPurchased && tokensAvailable < tokenCost && (
+                <p className="text-[13px] text-[#E16614] text-center">
+                  You need {tokenCost - tokensAvailable} more token(s) to purchase this resource.
+                </p>
               )}
             </div>
           </div>

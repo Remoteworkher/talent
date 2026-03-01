@@ -42,7 +42,7 @@ export default function ResourceDetailPage() {
       type={resource.resource_type || "Resource Guide"}
       image={resource.preview_url || "/resume-templates.svg"}
       tokenCost={resource.tokens}
-      tokensAvailable={userData?.ai_tokens || 0}
+      tokensAvailable={userData?.tokens ?? userData?.ai_tokens ?? 0}
       onBack={() => router.push("/resources")}
     />
   );

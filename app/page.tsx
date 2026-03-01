@@ -1,5 +1,6 @@
 import Events from "@/components/Home/Events";
 import JobsMatched from "@/components/Home/JobsMatched";
+import Resources from "@/components/Home/Resources";
 // import Perks from "@/components/Home/Perks";
 import Tasks from "@/components/Home/Tasks";
 // import BecomeATalent from "@/components/reusables/BecomeATalent";
@@ -16,10 +17,10 @@ export default function Home() {
       {/* <BecomeATalent /> */}
       <Welcome />
       <Tasks />
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <JobsMatched />
-        <Events />
-        {/* <Perks /> */}
+      <div className="">
+        <Resources />
+        {/* <JobsMatched />
+        <Events /> */}
       </div>
     </section>
   );

@@ -8,22 +8,28 @@ import TemplateCard from "@/components/Resources/TemplateCard";
 import GuideCard from "@/components/Resources/GuideCard";
 import SalaryCTA from "@/components/Resources/SalaryCTA";
 import RecordingCard from "@/components/Resources/RecordingCard";
-import ResourceDetail from "@/components/Resources/ResourceDetail";
 
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
-import { useResources } from "@/hooks/useResources";
+import { useResources, useBuyResource, useDownloadResource, ResourceItem } from "@/hooks/useResources";
 import { useUserData } from "@/hooks/userData";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 import { useRouter } from "next/navigation";
 
 export default function ResourcesPage() {
   const router = useRouter();
   const [selectedResourceType, setSelectedResourceType] = useState<string | undefined>(undefined);
+  const [actionUid, setActionUid] = useState<string | null>(null);
   
   const { data: resourcesData, isLoading: isResourcesLoading } = useResources(selectedResourceType === 'all' ? undefined : selectedResourceType);
   const { data: userData } = useUserData();
+  const { mutate: buy, isPending: isBuying } = useBuyResource();
+  const { mutate: download, isPending: isDownloading } = useDownloadResource();
+
+  const tokensAvailable = userData?.tokens ?? userData?.ai_tokens ?? 0;
+  const isProcessing = isBuying || isDownloading;
 
   const handleTabChange = (value: string) => {
     setSelectedResourceType(value);
@@ -31,6 +37,60 @@ export default function ResourcesPage() {
 
   const handleViewDetail = (uid: string) => {
     router.push(`/resources/${uid}`);
+  };
+
+  // For guides, linkedin, career, interview – buy then download on click
+  const handleBuyAndDownload = (item: ResourceItem) => {
+    if (item.purchased) {
+      // Already purchased, just download
+      setActionUid(item.uid);
+      download(item.uid, {
+        onSuccess: () => {
+          toast.success("Download started!");
+          setActionUid(null);
+        },
+        onError: () => {
+          toast.error("Download failed. Please try again.");
+          setActionUid(null);
+        }
+      });
+      return;
+    }
+
+    if (tokensAvailable < item.tokens) {
+      toast.error(`You need ${item.tokens} credits but only have ${tokensAvailable}.`);
+      return;
+    }
+
+    setActionUid(item.uid);
+    buy(item.uid, {
+      onSuccess: () => {
+        toast.success("Purchased! Starting download...");
+        download(item.uid, {
+          onSuccess: () => {
+            toast.success("Download started!");
+            setActionUid(null);
+          },
+          onError: () => {
+            toast.error("Purchase succeeded but download failed. Try again.");
+            setActionUid(null);
+          }
+        });
+      },
+      onError: (error: any) => {
+        toast.error(error.response?.data?.message || "Purchase failed.");
+        setActionUid(null);
+      }
+    });
+  };
+
+  // For videos – open external link
+  const handleWatchVideo = (item: ResourceItem) => {
+    if (item.preview_url) {
+      window.open(item.preview_url, "_blank", "noopener,noreferrer");
+    } else {
+      toast.error("No video link available.");
+    }
   };
 
   const categories = [
@@ -117,15 +177,20 @@ export default function ResourcesPage() {
                                 description={item.description}
                                 duration={(item as any).duration || "45mins"}
                                 date={(item as any).date || "Jan 21, 2025"}
-                                onWatch={() => handleViewDetail(item.uid)}
+                                onWatch={() => handleWatchVideo(item)}
                               />
                             ) : (
                               <GuideCard 
                                 title={item.name}
                                 description={item.description}
                                 tokenCost={item.tokens}
-                                buttonLabel="Download"
-                                onAction={() => handleViewDetail(item.uid)}
+                                buttonLabel={
+                                  actionUid === item.uid && isProcessing
+                                    ? (isBuying ? "Purchasing..." : "Downloading...")
+                                    : item.purchased ? "Download" : "Buy & Download"
+                                }
+                                isLoading={actionUid === item.uid && isProcessing}
+                                onAction={() => handleBuyAndDownload(item)}
                               />
                             )}
                           </div>
