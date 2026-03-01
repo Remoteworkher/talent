@@ -6,7 +6,7 @@ export default function ElevatorPitchResultPage() {
     <BaseResultPage
       slug="elevator-pitch"
       headerTitle="Elevator Pitch Generator"
-      formPath="/career-tools/growth/elevator-pitch"
+      formPath="/career-tools/career/elevator-pitch"
       downloadPdf={(output) => {
           console.log("Downloading PDF for Elevator Pitch", output);
       }}

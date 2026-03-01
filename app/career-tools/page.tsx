@@ -9,7 +9,6 @@ import { useToolTypes, useToolGroups, Tool } from "@/hooks/useCareerTools";
 import { Loader2 } from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useTokens } from "@/hooks/useTokens";
-import { useVerifyPlanTransaction } from "@/hooks/usePlans";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -23,7 +22,7 @@ const getToolUrl = (slug: string) => {
     "linkedin-summary-generator": "/career-tools/linkedin/summary-generator",
     "cover-letter-builder": "/career-tools/resumes/cover-letter",
     "email-writer": "/career-tools/resumes/email-writer",
-    "resume-optimizer": "/career-tools/resumes/optimizer",
+    "profile-optimizer": "/career-tools/linkedin/profile-optimizer",
     "explore-careers": "/career-tools/career/explore",
     "career-roadmap": "/career-tools/career/roadmap",
     "salary-analyzer": "/career-tools/career/salary-analyzer",
@@ -64,38 +63,8 @@ const Page = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const reference = searchParams.get("reference");
-  const { verifyTokenMutation } = useTokens();
-  const verifyPlanMutation = useVerifyPlanTransaction();
-
   const { data: toolTypes, isLoading: isLoadingTypes } = useToolTypes();
   const { data: toolGroups, isLoading: isLoadingGroups } = useToolGroups(activeTab);
-
-  React.useEffect(() => {
-    if (reference) {
-      const verifyPayment = async () => {
-        const toastId = toast.loading("Verifying your payment...");
-        try {
-          // Try verifying as token transaction first
-          try {
-            await verifyTokenMutation.mutateAsync(reference);
-          } catch (e) {
-            // If token verification fails, try plan verification
-            await verifyPlanMutation.mutateAsync(reference);
-          }
-          
-          toast.success("Payment verified! Your account has been updated.", { id: toastId });
-          // Invalidate user data to refresh token balance and plan status
-          queryClient.invalidateQueries({ queryKey: ["user-data"] });
-          // Clean up the URL
-          const newUrl = window.location.pathname;
-          router.replace(newUrl);
-        } catch (error) {
-          toast.error("Failed to verify payment. Please contact support.", { id: toastId });
-        }
-      };
-      verifyPayment();
-    }
-  }, [reference, queryClient, router]);
 
   if (isLoadingTypes) {
     return (

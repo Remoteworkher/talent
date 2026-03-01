@@ -271,141 +271,193 @@ export const ToolResultRenderer = ({ slug, output }: { slug: string; output: any
     );
   }
 
-  // 5. Personal Brand Audit
-  if (s.includes("brand-audit")) {
+  // 5. Personal Brand Audit / LinkedIn Optimizer
+  if (s.includes("brand-audit") || s.includes("profile-optimizer") || s.includes("linkedin-optimizer")) {
+    const isOptimizer = s.includes("optimizer");
+    
     return (
       <div className="w-full space-y-12 text-left animate-in fade-in slide-in-from-top-4 duration-700">
         {/* Top Score */}
-        <div className="bg-white border border-[#E8E8E8] rounded-[20px] p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
-           <div className="space-y-1">
-              <p className="text-[12px] font-bold text-[#6A6D71] uppercase tracking-wide">Avg. Score</p>
+        <div className="bg-white border border-[#E8E8E8] rounded-[16px] p-4 md:p-4 flex flex-col md:flex-col items-start justify-between gap-5 relative overflow-hidden">
+           <div className="space-y-1 z-10">
+              <p className="text-[16px] font-bold text-[#6A6D71]  tracking-wider mb-2">Avg. Score</p>
               <div className="flex items-baseline gap-1">
-                 <span className="text-[42px] font-extrabold text-[#322FEB]">{output.average_score || 79}</span>
-                 <span className="text-[20px] font-bold text-[#95969A]">/100</span>
+                 <span className="text-[16px] md:text-[24px] sora-semibold text-[#322FEB] leading-none">{output.average_score || 79}</span>
+                 <span className="text-[16px] md:text-[24px] sora-semibold text-[#95969A]">/100</span>
               </div>
            </div>
-           <div className="flex-1 max-w-md w-full">
-              <p className="text-[13px] text-[#6A6D71] leading-relaxed italic">
-                 {output.score_context || "Your online presence shows strong consistency across platforms with room for deeper content engagement."}
-              </p>
-           </div>
-        </div>
-
-        {/* Brand Statement */}
-        <div className="space-y-4">
-           <h3 className="text-[#161A21] font-bold text-[18px]">Brand Statement</h3>
-           <p className="text-[#444] text-[15px] md:text-[16px] leading-[1.7]">
-              {output.brand_statement || "A typical day begins with a 'Daily Standup' with the product and engineering teams to sync on feature progress. Mid-morning is usually dedicated to deep focus work—perhaps refining a high-fidelity checkout flow or building."}
-           </p>
-        </div>
-
-        {/* AI Recommendation Card */}
-        <div className="bg-[#F8F9FF] border border-[#E1E4FF] rounded-[16px] p-6 space-y-4 relative group">
-           <div className="flex items-center gap-2 text-[#5335E9] font-bold text-[14px]">
-              <Image src="/sparkling-line-2.svg" width={18} height={18} alt="sparkle" className="brightness-0 saturate-100 invert-[.15] sepia-[.9] saturate-[50] hue-rotate-[220deg]" />
-              AI Recommendation
-           </div>
-           <p className="text-[#161A21] text-[15px] leading-[1.8] pr-10">
-              {output.ai_recommendation || "You know how most AI and Fintech apps feel like you need a PhD just to navigate the home screen? I solve that. I'm a Product Designer who takes messy early-stage ideas and turns them into high-converting products."}
-           </p>
-           <button
-              onClick={() => {
-                navigator.clipboard.writeText(output.ai_recommendation || "");
-                toast.success("Copied to clipboard!");
-              }}
-              className="absolute bottom-6 right-6 p-2 text-[#95969A] hover:text-[#322FEB] transition-colors"
-           >
-              <Image src="/file-copy-line-2.svg" width={18} height={18} alt="copy" />
-           </button>
-        </div>
-
-        {/* Platform Analysis Bars */}
-        <div className="space-y-6">
-           <h3 className="text-[#161A21] font-bold text-[18px]">Platform Analysis</h3>
-           <p className="text-[#6A6D71] text-[14px] mb-6">Insight into your performance across various professional and social networks.</p>
            
-           <div className="space-y-6">
-              {[
-                { label: "Linkedin", score: output.platform_analysis?.[0]?.score || 55, icon: "/linkedin.svg", color: "#322FEB", desc: output.platform_analysis?.[0]?.insight || "Too resume-focused; lacks a hook and a clear CTA for high-ticket opportunities." },
-                { label: "Twitter/X", score: output.platform_analysis?.[1]?.score || 70, icon: "/twitter-x.svg", color: "#322FEB", desc: output.platform_analysis?.[1]?.insight || "Mainly retweeting or posting links; no original voice yet." },
-                { label: "Instagram", score: output.platform_analysis?.[2]?.score || 40, icon: "/instagram.svg", color: "#322FEB", desc: output.platform_analysis?.[2]?.insight || "Mainly reposting contents; no original voice yet." },
-                { label: "Dribbble", score: output.platform_analysis?.[3]?.score || 100, icon: "/dribbble.svg", color: "#322FEB", desc: output.platform_analysis?.[3]?.insight || "High visual quality but lack process documentation." },
-              ].map((p, i) => (
-                <div key={i} className="bg-white border border-[#F0F0F0] rounded-[16px] p-4 md:p-5 flex flex-col gap-3">
-                   <div className="flex justify-between items-center">
-                      <div className="flex items-center gap-3">
-                         <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center">
-                            <span className="text-[14px]">{i === 0 ? "🔵" : i === 1 ? "✅" : i === 2 ? "🎨" : "🟣"}</span>
-                         </div>
-                         <div className="space-y-0.5">
-                            <p className="font-bold text-[#161A21] text-[14px]">{p.label}</p>
-                            <p className="text-[12px] text-[#95969A]">{p.desc}</p>
-                         </div>
+           <div className="flex-1 w-full z-10 space-y-3">
+              {(output.score_suggestions || output.suggestions || [
+                "Quantify your early career roles with the same rigor as your recent ones.",
+                "Add 'Senior Product Designer' to the current job title to help with HR searches.",
+                "Build a 'Featured' section to showcase the Framer portfolio visually."
+              ]).map((item: string, i: number) => (
+                <div key={i} className="flex gap-3 items-start">
+                  <Image src="/check-fill.svg" width={16} height={16} alt="check" className="mt-0.5 shrink-0 brightness-0 saturate-100 invert-[.15] sepia-[.9] saturate-[50] hue-rotate-[220deg]" />
+                  <p className="text-[#6A6D71] text-[14px] leading-relaxed italic">
+                    {item}
+                  </p>
+                </div>
+              ))}
+           </div>
+        </div>
+
+        {isOptimizer ? (
+          <div className="space-y-12">
+            {/* Optimized Headline Section */}
+            <div className="space-y-4">
+              <h3 className="text-[#161A21] font-bold text-[18px] md:text-[20px]">Optimized Headline</h3>
+              <p className="text-[#6A6D71] text-[14px] italic">Current: {output.current_headline || "Emmanuel ThankGod Product Designer | Delaware, USA"}</p>
+              <div className="bg-[#F6F3FF] border border-[#C3BCFC] rounded-[12px] p-6 md:p-8 space-y-5 relative group">
+                <div className="flex items-center gap-2 text-[#5335E9] font-bold text-[13px] uppercase tracking-widest">
+                  <Image src="/sparkling-line-2.svg" width={18} height={18} alt="sparkle" className="brightness-0 saturate-100 invert-[.15] sepia-[.9] saturate-[50] hue-rotate-[220deg]" />
+                  Optimized:
+                </div>
+                <p className="text-[#161A21] text-[16px] md:text-[18px] leading-[1.8] font-medium pr-10">
+                  {output.optimized_headline || "Senior Product Designer | Helping SaaS & Tech Teams Scale via Modular UX Frameworks & Design Systems | Increased User Engagement by 40% | UX Research & Product Strategy"}
+                </p>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(output.optimized_headline || "");
+                    toast.success("Headline copied!");
+                  }}
+                  className="absolute bottom-6 right-6 p-2 text-[#95969A] hover:text-[#322FEB] transition-all hover:scale-110"
+                >
+                  <Image src="/file-copy-line-2.svg" width={20} height={20} alt="copy" />
+                </button>
+              </div>
+            </div>
+
+            {/* Optimized About Section */}
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <h3 className="text-[#161A21] font-bold text-[18px] md:text-[20px]">Optimized About Section</h3>
+                <p className="text-[#6A6D71] text-[14px] md:text-[15px] leading-relaxed max-w-[800px]">
+                  {output.about_description || "Does your design system actually speed up development, or is it just a library of pretty buttons? I specialize in bridging the gap between complex engineering requirements and intuitive user experiences. Over the last 7+ years, I've led design initiatives that didn't just look good—they moved the needle."}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white border border-[#E8E8E8] rounded-[24px] p-6 md:p-8 space-y-6 shadow-sm">
+                  <h4 className="font-bold text-[#161A21] text-[16px]">What I bring to the table:</h4>
+                  <div className="space-y-4">
+                    {(output.strengths || output.what_i_bring || [
+                      "Strategic Design Leadership: Leading end-to-end product lifecycles from discovery to launch.",
+                      "Modular Architecture: Building design systems that reduce iteration cycles by up to 45%.",
+                      "Data-Driven UX: Using quantitative analysis and Google Analytics to drive 30% improvements in usability completion.",
+                      "Cross-Functional Synergy: Facilitating workshops that align developers, PMs, and stakeholders."
+                    ]).map((s: string, idx: number) => (
+                      <div key={idx} className="flex gap-3 text-[13px] md:text-[14px] text-[#444] leading-relaxed">
+                        <Image src="/check-fill.svg" width={16} height={16} alt="check" className="mt-0.5 shrink-0 brightness-0 saturate-100 invert-[.15] sepia-[.9] saturate-[40] hue-rotate-[230deg]" />
+                        {s}
                       </div>
-                      <div className="text-[16px] font-bold text-[#161A21]">{p.score}/100</div>
-                   </div>
-                   <div className="w-full bg-[#F0F0F0] h-2 rounded-full overflow-hidden">
-                      <div 
-                         className="h-full bg-[#322FEB] transition-all duration-1000 ease-out" 
-                         style={{ width: `${p.score}%` }} 
-                      />
-                   </div>
+                    ))}
+                  </div>
                 </div>
-              ))}
-           </div>
-        </div>
 
-        {/* Strengths & Improvements */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6">
-           <div className="bg-white border border-[#E8E8E8] rounded-[20px] p-6 space-y-4">
-              <h4 className="font-bold text-[#161A21] text-[16px]">Your Strength</h4>
-              <div className="space-y-3">
-                 {(output.your_strengths || ["Visual Consistency", "Platform Presence", "Technical Competency"]).map((s: string, idx: number) => (
-                    <div key={idx} className="flex gap-3 text-[13px] text-[#444] leading-relaxed">
-                       <Image src="/check-fill.svg" width={16} height={16} alt="check" className="mt-0.5 shrink-0 brightness-0 saturate-100 invert-[.15] sepia-[.9] saturate-[50] hue-rotate-[220deg]" />
-                       {s}
-                    </div>
-                 ))}
-              </div>
-           </div>
-           <div className="bg-white border border-[#E8E8E8] rounded-[20px] p-6 space-y-4">
-              <h4 className="font-bold text-[#161A21] text-[16px]">Areas to Improve</h4>
-              <div className="space-y-3">
-                 {(output.areas_to_improve || ["Invisible Case Studies", "Generic LinkedIn Headline", "Lack of Opinionated Content"]).map((s: string, idx: number) => (
-                    <div key={idx} className="flex gap-4 text-[13px] text-[#444] leading-relaxed items-center">
-                       <span className="text-[#322FEB] font-bold text-[18px] w-4 flex justify-center">×</span>
-                       {s}
-                    </div>
-                 ))}
-              </div>
-           </div>
-        </div>
-
-        {/* 30-Day Action Plan */}
-        <div className="space-y-6 pt-6">
-           <h3 className="text-[#161A21] font-bold text-[18px]">30-Day Action Plan</h3>
-           <p className="text-[#6A6D71] text-[14px]">A actionable roadmap to refine your personal brand over the next month.</p>
-           
-           <div className="space-y-3">
-              {(output.action_plan_30_days || [
-                 "Rewrite LinkedIn About Section like a story.",
-                 "Design a Custom LinkedIn banner.",
-                 "Select a major project.",
-                 "Document the research, friction points and ROI.",
-                 "Write Linkedin post about UX ethics or strategy.",
-                 "Start a 5-day design tips on Twitter/X.",
-                 "Pitch a guest post or collaboration to a design blog.",
-                 "Host a 'Portfolio Review' or 'AMA' session on X Spaces."
-              ]).map((plan: string, i: number) => (
-                <div key={i} className="bg-white border border-[#E8E8E8] rounded-[12px] p-4 flex items-center gap-4 hover:shadow-sm transition-shadow">
-                   <div className="w-10 h-10 rounded-lg bg-[#F8F9FF] border border-[#E1E4FF] flex items-center justify-center shrink-0">
-                      <Image src="/file.svg" width={18} height={18} alt="icon" className="brightness-0 saturate-100 invert-[.15] sepia-[.9] saturate-[50] hue-rotate-[220deg]" />
-                   </div>
-                   <p className="text-[14px] text-[#161A21] font-medium">{plan}</p>
+                <div className="bg-white border border-[#E8E8E8] rounded-[24px] p-6 md:p-8 space-y-6 shadow-sm">
+                  <h4 className="font-bold text-[#161A21] text-[16px]">Areas to Improve.</h4>
+                  <div className="space-y-4">
+                    {(output.improvements || output.areas_to_improve || [
+                      "Use white space to make it readable on mobile.",
+                      "Keep the email address visible so recruiters don't have to hunt for it.",
+                      "Bold key achievements to make them pop during a quick skim."
+                    ]).map((s: string, idx: number) => (
+                      <div key={idx} className="flex gap-4 text-[13px] md:text-[14px] text-[#444] leading-relaxed">
+                        <Image src="/check-fill.svg" width={16} height={16} alt="check" className="mt-0.5 shrink-0 brightness-0 saturate-100 invert-[.15] sepia-[.9] saturate-[40] hue-rotate-[230deg]" />
+                        {s}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              ))}
-           </div>
-        </div>
+              </div>
+            </div>
+
+            {/* Recommended Skills */}
+            <div className="space-y-5">
+              <h3 className="text-[#161A21] font-bold text-[18px] md:text-[20px]">Recommended Skills</h3>
+              <div className="flex flex-wrap gap-3">
+                {(output.recommended_skills || ["UX Design", "Prototyping", "Wireframing", "Information Architecture", "User Research", "Stakeholder Management", "UX Audit", "Design System"]).map((skill: string, i: number) => (
+                  <span 
+                    key={i} 
+                    className="px-5 py-2.5 border border-[#322FEB] text-[#322FEB] rounded-full text-[13px] md:text-[14px] font-medium hover:bg-[#F6F3FF] cursor-default transition-all"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-12">
+            {/* Brand Statement */}
+            <div className="space-y-4">
+               <h3 className="text-[#161A21] font-bold text-[18px]">Brand Statement</h3>
+               <p className="text-[#444] text-[15px] md:text-[16px] leading-[1.7]">
+                  {output.brand_statement || "A typical day begins with a 'Daily Standup' with the product and engineering teams."}
+               </p>
+            </div>
+
+            {/* AI Recommendation Card */}
+            <div className="bg-[#F8F9FF] border border-[#E1E4FF] rounded-[16px] p-6 space-y-4 relative group">
+               <div className="flex items-center gap-2 text-[#5335E9] font-bold text-[14px]">
+                  <Image src="/sparkling-line-2.svg" width={18} height={18} alt="sparkle" className="brightness-0 saturate-100 invert-[.15] sepia-[.9] saturate-[50] hue-rotate-[220deg]" />
+                  AI Recommendation
+               </div>
+               <p className="text-[#161A21] text-[15px] leading-[1.8] pr-10">
+                  {output.ai_recommendation || "You know how most AI and Fintech apps feel like you need a PhD just to navigate the home screen?"}
+               </p>
+               <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(output.ai_recommendation || "");
+                    toast.success("Copied to clipboard!");
+                  }}
+                  className="absolute bottom-6 right-6 p-2 text-[#95969A] hover:text-[#322FEB] transition-colors"
+               >
+                  <Image src="/file-copy-line-2.svg" width={18} height={18} alt="copy" />
+               </button>
+            </div>
+
+            {/* Platform Analysis Bars */}
+            <div className="space-y-6">
+               <h3 className="text-[#161A21] font-bold text-[18px]">Platform Analysis</h3>
+               <div className="space-y-4">
+                  {(output.platform_analysis || []).map((p: any, i: number) => (
+                    <div key={i} className="bg-white border border-[#F0F0F0] rounded-[16px] p-4 flex flex-col gap-3">
+                       <div className="flex justify-between items-center">
+                          <p className="font-bold text-[#161A21] text-[14px]">{p.label}</p>
+                          <div className="text-[16px] font-bold text-[#161A21]">{p.score}/100</div>
+                       </div>
+                       <div className="w-full bg-[#F0F0F0] h-2 rounded-full overflow-hidden">
+                          <div className="h-full bg-[#322FEB] transition-all duration-1000" style={{ width: `${p.score}%` }} />
+                       </div>
+                    </div>
+                  ))}
+               </div>
+            </div>
+
+            {/* 30-Day Action Plan */}
+            <div className="space-y-6 pt-6">
+               <h3 className="text-[#161A21] font-bold text-[18px]">30-Day Action Plan</h3>
+               <div className="space-y-3">
+                  {(output.action_plan_30_days || [
+                     "Rewrite LinkedIn About Section like a story.",
+                     "Design a Custom LinkedIn banner.",
+                     "Select a major project.",
+                     "Document the research, friction points and ROI."
+                  ]).map((plan: string, i: number) => (
+                    <div key={i} className="bg-white border border-[#E8E8E8] rounded-[12px] p-4 flex items-center gap-4 hover:shadow-sm transition-shadow">
+                       <div className="w-10 h-10 rounded-lg bg-[#F8F9FF] border border-[#E1E4FF] flex items-center justify-center shrink-0">
+                          <Image src="/file.svg" width={18} height={18} alt="icon" className="brightness-0 saturate-100 invert-[.15] sepia-[.9] saturate-[50] hue-rotate-[220deg]" />
+                       </div>
+                       <p className="text-[14px] text-[#161A21] font-medium">{plan}</p>
+                    </div>
+                  ))}
+               </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -480,9 +532,9 @@ export const ToolResultRenderer = ({ slug, output }: { slug: string; output: any
   // 8. LinkedIn Summary Generator
   if (s.includes("summary-generator")) {
     return (
-      <div className="w-full bg-white border border-[#E8E8E8] rounded-[24px] p-6 md:p-10 shadow-lg text-left">
-        <p className="text-[14px] font-bold text-[#161A21] mb-6">Your Summary</p>
-        <div className="text-[15px] text-[#333] leading-[1.8] whitespace-pre-wrap">
+      <div className="w-full bg-white border border-[#E8E8E8] rounded-[24px] p-8 md:p-12 shadow-[0px_4px_20px_rgba(0,0,0,0.03)] text-left">
+        <h3 className="text-[14px] mori-semibold text-[#161A21] mb-8">Your Summary</h3>
+        <div className="text-[15px] md:text-[16px] text-[#161A21] leading-[1.8] whitespace-pre-wrap font-normal">
           {output.summary_text || output.content || (typeof output === "string" ? output : JSON.stringify(output, null, 2))}
         </div>
       </div>

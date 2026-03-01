@@ -120,7 +120,7 @@ export const useAllTools = () => {
     queryKey: ["career-all-tools"],
     queryFn: async () => {
       // Fallback types if ToolTypes fetch is slow or fails
-      const typesToFetch = toolTypes?.map(t => t.id) || ["resume", "linkedin", "career", "growth"];
+      const typesToFetch = toolTypes?.map(t => t.id) || ["resume", "linkedin", "career"];
       
       const allResults = await Promise.all(
         typesToFetch.map(async (t) => {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   Dialog,
   DialogContent,
@@ -20,10 +20,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useUserData } from "@/hooks/userData";
-import { usePlans } from "@/hooks/usePlans";
 import { useTokens } from "@/hooks/useTokens";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface GetTokensDialogProps {
   open: boolean;
@@ -32,15 +32,114 @@ interface GetTokensDialogProps {
 
 const GetTokensDialog: React.FC<GetTokensDialogProps> = ({ open, onOpenChange }) => {
   const { data: userData } = useUserData();
-  const { data: plans } = usePlans();
-  const { tokenPlans, buyTokensMutation, isLoadingTokenPlans } = useTokens();
+  const queryClient = useQueryClient();
+  const { 
+    tokenPlans, 
+    subscriptionPlans, 
+    buyTokensMutation,
+    verifyTokenMutation,
+    isLoading: isTokensLoading 
+  } = useTokens();
+  const plans = subscriptionPlans.data;
+  const isLoadingTokenPlans = isTokensLoading;
   const [selectedOption, setSelectedOption] = useState("upgrade");
   const [selectedTokenPlanUid, setSelectedTokenPlanUid] = useState<string>("");
+  const [isVerifying, setIsVerifying] = useState(false);
+
+  // Verify payment using the stored reference
+  const verifyPayment = useCallback(async (reference: string) => {
+    setIsVerifying(true);
+    const toastId = toast.loading("Verifying your payment...");
+    try {
+      await verifyTokenMutation.mutateAsync(reference);
+      toast.success("Payment verified! Your tokens have been updated.", { id: toastId });
+      // Refresh user data to reflect new token balance
+      queryClient.invalidateQueries({ queryKey: ["user-data"] });
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+      onOpenChange(false);
+    } catch (error: any) {
+      console.error("Payment verification failed:", error);
+      toast.error(
+        error?.response?.data?.message || "Verification failed. Please contact support.",
+        { id: toastId }
+      );
+    } finally {
+      setIsVerifying(false);
+    }
+  }, [verifyTokenMutation, queryClient, onOpenChange]);
+
+  // Load Paystack v2 inline script
+  const loadPaystackScript = useCallback((): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      if ((window as any).PaystackPop) {
+        resolve();
+        return;
+      }
+      const script = document.createElement("script");
+      script.src = "https://js.paystack.co/v2/inline.js";
+      script.async = true;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error("Failed to load Paystack"));
+      document.head.appendChild(script);
+    });
+  }, []);
+
+  // Handle the buy button click
+  const handleBuy = () => {
+    const uidToUse = selectedOption === "topup" ? selectedTokenPlanUid : nextPlan?.uid;
+    
+    if (!uidToUse) {
+      toast.error(selectedOption === "topup" ? "Please select a token plan" : "No upgrade plan available.");
+      return;
+    }
+
+    buyTokensMutation.mutate(uidToUse, {
+      onSuccess: async (data: any) => {
+        if (data.access_code) {
+          try {
+            await loadPaystackScript();
+
+            const popup = new (window as any).PaystackPop();
+            onOpenChange(false);
+            popup.resumeTransaction(data.access_code, {
+              onSuccess: (transaction: any) => {
+                // Payment completed — verify with reference
+                const ref = transaction.reference || data.reference;
+                if (ref) {
+                  verifyPayment(ref);
+                }
+              },
+              onCancel: () => {
+                toast.info("Payment was cancelled.");
+              },
+              onError: (error: any) => {
+                console.error("Paystack error:", error);
+                toast.error("Payment failed. Please try again.");
+              },
+            });
+          } catch (err) {
+            console.error("Failed to load Paystack:", err);
+            // Fallback to redirect if script fails
+            if (data.authorization_url) {
+              window.location.href = data.authorization_url;
+            }
+          }
+        } else if (data.authorization_url) {
+          window.location.href = data.authorization_url;
+        } else {
+          toast.error("Failed to initiate payment. Please try again.");
+        }
+      },
+      onError: () => {
+        toast.error("Something went wrong. Please try again.");
+      }
+    });
+  };
 
   // Determine current and next plan for "Upgrade" section
-  const allMonthlyPlans = plans?.monthly || [];
-  const currentPlan = allMonthlyPlans.find(p => p.uid === userData?.plan_uid) || allMonthlyPlans[0];
-  const nextPlan = allMonthlyPlans.find(p => parseInt(p.tokens) > parseInt(currentPlan?.tokens || "0")) || allMonthlyPlans[1];
+  const allMonthlyPlans = (plans?.monthly || []) as any[];
+  const currentPlan = allMonthlyPlans.find((p: any) => p.uid === userData?.plan_uid) || allMonthlyPlans[0];
+  const nextPlan = allMonthlyPlans.find((p: any) => parseInt(p.tokens) > parseInt(currentPlan?.tokens || "0")) || allMonthlyPlans[1];
 
   const formatCurrency = (amount: string | number) => {
     return new Intl.NumberFormat("en-NG", {
@@ -50,16 +149,18 @@ const GetTokensDialog: React.FC<GetTokensDialogProps> = ({ open, onOpenChange })
     }).format(typeof amount === "string" ? parseInt(amount) : amount);
   };
 
+  const isBusy = buyTokensMutation.isPending || isVerifying;
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={isBusy ? undefined : onOpenChange}>
       <DialogContent className="sm:max-w-[480px] p-0 overflow-hidden border-none rounded-[24px]">
         <div className="p-6 md:p-4 space-y-6">
           <DialogHeader className="space-y-3 text-left">
             <DialogTitle className="text-[18px] mori-semibold text-[#161A21]">Get AI Tokens</DialogTitle>
             <DialogDescription className="text-[14px] text-[#6A6D71] leading-relaxed">
-              <span className="">Choose a token package to continue using AI career tools.</span>
+              <span>Choose a token package to continue using AI career tools.</span>
               <br />
-              <span className="">Payment powered by Paystack.</span>
+              <span>Payment powered by Paystack.</span>
             </DialogDescription>
           </DialogHeader>
 
@@ -135,9 +236,9 @@ const GetTokensDialog: React.FC<GetTokensDialogProps> = ({ open, onOpenChange })
                   <SelectValue placeholder={isLoadingTokenPlans ? "Loading plans..." : "Select an amount"} />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl">
-                  {tokenPlans?.data?.map((plan: any) => (
+                  {((tokenPlans?.data || []) as any[]).map((plan: any) => (
                     <SelectItem key={plan.uid} value={plan.uid}>
-                      {plan.tokens} Tokens - {formatCurrency(plan.price)}
+                      {plan.tokens} Tokens — {formatCurrency(plan.price)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -150,36 +251,17 @@ const GetTokensDialog: React.FC<GetTokensDialogProps> = ({ open, onOpenChange })
           <Button 
             variant="outline" 
             onClick={() => onOpenChange(false)}
+            disabled={isBusy}
             className="flex-1 h-14 rounded-full border-[#E8E8E8] text-[#6A6D71] text-[16px] font-medium"
           >
             Cancel
           </Button>
           <Button 
             className="flex-1 h-14 rounded-full bg-[#322FEB] hover:bg-[#2826c8] text-white text-[16px] font-medium shadow-[0px_8px_16px_0px_#322FEB4D]"
-            disabled={buyTokensMutation.isPending || (selectedOption === "topup" && !selectedTokenPlanUid)}
-            onClick={() => {
-              const uidToUse = selectedOption === "topup" ? selectedTokenPlanUid : nextPlan?.uid;
-              
-              if (!uidToUse) {
-                toast.error(selectedOption === "topup" ? "Please select a token plan" : "No upgrade plan available.");
-                return;
-              }
-
-              buyTokensMutation.mutate(uidToUse, {
-                onSuccess: (data: any) => {
-                  if (data.authorization_url) {
-                    window.location.href = data.authorization_url;
-                  } else {
-                    toast.error("Failed to initiate payment. Please try again.");
-                  }
-                },
-                onError: () => {
-                  toast.error("Something went wrong. Please try again.");
-                }
-              });
-            }}
+            disabled={isBusy || (selectedOption === "topup" && !selectedTokenPlanUid)}
+            onClick={handleBuy}
           >
-            {buyTokensMutation.isPending ? (
+            {isBusy ? (
               <Loader2 className="w-5 h-5 animate-spin" />
             ) : (
               selectedOption === "upgrade" ? "Upgrade plan" : "Top up now"
