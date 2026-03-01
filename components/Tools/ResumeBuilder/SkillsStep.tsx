@@ -28,8 +28,8 @@ export const SkillsStep: React.FC<SkillsStepProps> = ({
       </div>
 
       <div className="space-y-4 mt-6">
-        <div className="space-y-1">
-          <Label htmlFor="targetRole" className="text-[#161A21] text-[14px]">
+        <div className="space-y-1.5 flex flex-col gap-1.5 pt-4">
+          <Label htmlFor="targetRole" className="text-[#161A21] font-semibold text-[14px]">
             Target Role (for AI optimization)
           </Label>
           <Input
@@ -38,12 +38,13 @@ export const SkillsStep: React.FC<SkillsStepProps> = ({
             type="text"
             value={targetRole}
             onChange={(e) => setTargetRole(e.target.value)}
+            className="h-14 rounded-xl"
             required
           />
         </div>
 
-        <div className="space-y-1">
-          <Label htmlFor="skills" className="text-[#161A21] text-[14px]">
+        <div className="space-y-1.5 flex flex-col gap-1.5 pt-4">
+          <Label htmlFor="skills" className="text-[#161A21] font-semibold text-[14px]">
             Skills (comma-separated)
           </Label>
           <Textarea
@@ -52,7 +53,7 @@ export const SkillsStep: React.FC<SkillsStepProps> = ({
             value={skills}
             onChange={(e) => setSkills(e.target.value)}
             rows={6}
-            className="min-h-[132px]"
+            className="min-h-[132px] rounded-xl"
             required
           />
         </div>

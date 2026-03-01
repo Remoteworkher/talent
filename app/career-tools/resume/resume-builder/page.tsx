@@ -1,9 +1,11 @@
 "use client";
+import { useRouter } from "next/navigation";
 import ResumeCard from "@/components/reusables/ResumeCard";
 import { Button } from "@/components/ui/button";
 import { RadioGroup } from "@/components/ui/radio-group";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useResumeBuilderStore } from "@/lib/store/useResumeBuilderStore";
 
 const resumeTemplates = [
   {
@@ -49,7 +51,20 @@ const resumeTemplates = [
 ];
 
 const Page = () => {
-  const [selectedTemplate, setSelectedTemplate] = useState("");
+  const router = useRouter();
+  const { template: selectedTemplate, setTemplate, setThemeColor } = useResumeBuilderStore();
+
+  const handleNext = () => {
+    if (!selectedTemplate) return;
+    
+    // Find selected template to get its default color (third color is usually the accent)
+    const t = resumeTemplates.find(item => item.value === selectedTemplate);
+    if (t && t.colors.length >= 3) {
+      setThemeColor(t.colors[2]);
+    }
+    
+    router.push("/career-tools/resume/resume-builder/information");
+  };
 
   return (
     <div className="bg-[#FFFCFD] min-h-screen flex flex-col">
@@ -63,7 +78,7 @@ const Page = () => {
         <section className="flex justify-center mt-10 md:w-4/5 mx-auto">
           <RadioGroup
             value={selectedTemplate}
-            onValueChange={setSelectedTemplate}
+            onValueChange={setTemplate}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center">
               {resumeTemplates.map((template) => (
@@ -88,7 +103,7 @@ const Page = () => {
       </div>
       <section className="bg-white w-full border-t border-[#E8E8E8] fixed bottom-0 left-0 right-0 py-4 z-20">
         <div className="flex justify-end items-end px-4">
-          <Button className="px-5">
+          <Button onClick={handleNext} disabled={!selectedTemplate} className="px-5">
             Next: Personal info
             <Image
               src={`/arrow-right-line.svg`}

@@ -67,10 +67,10 @@ export const EducationSection: React.FC<EducationProps> = ({
               )}
             </div>
             <div className="space-y-4 mt-6">
-              <div className="space-y-1">
+              <div className="space-y-1.5 flex flex-col gap-1.5 pt-4">
                 <Label
                   htmlFor={`institutionName-${eduIndex}`}
-                  className="text-[#161A21] text-[14px]"
+                  className="text-[#161A21] font-semibold text-[14px]"
                 >
                   Institution Name
                 </Label>
@@ -86,14 +86,15 @@ export const EducationSection: React.FC<EducationProps> = ({
                       e.target.value,
                     )
                   }
+                  className="h-14 rounded-xl"
                   required
                 />
               </div>
 
-              <div className="space-y-1">
+              <div className="space-y-1.5 flex flex-col gap-1.5 pt-4">
                 <Label
                   htmlFor={`location-${eduIndex}`}
-                  className="text-[#161A21] text-[14px]"
+                  className="text-[#161A21] font-semibold text-[14px]"
                 >
                   Location
                 </Label>
@@ -105,14 +106,15 @@ export const EducationSection: React.FC<EducationProps> = ({
                   onChange={(e) =>
                     handleEducationChange(eduIndex, "location", e.target.value)
                   }
+                  className="h-14 rounded-xl"
                   required
                 />
               </div>
 
-              <div className="space-y-1">
+              <div className="space-y-1.5 flex flex-col gap-1.5 pt-4">
                 <Label
                   htmlFor={`degree-${eduIndex}`}
-                  className="text-[#161A21] text-[14px]"
+                  className="text-[#161A21] font-semibold text-[14px]"
                 >
                   Degree
                 </Label>
@@ -122,7 +124,7 @@ export const EducationSection: React.FC<EducationProps> = ({
                   onChange={(e) =>
                     handleEducationChange(eduIndex, "degree", e.target.value)
                   }
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex h-14 w-full rounded-xl border border-[#E8E8E8] bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#322FEB] disabled:cursor-not-allowed disabled:opacity-50 appearance-none bg-[url('/arrow-down.svg')] bg-[length:16px] bg-[right_16px_center] bg-no-repeat"
                   required
                 >
                   <option value="">Select degree</option>
@@ -140,10 +142,10 @@ export const EducationSection: React.FC<EducationProps> = ({
                 </select>
               </div>
 
-              <div className="space-y-1">
+              <div className="space-y-1.5 flex flex-col gap-1.5 pt-4">
                 <Label
                   htmlFor={`fieldOfStudy-${eduIndex}`}
-                  className="text-[#161A21] text-[14px]"
+                  className="text-[#161A21] font-semibold text-[14px]"
                 >
                   Field of Study
                 </Label>
@@ -159,14 +161,15 @@ export const EducationSection: React.FC<EducationProps> = ({
                       e.target.value,
                     )
                   }
+                  className="h-14 rounded-xl"
                   required
                 />
               </div>
 
-              <div className="space-y-1">
+              <div className="space-y-1.5 flex flex-col gap-1.5 pt-4">
                 <Label
                   htmlFor={`graduationYear-${eduIndex}`}
-                  className="text-[#161A21] text-[14px]"
+                  className="text-[#161A21] font-semibold text-[14px]"
                 >
                   Graduation Year
                 </Label>
@@ -182,6 +185,7 @@ export const EducationSection: React.FC<EducationProps> = ({
                       e.target.value,
                     )
                   }
+                  className="h-14 rounded-xl"
                   required
                 />
               </div>
@@ -191,7 +195,7 @@ export const EducationSection: React.FC<EducationProps> = ({
       </div>
       <Button
         variant="outline"
-        className="mt-4"
+        className="mt-6 w-full h-14 rounded-xl border-dashed border-[#322FEB] text-[#322FEB] hover:bg-[#322FEB10]"
         onClick={handleAddEducation}
         type="button"
       >

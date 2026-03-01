@@ -24,8 +24,10 @@ const routeTitles: Record<string, string> = {
 
 const TalentTopBar = ({
   onToggleSidebar,
+  isCollapsed,
 }: {
   onToggleSidebar?: () => void;
+  isCollapsed?: boolean;
 }) => {
   const pathname = usePathname();
   const title = routeTitles[pathname] || "Dashboard";
@@ -34,7 +36,8 @@ const TalentTopBar = ({
   const { data: userProfile } = useProfile();
 
   return (
-    <div className="w-full max-w-[1168px] flex justify-between items-center py-5 px-4 md:px-10 border-b border-[#E8E8E8] bg-white">
+    <div className="flex justify-start">
+      <div className={`flex justify-between items-center py-5 px-4 md:px-10 border-b border-[#E8E8E8] bg-white transition-all duration-300 w-full ${isCollapsed ? 'max-w-[1360px]' : 'max-w-[1165px]'}`}>
       <div className="flex flex-1 justify-start items-center gap-4">
         <button
           type="button"
@@ -67,6 +70,7 @@ const TalentTopBar = ({
           <NameCard profileData={userProfile} />
         </div>
       </div>
+    </div>
     </div>
   );
 };

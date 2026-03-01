@@ -72,7 +72,7 @@ export default function RootLayout({
                         mounted && window.innerWidth >= 768 ? `${sidebarWidth}px` : "0",
                     }}
                   >
-                    <TalentTopBar onToggleSidebar={handleToggleSidebar} />
+                    <TalentTopBar onToggleSidebar={handleToggleSidebar} isCollapsed={isCollapsed} />
                   </div>
                   <main className="flex-1 pt-[80px] p-4">{children}</main>
                 </div>

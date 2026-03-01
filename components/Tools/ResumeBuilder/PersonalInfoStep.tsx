@@ -52,8 +52,7 @@ export const PersonalInformation: React.FC<PersonalInformationProps> = ({
       </div>
 
       <div className="space-y-4 mt-6">
-        <div className="space-y-1">
-          <Label htmlFor="fullName" className="text-[#161A21] text-[14px]">
+          <Label htmlFor="fullName" className="text-[#161A21] font-semibold text-[14px]">
             Full Name
           </Label>
           <Input
@@ -62,12 +61,11 @@ export const PersonalInformation: React.FC<PersonalInformationProps> = ({
             type="text"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
+            className="h-14 rounded-xl"
             required
           />
-        </div>
 
-        <div className="space-y-1">
-          <Label htmlFor="email" className="text-[#161A21] text-[14px]">
+          <Label htmlFor="email" className="text-[#161A21] font-semibold text-[14px]">
             Email Address
           </Label>
           <Input
@@ -76,12 +74,11 @@ export const PersonalInformation: React.FC<PersonalInformationProps> = ({
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            className="h-14 rounded-xl"
             required
           />
-        </div>
 
-        <div className="space-y-1">
-          <Label htmlFor="phoneNumber" className="text-[#161A21] text-[14px]">
+          <Label htmlFor="phoneNumber" className="text-[#161A21] font-semibold text-[14px]">
             Phone Number
           </Label>
           <div className="flex gap-2">
@@ -91,7 +88,7 @@ export const PersonalInformation: React.FC<PersonalInformationProps> = ({
               type="text"
               value={countryCode}
               onChange={(e) => setCountryCode(e.target.value)}
-              className="w-20"
+              className="w-24 h-14 rounded-xl"
               required
             />
             <Input
@@ -100,13 +97,12 @@ export const PersonalInformation: React.FC<PersonalInformationProps> = ({
               type="tel"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
+              className="h-14 rounded-xl"
               required
             />
           </div>
-        </div>
 
-        <div className="space-y-1">
-          <Label htmlFor="location" className="text-[#161A21] text-[14px]">
+          <Label htmlFor="location" className="text-[#161A21] font-semibold text-[14px]">
             Location
           </Label>
           <Input
@@ -115,12 +111,11 @@ export const PersonalInformation: React.FC<PersonalInformationProps> = ({
             type="text"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
+            className="h-14 rounded-xl"
             required
           />
-        </div>
 
-        <div className="space-y-1">
-          <Label htmlFor="linkedinUrl" className="text-[#161A21] text-[14px]">
+          <Label htmlFor="linkedinUrl" className="text-[#161A21] font-semibold text-[14px]">
             LinkedIn URL (Optional)
           </Label>
           <Input
@@ -129,11 +124,10 @@ export const PersonalInformation: React.FC<PersonalInformationProps> = ({
             type="url"
             value={linkedinUrl}
             onChange={(e) => setLinkedinUrl(e.target.value)}
+            className="h-14 rounded-xl"
           />
-        </div>
 
-        <div className="space-y-1">
-          <Label htmlFor="portfolio" className="text-[#161A21] text-[14px]">
+          <Label htmlFor="portfolio" className="text-[#161A21] font-semibold text-[14px]">
             Portfolio/Website (Optional)
           </Label>
           <Input
@@ -142,13 +136,12 @@ export const PersonalInformation: React.FC<PersonalInformationProps> = ({
             type="url"
             value={portfolio}
             onChange={(e) => setPortfolio(e.target.value)}
+            className="h-14 rounded-xl"
           />
-        </div>
 
-        <div className="space-y-1">
           <Label
             htmlFor="professionalSummary"
-            className="text-[#161A21] text-[14px]"
+            className="text-[#161A21] font-semibold text-[14px]"
           >
             Professional Summary
           </Label>
@@ -158,10 +151,9 @@ export const PersonalInformation: React.FC<PersonalInformationProps> = ({
             value={professionalSummary}
             onChange={(e) => setProfessionalSummary(e.target.value)}
             rows={6}
-            className="min-h-[132px]"
+            className="min-h-[132px] rounded-xl"
             required
           />
-        </div>
       </div>
     </section>
   );

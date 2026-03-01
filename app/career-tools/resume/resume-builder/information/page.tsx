@@ -1,13 +1,10 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import Image from "next/image";
 import { PersonalInformation } from "@/components/Tools/ResumeBuilder/PersonalInfoStep";
@@ -15,6 +12,7 @@ import { WorkExperience } from "@/components/Tools/ResumeBuilder/ExperienceStep"
 import { EducationSection } from "@/components/Tools/ResumeBuilder/EducationStep";
 import { SkillsStep } from "@/components/Tools/ResumeBuilder/SkillsStep";
 import ProcessModal from "@/components/reusables/ProcessModal";
+import { useResumeBuilderStore, ExperienceEntry, EducationEntry } from "@/lib/store/useResumeBuilderStore";
 
 interface Experience {
   companyName: string;
@@ -35,46 +33,15 @@ interface Education {
 }
 
 const Page = () => {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  // Personal Information states
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [countryCode, setCountryCode] = useState("+234");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [location, setLocation] = useState("");
-  const [linkedinUrl, setLinkedinUrl] = useState("");
-  const [portfolio, setPortfolio] = useState("");
-  const [professionalSummary, setProfessionalSummary] = useState("");
-
-  // Work Experience states
-  const [experiences, setExperiences] = useState<Experience[]>([
-    {
-      companyName: "",
-      companyLocation: "",
-      jobTitle: "",
-      startDate: "",
-      endDate: "",
-      currentlyWorking: false,
-      achievements: [""],
-    },
-  ]);
-
-  // Education states
-  const [educations, setEducations] = useState<Education[]>([
-    {
-      institutionName: "",
-      location: "",
-      degree: "",
-      fieldOfStudy: "",
-      graduationYear: "",
-    },
-  ]);
-
-  // Skills states
-  const [targetRole, setTargetRole] = useState("");
-  const [skills, setSkills] = useState("");
+  const {
+    firstName, lastName, email, phone, location, linkedinUrl, portfolioUrl, professionalSummary,
+    experiences, educations, targetRole, skills,
+    setPersonalInfo, setExperiences, setEducations, setSkills
+  } = useResumeBuilderStore();
 
   const handleAddExperience = () => {
     setExperiences([
@@ -92,20 +59,19 @@ const Page = () => {
   };
 
   const handleDeleteExperience = (expIndex: number) => {
-    const newExperiences = experiences.filter((_, i) => i !== expIndex);
-    setExperiences(newExperiences);
+    setExperiences(experiences.filter((_, i) => i !== expIndex));
   };
 
   const handleExperienceChange = (
     expIndex: number,
-    field: keyof Experience,
+    field: keyof ExperienceEntry,
     value: string | boolean | string[],
   ) => {
     const newExperiences = [...experiences];
     newExperiences[expIndex] = {
       ...newExperiences[expIndex],
       [field]: value,
-    };
+    } as ExperienceEntry;
     setExperiences(newExperiences);
   };
 
@@ -147,20 +113,19 @@ const Page = () => {
   };
 
   const handleDeleteEducation = (eduIndex: number) => {
-    const newEducations = educations.filter((_, i) => i !== eduIndex);
-    setEducations(newEducations);
+    setEducations(educations.filter((_, i) => i !== eduIndex));
   };
 
   const handleEducationChange = (
     eduIndex: number,
-    field: keyof Education,
+    field: keyof EducationEntry,
     value: string,
   ) => {
     const newEducations = [...educations];
     newEducations[eduIndex] = {
       ...newEducations[eduIndex],
       [field]: value,
-    };
+    } as EducationEntry;
     setEducations(newEducations);
   };
 
@@ -170,6 +135,10 @@ const Page = () => {
     } else if (currentStep === 4) {
       // Open dialog when on last step
       setIsDialogOpen(true);
+      // Simulate resume generation and redirect
+      setTimeout(() => {
+        router.push("/career-tools/resume/resume-builder/resume");
+      }, 3000);
     }
   };
 
@@ -200,22 +169,25 @@ const Page = () => {
         {/* Step 1: Personal Information */}
         {currentStep === 1 && (
           <PersonalInformation
-            fullName={fullName}
-            setFullName={setFullName}
+            fullName={`${firstName} ${lastName}`.trim()}
+            setFullName={(val) => {
+              const [first, ...rest] = val.split(" ");
+              setPersonalInfo({ firstName: first || "", lastName: rest.join(" ") || "" });
+            }}
             email={email}
-            setEmail={setEmail}
-            countryCode={countryCode}
-            setCountryCode={setCountryCode}
-            phoneNumber={phoneNumber}
-            setPhoneNumber={setPhoneNumber}
+            setEmail={(email) => setPersonalInfo({ email })}
+            countryCode={"+234"} // Hardcoded for now as store doesn't have it
+            setCountryCode={() => {}}
+            phoneNumber={phone}
+            setPhoneNumber={(phone) => setPersonalInfo({ phone })}
             location={location}
-            setLocation={setLocation}
+            setLocation={(location) => setPersonalInfo({ location })}
             linkedinUrl={linkedinUrl}
-            setLinkedinUrl={setLinkedinUrl}
-            portfolio={portfolio}
-            setPortfolio={setPortfolio}
+            setLinkedinUrl={(linkedinUrl) => setPersonalInfo({ linkedinUrl })}
+            portfolio={portfolioUrl}
+            setPortfolio={(portfolioUrl) => setPersonalInfo({ portfolioUrl })}
             professionalSummary={professionalSummary}
-            setProfessionalSummary={setProfessionalSummary}
+            setProfessionalSummary={(professionalSummary) => setPersonalInfo({ professionalSummary })}
           />
         )}
 
@@ -246,9 +218,9 @@ const Page = () => {
         {currentStep === 4 && (
           <SkillsStep
             targetRole={targetRole}
-            setTargetRole={setTargetRole}
-            skills={skills}
-            setSkills={setSkills}
+            setTargetRole={(role) => useResumeBuilderStore.setState({ targetRole: role })}
+            skills={skills.join(", ")}
+            setSkills={(s) => setSkills(s.split(",").map(i => i.trim()))}
           />
         )}
 
@@ -296,7 +268,7 @@ const Page = () => {
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="w-[440px]">
+        <DialogContent className="w-[95vw] sm:w-[440px] p-0 border-none">
           <ProcessModal onClose={() => setIsDialogOpen(false)} />
         </DialogContent>
       </Dialog>

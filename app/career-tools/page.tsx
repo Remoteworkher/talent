@@ -7,6 +7,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React, { useState } from "react";
 import { useToolTypes, useToolGroups, Tool } from "@/hooks/useCareerTools";
 import { Loader2 } from "lucide-react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useTokens } from "@/hooks/useTokens";
+import { useVerifyPlanTransaction } from "@/hooks/usePlans";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 const getToolUrl = (slug: string) => {
   const routes: Record<string, string> = {
@@ -19,11 +24,12 @@ const getToolUrl = (slug: string) => {
     "cover-letter-builder": "/career-tools/resumes/cover-letter",
     "email-writer": "/career-tools/resumes/email-writer",
     "resume-optimizer": "/career-tools/resumes/optimizer",
-    "explore-careers": "/career-tools/growth/explore",
-    "career-roadmap": "/career-tools/growth/roadmap",
-    "salary-analyzer": "/career-tools/growth/salary-analyzer",
-    "personal-brand-audit": "/career-tools/growth/brand-audit",
-    "elevator-pitch": "/career-tools/growth/elevator-pitch",
+    "explore-careers": "/career-tools/career/explore",
+    "career-roadmap": "/career-tools/career/roadmap",
+    "salary-analyzer": "/career-tools/career/salary-analyzer",
+    "personal-brand-audit": "/career-tools/career/brand-audit",
+    "elevator-pitch": "/career-tools/career/elevator-pitch",
+    "resume-builder": "/career-tools/resume/resume-builder",
   };
   return routes[slug] || `/career-tools/${slug}`;
 };
@@ -54,9 +60,42 @@ const getToolStyle = (slug: string) => {
 
 const Page = () => {
   const [activeTab, setActiveTab] = useState("overview");
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const reference = searchParams.get("reference");
+  const { verifyTokenMutation } = useTokens();
+  const verifyPlanMutation = useVerifyPlanTransaction();
 
   const { data: toolTypes, isLoading: isLoadingTypes } = useToolTypes();
   const { data: toolGroups, isLoading: isLoadingGroups } = useToolGroups(activeTab);
+
+  React.useEffect(() => {
+    if (reference) {
+      const verifyPayment = async () => {
+        const toastId = toast.loading("Verifying your payment...");
+        try {
+          // Try verifying as token transaction first
+          try {
+            await verifyTokenMutation.mutateAsync(reference);
+          } catch (e) {
+            // If token verification fails, try plan verification
+            await verifyPlanMutation.mutateAsync(reference);
+          }
+          
+          toast.success("Payment verified! Your account has been updated.", { id: toastId });
+          // Invalidate user data to refresh token balance and plan status
+          queryClient.invalidateQueries({ queryKey: ["user-data"] });
+          // Clean up the URL
+          const newUrl = window.location.pathname;
+          router.replace(newUrl);
+        } catch (error) {
+          toast.error("Failed to verify payment. Please contact support.", { id: toastId });
+        }
+      };
+      verifyPayment();
+    }
+  }, [reference, queryClient, router]);
 
   if (isLoadingTypes) {
     return (
@@ -67,18 +106,18 @@ const Page = () => {
   }
 
   return (
-    <div className="space-y-3 p-4">
+    <div className="space-y-4 p-3 md:p-6 lg:p-8 mx-auto md:w-full">
       <HeaderSub
         title="Career Tools"
         subtitle="AI-powered tools to help you advance your career"
       />
       <TokensCard />
-      <section className="space-y-3 pt-4">
+      <section className="space-y-4 pt-2 md:pt-4">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="bg-transparent flex gap-2 overflow-x-auto no-scrollbar">
+          <TabsList className="bg-transparent h-auto p-0 flex flex-wrap gap-2 justify-start overflow-x-auto no-scrollbar pb-1">
             <TabsTrigger
               value="overview"
-              className="data-[state=active]:bg-[#322FEB] data-[state=active]:text-white px-4 py-5 border border-[#E8E8E8] rounded-md transition whitespace-nowrap"
+              className="px-6 py-2.5 border border-[#E8E8E8] bg-white text-[#6A6D71] data-[state=active]:bg-[#322FEB] data-[state=active]:text-white data-[state=active]:border-[#322FEB] data-[state=active]:shadow-md data-[state=active]:shadow-blue-100 transition-all text-[15px] font-medium h-auto shadow-none rounded-md whitespace-nowrap"
             >
               Overview
             </TabsTrigger>
@@ -86,27 +125,37 @@ const Page = () => {
               <TabsTrigger
                 key={type.id}
                 value={type.id}
-                className="data-[state=active]:bg-[#322FEB] data-[state=active]:text-white px-4 py-5 border border-[#E8E8E8] rounded-md transition capitalize whitespace-nowrap"
+                className="px-6 py-2.5 border border-[#E8E8E8] bg-white text-[#6A6D71] data-[state=active]:bg-[#322FEB] data-[state=active]:text-white data-[state=active]:border-[#322FEB] data-[state=active]:shadow-md data-[state=active]:shadow-blue-100 transition-all text-[15px] font-medium h-auto shadow-none rounded-md whitespace-nowrap capitalize"
               >
                 {type.label}
               </TabsTrigger>
             ))}
           </TabsList>
 
-          <TabsContent value={activeTab} className="space-y-6 pt-4">
+          <TabsContent value={activeTab} className="space-y-8 pt-4">
             {isLoadingGroups ? (
-              <div className="flex justify-center items-center py-12">
-                <Loader2 className="w-6 h-6 animate-spin text-[#322FEB]" />
+              <div className="flex justify-center items-center py-20">
+                <Loader2 className="w-8 h-8 animate-spin text-[#322FEB]" />
               </div>
             ) : (
               toolGroups?.map((group) => (
-                <section key={group.uid} className="space-y-4">
-                  <SubHeader
-                    title={group.name}
-                    subtitle={group.description}
-                  />
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {group.tools.map((tool) => {
+                <section key={group.uid} className="space-y-5">
+                  <div className="flex justify-between items-end gap-4">
+                    <SubHeader
+                      title={group.name}
+                      subtitle={group.description}
+                    />
+                    {activeTab === "overview" && group.tools.length > 4 && (
+                      <button
+                        onClick={() => setActiveTab(group.type)}
+                        className="text-[#322FEB] text-[14px] mori-semibold hover:underline shrink-0 pb-0.5"
+                      >
+                        See all
+                      </button>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+                    {(activeTab === "overview" ? group.tools.slice(0, 4) : group.tools).map((tool) => {
                       const style = getToolStyle(tool.slug);
                       return (
                         <ToolCard

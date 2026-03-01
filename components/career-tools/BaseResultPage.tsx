@@ -46,9 +46,10 @@ export const BaseResultPage: React.FC<BaseResultPageProps> = ({
 
   return (
     <div className="bg-[#FFFCFD] min-h-screen px-4 md:px-8 py-8 flex flex-col items-center">
-      <div className="w-full max-w-[1000px] flex flex-col items-center">
-        <div className="w-full flex items-center justify-end mb-8 md:mb-12">
-           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
+      <div className="w-full max-w-[1000px] flex flex-col">
+        <div className="w-full flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4">
+            <h2 className="text-[24px] md:text-[32px] font-bold text-[#161A21] text-left">{headerTitle || tool?.name || "Career Tool Output"}</h2>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto shrink-0">
               <Button 
                 onClick={() => {
                   const latest = results[0]?.payload?.output;
@@ -81,7 +82,6 @@ export const BaseResultPage: React.FC<BaseResultPageProps> = ({
         </div>
 
         <div className="w-full space-y-12">
-            <h2 className="text-[24px] md:text-[32px] font-bold text-[#161A21] mb-10 text-left w-full">{headerTitle || tool?.name || "Career Tool Output"}</h2>
             <div className="space-y-16">
               {results.map((res, idx) => (
                 <div key={idx} className="relative w-full flex flex-col items-center animate-in fade-in slide-in-from-top-4 duration-500">

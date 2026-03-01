@@ -67,7 +67,7 @@ const Event = () => {
               </div>
             </div>
           </div>
-          <div className="text-[#322FEB] sora-semibold text-[16px] mt-2 sm:mt-0 sm:self-center">
+          <div className="text-[#322FEB] mori-semibold text-[16px] mt-2 sm:mt-0 sm:self-center">
             ₦{event.member_price.toLocaleString()}
           </div>
         </div>

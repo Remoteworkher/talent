@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import axios from "../lib/axios";
 
 export interface Plan {
@@ -27,5 +27,14 @@ export const usePlans = () => {
   return useQuery<PlansByPeriod>({
     queryKey: ["plans"],
     queryFn: fetchPlans,
+  });
+};
+
+export const useVerifyPlanTransaction = () => {
+  return useMutation({
+    mutationFn: async (reference: string) => {
+      const res = await axios.get(`/api/talent/plans/verify?reference=${reference}`);
+      return res.data.data;
+    },
   });
 };

@@ -41,7 +41,7 @@ const ReferralTab = () => {
           <Image src="/star-line.svg" alt="Star" width={24} height={24} />
         </div>
         <div className="space-y-0.5">
-          <h3 className="mori-semibold text-[18px] text-[#322FEB]">Remote Workher Referral</h3>
+          <h3 className="mori-semibold text-[18px] text-[#322FEB]">Compass Referral</h3>
           <p className="text-[#161A21] text-[16px]">
             Get instant job alerts, career tips, and exclusive updates delivered straight to your phone
           </p>
@@ -104,7 +104,7 @@ const ReferralTab = () => {
                   </div>
                   <div className="space-y-0.5">
                     <p className="text-[14px] font-semibold text-[#161A21]">{item.name}</p>
-                    <p className="text-[13px] text-[#6A6D71]">Joined Remote Workher via referral link</p>
+                    <p className="text-[13px] text-[#6A6D71]">Joined Compass via referral link</p>
                   </div>
                 </div>
                 {/* Assuming there might be a reward amount per entry, but the API doesn't specify it per user yet, using a placeholder or logic if available */}

@@ -80,10 +80,10 @@ export const WorkExperience: React.FC<WorkExperienceProps> = ({
               )}
             </div>
             <div className="space-y-4 mt-6">
-              <div className="space-y-1">
+              <div className="space-y-1.5 flex flex-col gap-1.5 pt-4">
                 <Label
                   htmlFor={`companyName-${expIndex}`}
-                  className="text-[#161A21] text-[14px]"
+                  className="text-[#161A21] font-semibold text-[14px]"
                 >
                   Company Name
                 </Label>
@@ -99,14 +99,15 @@ export const WorkExperience: React.FC<WorkExperienceProps> = ({
                       e.target.value,
                     )
                   }
+                  className="h-14 rounded-xl"
                   required
                 />
               </div>
 
-              <div className="space-y-1">
+              <div className="space-y-1.5 flex flex-col gap-1.5 pt-4">
                 <Label
                   htmlFor={`companyLocation-${expIndex}`}
-                  className="text-[#161A21] text-[14px]"
+                  className="text-[#161A21] font-semibold text-[14px]"
                 >
                   Location
                 </Label>
@@ -122,14 +123,15 @@ export const WorkExperience: React.FC<WorkExperienceProps> = ({
                       e.target.value,
                     )
                   }
+                  className="h-14 rounded-xl"
                   required
                 />
               </div>
 
-              <div className="space-y-1">
+              <div className="space-y-1.5 flex flex-col gap-1.5 pt-4">
                 <Label
                   htmlFor={`jobTitle-${expIndex}`}
-                  className="text-[#161A21] text-[14px]"
+                  className="text-[#161A21] font-semibold text-[14px]"
                 >
                   Job Title
                 </Label>
@@ -141,15 +143,16 @@ export const WorkExperience: React.FC<WorkExperienceProps> = ({
                   onChange={(e) =>
                     handleExperienceChange(expIndex, "jobTitle", e.target.value)
                   }
+                  className="h-14 rounded-xl"
                   required
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+                <div className="space-y-1.5 flex flex-col gap-1.5">
                   <Label
                     htmlFor={`startDate-${expIndex}`}
-                    className="text-[#161A21] text-[14px]"
+                    className="text-[#161A21] font-semibold text-[14px]"
                   >
                     Start Date
                   </Label>
@@ -165,14 +168,15 @@ export const WorkExperience: React.FC<WorkExperienceProps> = ({
                         e.target.value,
                       )
                     }
+                    className="h-14 rounded-xl"
                     required
                   />
                 </div>
 
-                <div className="space-y-1">
+                <div className="space-y-1.5 flex flex-col gap-1.5">
                   <Label
                     htmlFor={`endDate-${expIndex}`}
-                    className="text-[#161A21] text-[14px]"
+                    className="text-[#161A21] font-semibold text-[14px]"
                   >
                     End Date
                   </Label>
@@ -192,6 +196,7 @@ export const WorkExperience: React.FC<WorkExperienceProps> = ({
                         e.target.value,
                       )
                     }
+                    className="h-14 rounded-xl"
                     disabled={experience.currentlyWorking}
                     required={!experience.currentlyWorking}
                   />
@@ -217,10 +222,10 @@ export const WorkExperience: React.FC<WorkExperienceProps> = ({
                 </label>
               </div>
 
-              <div className="space-y-1">
+              <div className="space-y-1.5 flex flex-col gap-1.5 pt-4">
                 <Label
                   htmlFor={`achievements-${expIndex}`}
-                  className="text-[#161A21] text-[14px]"
+                  className="text-[#161A21] font-semibold text-[14px]"
                 >
                   Key Achievements
                 </Label>
@@ -241,12 +246,13 @@ export const WorkExperience: React.FC<WorkExperienceProps> = ({
                           e.target.value,
                         )
                       }
+                      className="h-14 rounded-xl"
                       required
                     />
                     {experience.achievements.length > 1 && (
                       <Button
                         variant="outline"
-                        className="rounded-[10px]"
+                        className="rounded-xl h-14"
                         onClick={() =>
                           handleDeleteAchievement(expIndex, achIndex)
                         }
@@ -264,7 +270,7 @@ export const WorkExperience: React.FC<WorkExperienceProps> = ({
                 ))}
                 <Button
                   variant="outline"
-                  className="mt-2"
+                  className="mt-2 h-12 rounded-xl border-dashed border-[#322FEB] text-[#322FEB] hover:bg-[#322FEB10]"
                   onClick={() => handleAddAchievement(expIndex)}
                   type="button"
                 >
@@ -277,7 +283,7 @@ export const WorkExperience: React.FC<WorkExperienceProps> = ({
       </div>
       <Button
         variant="outline"
-        className="mt-4"
+        className="mt-6 w-full h-14 rounded-xl border-dashed border-[#322FEB] text-[#322FEB] hover:bg-[#322FEB10]"
         onClick={handleAddExperience}
         type="button"
       >
