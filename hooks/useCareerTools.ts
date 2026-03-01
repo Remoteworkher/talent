@@ -92,9 +92,23 @@ export const useGenerateToolOutput = (toolSlug: string) => {
       // Create a copy of inputs to avoid mutating original
       const payload: any = { ...inputs };
       
-      // Convert any File objects to base64 strings
+      // Handle attachments array (File[] → base64 string[])
+      if (Array.isArray(payload.attachments)) {
+        const base64Attachments: string[] = [];
+        for (const item of payload.attachments) {
+          if (item instanceof File) {
+            base64Attachments.push(await fileToBase64(item));
+          } else if (typeof item === 'string') {
+            // Already a base64 string
+            base64Attachments.push(item);
+          }
+        }
+        payload.attachments = base64Attachments;
+      }
+
+      // Convert any remaining individual File objects to base64 strings
       for (const key in payload) {
-        if (payload[key] instanceof File) {
+        if (key !== 'attachments' && payload[key] instanceof File) {
           payload[key] = await fileToBase64(payload[key]);
         }
       }

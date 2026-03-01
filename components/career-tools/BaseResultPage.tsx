@@ -122,7 +122,7 @@ export const BaseResultPage: React.FC<BaseResultPageProps> = ({
       </div>
 
       {/* Mobile Fixed Bottom Actions */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-[#E8E8E8] p-4 z-50">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-[#E8E8E8] p-4 z-20">
         <div className="flex flex-col sm:flex-row gap-3 w-full">
           {downloadPdf ? (
             <Button 

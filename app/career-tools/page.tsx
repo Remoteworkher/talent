@@ -21,6 +21,7 @@ const getToolUrl = (slug: string) => {
     "summary-generator": "/career-tools/linkedin/summary-generator",
     "linkedin-summary-generator": "/career-tools/linkedin/summary-generator",
     "cover-letter-builder": "/career-tools/resumes/cover-letter",
+    "tax-calculator": "/career-tools/career/tax-calculator",
     "email-writer": "/career-tools/resumes/email-writer",
     "profile-optimizer": "/career-tools/linkedin/profile-optimizer",
     "explore-careers": "/career-tools/career/explore",

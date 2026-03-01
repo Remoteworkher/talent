@@ -124,49 +124,49 @@ export const ToolResultRenderer = ({ slug, output }: { slug: string; output: any
   // 4a. Salary Analyzer (dedicated renderer)
   if (s.includes("salary-analyzer")) {
     return (
-      <div className="w-full space-y-10 text-left animate-in fade-in slide-in-from-top-4 duration-700">
-        {/* Header */}
+      <div className="w-full space-y-6 md:space-y-10 text-left animate-in fade-in slide-in-from-top-4 duration-700 px-4 md:px-0">
+        {/* Subtitle */}
         <div className="space-y-2">
-          <p className="text-[15px] text-[#6A6D71]">
+          <p className="text-[14px] md:text-[15px] text-[#6A6D71]">
             {output.subtitle || "Discover detailed information about any career and see how well you fit based on your skills"}
           </p>
         </div>
 
         {/* Salary Overview - 3 column cards */}
-        <section className="space-y-4">
-          <h3 className="font-bold text-[20px] text-[#161A21]">Salary Overview</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-[#E8E8E8] rounded-[16px] overflow-hidden border border-[#E8E8E8]">
-            <div className="bg-white p-5 space-y-1">
-              <p className="text-[12px] text-[#6A6D71] font-medium">Average Salary</p>
-              <p className="text-[22px] font-bold text-[#161A21]">{output.average_salary || "—"}</p>
+        <section className="space-y-3 md:space-y-4 w-full">
+          <h3 className="sora-semibold text-[18px] md:text-[20px] text-[#161A21]">Salary Overview</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3  overflow-hidden">
+            <div className="bg-white border border-[#E8E8E8] rounded-[12px] md:rounded-[16px] p-4 md:p-5 space-y-1">
+              <p className="text-[11px] md:text-[12px] text-[#6A6D71] font-medium">Average Salary</p>
+              <p className="text-[18px] md:text-[22px] font-bold text-[#161A21]">{output.average_salary || "—"}</p>
             </div>
-            <div className="bg-white p-5 space-y-1">
-              <p className="text-[12px] text-[#6A6D71] font-medium">Salary Range</p>
-              <p className="text-[22px] font-bold text-[#161A21]">{output.salary_range || "—"}</p>
+            <div className="bg-white border border-[#E8E8E8] rounded-[12px] md:rounded-[16px] p-4 md:p-5 space-y-1">
+              <p className="text-[11px] md:text-[12px] text-[#6A6D71] font-medium">Salary Range</p>
+              <p className="text-[18px] md:text-[22px] font-bold text-[#161A21]">{output.salary_range || "—"}</p>
             </div>
-            <div className="bg-white p-5 space-y-1">
-              <p className="text-[12px] text-[#6A6D71] font-medium">Experience Level</p>
-              <p className="text-[22px] font-bold text-[#161A21]">{output.experience_level || "—"}</p>
+            <div className="bg-white border border-[#E8E8E8] rounded-[12px] md:rounded-[16px] p-4 md:p-5 space-y-1">
+              <p className="text-[11px] md:text-[12px] text-[#6A6D71] font-medium">Experience Level</p>
+              <p className="text-[18px] md:text-[22px] font-bold text-[#161A21]">{output.experience_level || "—"}</p>
             </div>
           </div>
         </section>
 
         {/* Salary by Company Type */}
         {output.salary_by_company_type && (
-          <section className="space-y-4">
-            <h3 className="font-bold text-[18px] text-[#161A21]">Salary by Company Type</h3>
+          <section className="space-y-3 md:space-y-4 w-full border-t border-[#E8E8E8] pt-6 md:pt-10">
+            <h3 className="font-bold text-[16px] md:text-[18px] text-[#161A21]">Salary by Company Type</h3>
             {output.salary_by_company_type_description && (
-              <p className="text-[14px] text-[#6A6D71] leading-relaxed">{output.salary_by_company_type_description}</p>
+              <p className="text-[13px] md:text-[14px] text-[#6A6D71] leading-relaxed">{output.salary_by_company_type_description}</p>
             )}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 md:gap-6">
               {(Array.isArray(output.salary_by_company_type) ? output.salary_by_company_type : []).map((company: any, ci: number) => (
                 <div key={ci} className="space-y-2">
-                  <p className="font-bold text-[14px] text-[#161A21]">{company.type}</p>
+                  <p className="font-bold text-[13px] md:text-[14px] text-[#161A21]">{company.type}</p>
                   <div className="space-y-1.5">
                     {company.levels?.map((level: any, li: number) => (
-                      <div key={li} className="flex justify-between items-center bg-[#F6F3FF] rounded-lg px-3 py-2">
-                        <span className="text-[12px] text-[#6A6D71] font-medium">{level.level}</span>
-                        <span className="text-[12px] font-bold text-[#161A21]">{level.salary}</span>
+                      <div key={li} className="flex justify-between items-center bg-[#F6F3FF] rounded-lg px-3 py-2 md:py-2.5">
+                        <span className="text-[11px] md:text-[12px] text-[#6A6D71] font-medium">{level.level}</span>
+                        <span className="text-[11px] md:text-[12px] font-bold text-[#161A21]">{level.salary}</span>
                       </div>
                     ))}
                   </div>
@@ -178,23 +178,23 @@ export const ToolResultRenderer = ({ slug, output }: { slug: string; output: any
 
         {/* What Drives Higher Pay */}
         {output.what_drives_higher_pay && output.what_drives_higher_pay.length > 0 && (
-          <section className="space-y-5">
-            <h3 className="font-bold text-[18px] text-[#161A21]">What Drives Higher Pay</h3>
-            <div className="space-y-5">
+          <section className="space-y-4 md:space-y-5 border-t border-[#E8E8E8] pt-6 md:pt-10">
+            <h3 className="font-bold text-[16px] md:text-[18px] text-[#161A21]">What Drives Higher Pay</h3>
+            <div className="space-y-5 md:space-y-6">
               {output.what_drives_higher_pay.map((driver: any, di: number) => (
-                <div key={di} className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-[#F6F3FF] flex items-center justify-center shrink-0 mt-0.5">
-                    <span className="text-[#322FEB] text-[14px]">⊕</span>
+                <div key={di} className="flex items-start gap-3 md:gap-4">
+                  <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-[#F6F3FF] border border-[#E0D9FC] flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-[#5335E9] text-[14px] md:text-[16px]">⊕</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2">
-                      <p className="font-bold text-[15px] text-[#161A21]">{typeof driver === "string" ? driver : driver.title}</p>
+                    <div className="flex items-start justify-between gap-2 md:gap-3">
+                      <p className="font-bold text-[14px] md:text-[15px] text-[#161A21]">{typeof driver === "string" ? driver : driver.title}</p>
                       {driver.percentage && (
-                        <span className="shrink-0 text-[#059669] font-bold text-[14px]">{driver.percentage}</span>
+                        <span className="shrink-0 text-[#059669] font-bold text-[13px] md:text-[14px]">{driver.percentage}</span>
                       )}
                     </div>
                     {driver.description && (
-                      <p className="text-[13px] text-[#6A6D71] mt-0.5 leading-relaxed">{driver.description}</p>
+                      <p className="text-[12px] md:text-[13px] text-[#6A6D71] mt-1 leading-relaxed">{driver.description}</p>
                     )}
                   </div>
                 </div>
@@ -205,28 +205,28 @@ export const ToolResultRenderer = ({ slug, output }: { slug: string; output: any
 
         {/* Negotiation Strategy */}
         {output.negotiation_strategy && (
-          <section className="space-y-5">
-            <h3 className="font-bold text-[18px] text-[#161A21]">Negotiation Strategy</h3>
-            <div className="space-y-4">
+          <section className="space-y-4 md:space-y-5 border-t border-[#E8E8E8] pt-6 md:pt-10">
+            <h3 className="font-bold text-[16px] md:text-[18px] text-[#161A21]">Negotiation Strategy</h3>
+            <div className="space-y-4 md:space-y-5">
               {output.negotiation_strategy.anchor_high && (
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-[#F6F3FF] flex items-center justify-center shrink-0 mt-0.5">
-                    <span className="text-[14px]">⊙</span>
+                <div className="flex items-start gap-3 md:gap-4">
+                  <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-[#F6F3FF] border border-[#E0D9FC] flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-[#5335E9] text-[14px] md:text-[16px]">⊙</span>
                   </div>
-                  <div>
-                    <p className="font-bold text-[15px] text-[#161A21]">Anchor High</p>
-                    <p className="text-[14px] text-[#6A6D71]">{output.negotiation_strategy.anchor_high}</p>
+                  <div className="min-w-0">
+                    <p className="font-bold text-[14px] md:text-[15px] text-[#161A21]">Anchor High</p>
+                    <p className="text-[13px] md:text-[14px] text-[#6A6D71] mt-0.5">{output.negotiation_strategy.anchor_high}</p>
                   </div>
                 </div>
               )}
               {output.negotiation_strategy.walk_away_point && (
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-[#FEF3F2] flex items-center justify-center shrink-0 mt-0.5">
-                    <span className="text-[14px]">⊘</span>
+                <div className="flex items-start gap-3 md:gap-4">
+                  <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-[#F6F3FF] border border-[#E0D9FC] flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-[#5335E9] text-[14px] md:text-[16px]">⊙</span>
                   </div>
-                  <div>
-                    <p className="font-bold text-[15px] text-[#161A21]">Walk Away Point</p>
-                    <p className="text-[14px] text-[#6A6D71]">{output.negotiation_strategy.walk_away_point}</p>
+                  <div className="min-w-0">
+                    <p className="font-bold text-[14px] md:text-[15px] text-[#161A21]">Walk Away Point</p>
+                    <p className="text-[13px] md:text-[14px] text-[#6A6D71] mt-0.5">{output.negotiation_strategy.walk_away_point}</p>
                   </div>
                 </div>
               )}
@@ -236,12 +236,12 @@ export const ToolResultRenderer = ({ slug, output }: { slug: string; output: any
 
         {/* Leverage Points */}
         {output.leverage_points && output.leverage_points.length > 0 && (
-          <section className="space-y-4">
-            <h3 className="font-bold text-[18px] text-[#161A21]">Leverage Points</h3>
-            <ul className="space-y-2">
+          <section className="space-y-3 md:space-y-4 border-t border-[#E8E8E8] pt-6 md:pt-10">
+            <h3 className="font-bold text-[16px] md:text-[18px] text-[#161A21]">Leverage Points</h3>
+            <ul className="space-y-2 md:space-y-2.5">
               {output.leverage_points.map((point: string, pi: number) => (
-                <li key={pi} className="flex items-start gap-2 text-[14px] text-[#444]">
-                  <span className="text-[#6A6D71] mt-1 shrink-0">·</span>
+                <li key={pi} className="flex items-start gap-2 md:gap-3 text-[13px] md:text-[14px] text-[#444] leading-relaxed">
+                  <span className="text-[#6A6D71] mt-0.5 shrink-0 text-[8px]">●</span>
                   {point}
                 </li>
               ))}
@@ -251,27 +251,27 @@ export const ToolResultRenderer = ({ slug, output }: { slug: string; output: any
 
         {/* Scripts to Use */}
         {output.scripts && output.scripts.length > 0 && (
-          <section className="space-y-5">
-            <h3 className="font-bold text-[18px] text-[#161A21]">Script to Use</h3>
-            <div className="space-y-4">
+          <section className="space-y-4 md:space-y-5 border-t border-[#E8E8E8] pt-6 md:pt-10">
+            <h3 className="font-bold text-[16px] md:text-[18px] text-[#161A21]">Script to Use</h3>
+            <div className="space-y-3 md:space-y-4">
               {output.scripts.map((script: any, si: number) => {
                 const scriptText = typeof script === "string" ? script : script.text;
                 return (
-                  <div key={si} className="bg-[#F6F3FF] border border-[#E0D9FC] rounded-[16px] p-5 relative">
-                    <p className="text-[#5335E9] text-[13px] font-bold mb-2 flex items-center gap-1">
+                  <div key={si} className="bg-[#F6F3FF] border border-[#E0D9FC] rounded-[12px] md:rounded-[16px] p-4 md:p-5 pr-12 md:pr-14 relative">
+                    <p className="text-[#5335E9] text-[12px] md:text-[13px] font-bold mb-2 flex items-center gap-1.5">
                       <span>✦</span> Script {si + 1}
                     </p>
-                    <p className="text-[14px] text-[#444] italic leading-relaxed pr-8">
+                    <p className="text-[13px] md:text-[14px] text-[#444] italic leading-relaxed">
                       &ldquo;{scriptText}&rdquo;
                     </p>
                     <button
-                      className="absolute top-4 right-4 w-8 h-8 rounded-lg bg-white border border-[#E0D9FC] flex items-center justify-center hover:bg-[#F0EEFF] transition-colors"
+                      className="absolute top-4 right-4 md:top-5 md:right-5 w-7 h-7 md:w-8 md:h-8 rounded-lg bg-white border border-[#E0D9FC] flex items-center justify-center hover:bg-[#F0EEFF] transition-colors"
                       onClick={() => {
                         navigator.clipboard.writeText(scriptText);
                         toast.success("Script copied!");
                       }}
                     >
-                      <Copy className="w-3.5 h-3.5 text-[#5335E9]" />
+                      <Copy className="w-3 h-3 md:w-3.5 md:h-3.5 text-[#5335E9]" />
                     </button>
                   </div>
                 );
@@ -282,23 +282,23 @@ export const ToolResultRenderer = ({ slug, output }: { slug: string; output: any
 
         {/* Hidden Compensation */}
         {output.hidden_compensation && output.hidden_compensation.length > 0 && (
-          <section className="space-y-5">
-            <h3 className="font-bold text-[18px] text-[#161A21]">Hidden Compensation</h3>
-            <div className="space-y-4">
+          <section className="space-y-4 md:space-y-5 border-t border-[#E8E8E8] pt-6 md:pt-10">
+            <h3 className="font-bold text-[16px] md:text-[18px] text-[#161A21]">Hidden Compensation</h3>
+            <div className="space-y-5 md:space-y-6">
               {output.hidden_compensation.map((comp: any, ci: number) => (
-                <div key={ci} className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-[#F6F3FF] flex items-center justify-center shrink-0 mt-0.5">
-                    <span className="text-[14px]">⊙</span>
+                <div key={ci} className="flex items-start gap-3 md:gap-4">
+                  <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-[#F6F3FF] border border-[#E0D9FC] flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-[#5335E9] text-[14px] md:text-[16px]">⊙</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2">
-                      <p className="font-bold text-[15px] text-[#161A21]">{comp.title}</p>
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-3">
+                      <p className="font-bold text-[14px] md:text-[15px] text-[#161A21]">{comp.title}</p>
                       {comp.value && (
-                        <span className="shrink-0 font-bold text-[14px] text-[#161A21]">{comp.value}</span>
+                        <span className="shrink-0 font-bold text-[13px] md:text-[14px] text-[#161A21]">{comp.value}</span>
                       )}
                     </div>
                     {comp.description && (
-                      <p className="text-[13px] text-[#6A6D71] mt-0.5 leading-relaxed">{comp.description}</p>
+                      <p className="text-[12px] md:text-[13px] text-[#6A6D71] mt-1 leading-relaxed">{comp.description}</p>
                     )}
                   </div>
                 </div>
@@ -307,11 +307,11 @@ export const ToolResultRenderer = ({ slug, output }: { slug: string; output: any
           </section>
         )}
 
-        {/* Industry Outlook fallback */}
+        {/* Industry Outlook */}
         {output.industry_outlook && (
-          <section className="space-y-3 pt-6 border-t border-[#E8E8E8]">
-            <h3 className="font-bold text-[18px] text-[#161A21]">Industry Outlook</h3>
-            <p className="text-[#444] text-[15px] leading-[1.8] whitespace-pre-wrap">{output.industry_outlook}</p>
+          <section className="space-y-3 border-t border-[#E8E8E8] pt-6 md:pt-10">
+            <h3 className="font-bold text-[16px] md:text-[18px] text-[#161A21]">Industry Outlook</h3>
+            <p className="text-[#444] text-[14px] md:text-[15px] leading-[1.8] whitespace-pre-wrap">{output.industry_outlook}</p>
           </section>
         )}
       </div>
@@ -1004,6 +1004,132 @@ export const ToolResultRenderer = ({ slug, output }: { slug: string; output: any
         <div className="text-[15px] text-[#333] leading-[1.8] whitespace-pre-wrap">
           {output.cover_letter_text || output.content || (typeof output === "string" ? output : JSON.stringify(output, null, 2))}
         </div>
+      </div>
+    );
+  }
+
+  // 10. Tax Calculator
+  if (s.includes("tax-calculator")) {
+    const mode = output?.mode || output?.calculation_mode || "annual";
+    const modeLabel = mode === "annual" ? "Annual" : "Monthly";
+
+    // Helper to safely extract display value from a field that might be string or object
+    const getVal = (val: any): string => {
+      if (!val) return "₦0.00";
+      if (typeof val === "string") return val;
+      if (typeof val === "number") return `₦${val.toLocaleString()}`;
+      if (typeof val === "object") return val.total || val.value || "";
+      return String(val);
+    };
+    const getMonthly = (val: any, fallback?: any): string => {
+      if (typeof val === "object" && val?.monthly_average) return String(val.monthly_average);
+      if (fallback) return getVal(fallback);
+      return "₦0.00";
+    };
+    const getLabel = (val: any, fallback: string): string => {
+      if (typeof val === "object" && val?.label) return String(val.label).toUpperCase();
+      return fallback;
+    };
+    const getDesc = (val: any, fallback: string): string => {
+      if (typeof val === "object" && val?.description) return String(val.description);
+      return fallback;
+    };
+
+    const payeTaxDue = output?.paye_tax_due;
+    const takeHomePay = output?.take_home_pay;
+    const breakdown = Array.isArray(output?.breakdown) ? output.breakdown : [];
+    const summaryRows = Array.isArray(output?.summary_rows) ? output.summary_rows : [];
+    const note = typeof output?.note === "string" ? output.note : output?.note?.description || "";
+
+    return (
+      <div className="w-full space-y-6 text-left animate-in fade-in slide-in-from-top-4 duration-500">
+        {/* Mode indicator */}
+        <div className="bg-[#F5F5F5] rounded-xl py-3 text-center text-[14px] font-medium text-[#161A21]">
+          {modeLabel}
+        </div>
+
+        {/* PAYE TAX DUE */}
+        <div className="border-2 border-[#322FEB] rounded-[16px] p-6 space-y-2 bg-white">
+          <span className="inline-block px-3 py-1 rounded-full border border-[#322FEB] text-[#322FEB] text-[12px] font-bold">
+            {getLabel(payeTaxDue, "PAYE TAX DUE")}
+          </span>
+          <p className="text-[14px] text-[#6A6D71] mt-2">
+            {getDesc(payeTaxDue, "Tax payable for this year")}
+          </p>
+          <p className="text-[32px] font-bold text-[#161A21]">
+            {getVal(payeTaxDue)}
+          </p>
+          <p className="text-[13px] text-[#322FEB] flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-[#322FEB] inline-block" />
+            Monthly average ({getMonthly(payeTaxDue, output?.paye_monthly_average)})
+          </p>
+        </div>
+
+        {/* TAKE-HOME PAY */}
+        <div className="border border-[#E8E8E8] rounded-[16px] p-6 space-y-2 bg-white">
+          <span className="inline-block px-3 py-1 rounded-full border border-[#E8E8E8] text-[#161A21] text-[12px] font-bold">
+            {getLabel(takeHomePay, "TAKE - HOME PAY")}
+          </span>
+          <p className="text-[14px] text-[#6A6D71] mt-2">
+            {getDesc(takeHomePay, "Cash after PAYE and payroll deductions (pension, NHF, NHIS, insurance, home-loan interest). Rent relief lowers tax, not cash paid out.")}
+          </p>
+          <p className="text-[32px] font-bold text-[#161A21]">
+            {getVal(takeHomePay)}
+          </p>
+          <p className="text-[13px] text-[#322FEB] flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-[#322FEB] inline-block" />
+            Monthly average ({getMonthly(takeHomePay, output?.take_home_monthly_average)})
+          </p>
+        </div>
+
+        {/* How we calculated this */}
+        {breakdown.length > 0 && (
+          <div className="space-y-4 pt-2 bg-white border border-[#E8E8E8] rounded-[16px] p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-bold text-[16px] text-[#161A21]">How we calculated this</h3>
+                <p className="text-[12px] text-[#6A6D71]">These are the amounts used in your calculation...</p>
+              </div>
+              <span className="text-[12px] text-[#6A6D71] font-medium uppercase">
+                {mode === "annual" ? "ANNUAL VIEW" : "MONTHLY VIEW"}
+              </span>
+            </div>
+
+            <div className="space-y-0 divide-y divide-[#F0F0F0]">
+              {breakdown.map((row: any, i: number) => (
+                <div key={i} className="flex justify-between items-start py-3">
+                  <span className={`text-[14px] ${row.indent ? "pl-6 text-[#6A6D71]" : "text-[#161A21]"} ${row.bold ? "font-bold" : ""}`}>
+                    {String(row.label || "")}
+                  </span>
+                  <span className={`text-[14px] font-semibold shrink-0 ${
+                    row.negative ? "text-[#D92D20]" : "text-[#161A21]"
+                  } ${row.bold ? "font-bold" : ""}`}>
+                    {String(row.value || row.total || "")}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {note && (
+              <p className="text-[12px] text-[#6A6D71] italic leading-relaxed pt-2">
+                {note}
+              </p>
+            )}
+
+            {summaryRows.map((row: any, i: number) => (
+              <div key={`s-${i}`} className="flex justify-between items-start py-3 border-t border-[#F0F0F0]">
+                <span className={`text-[14px] ${row.bold ? "font-bold text-[#161A21]" : "text-[#6A6D71]"}`}>
+                  {String(row.label || "")}
+                </span>
+                <span className={`text-[14px] font-semibold shrink-0 ${
+                  row.negative ? "text-[#D92D20]" : "text-[#161A21]"
+                } ${row.bold ? "font-bold" : ""}`}>
+                  {String(row.value || row.total || "")}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     );
   }

@@ -29,7 +29,7 @@ export default function BrandAuditPage() {
         instagram_handle: "",
         portfolio_url: "",
         github_url: "",
-        page_image_file_id: null as File | null,
+        attachments: [] as File[],
       }}
       renderFields={(formData, handleInputChange) => (
         <div className="space-y-6">
@@ -43,10 +43,15 @@ export default function BrandAuditPage() {
                    <input 
                       type="file" 
                       ref={fileInputRef} 
-                      className="hidden" 
+                      className="hidden"
+                      multiple
                       onChange={(e) => {
-                         const file = e.target.files?.[0];
-                         if (file) handleInputChange("page_image_file_id", file);
+                         const files = e.target.files;
+                         if (files && files.length > 0) {
+                           const existing = formData.attachments || [];
+                           handleInputChange("attachments", [...existing, ...Array.from(files)]);
+                         }
+                         e.target.value = "";
                       }} 
                    />
                    <div className="text-[#6A6D71] group-hover:text-[#322FEB] transition-colors">
@@ -54,7 +59,9 @@ export default function BrandAuditPage() {
                    </div>
                    <div className="text-center">
                       <p className="text-[#161A21] font-bold text-[14px]">
-                         {formData.page_image_file_id ? formData.page_image_file_id.name : "Upload your LinkedIn page image"}
+                         {formData.attachments?.length > 0 
+                           ? `${formData.attachments.length} file(s) selected` 
+                           : "Upload your LinkedIn page image"}
                       </p>
                       <p className="text-[#95969A] text-[12px]">JPEG, PNG, PDF, and MP4 formats, up to 50 MB.</p>
                    </div>
@@ -65,6 +72,26 @@ export default function BrandAuditPage() {
                       Browse File
                    </button>
                 </div>
+                {formData.attachments?.length > 0 && (
+                  <div className="space-y-2">
+                    {formData.attachments.map((file: File, idx: number) => (
+                      <div key={idx} className="flex items-center justify-between p-2 rounded-lg bg-[#F9F9FB] border border-[#E8E8E8]">
+                        <span className="text-[13px] text-[#161A21] truncate max-w-[250px]">{file.name}</span>
+                        <button 
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const updated = formData.attachments.filter((_: File, i: number) => i !== idx);
+                            handleInputChange("attachments", updated);
+                          }}
+                          className="text-[#95969A] hover:text-red-500 text-[12px] font-medium px-2"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
              </div>
 
              <div className="space-y-1.5 text-left pt-2">
