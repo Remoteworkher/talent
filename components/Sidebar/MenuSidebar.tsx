@@ -13,14 +13,15 @@ type MenuItemType = {
 };
 
 const mainMenu: MenuItemType[] = [
-  {
-    label: "90 Days Roadmap",
-    icon: "/atom.svg",
-    href: "/",
-  },
+  
   {
     label: "Home",
     icon: "/home-icon.svg",
+    href: "/",
+  },
+  {
+    label: "90 Days Roadmap",
+    icon: "/atom.svg",
     href: "/",
   },
 ];
