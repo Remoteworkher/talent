@@ -52,7 +52,7 @@ export const BaseResultPage: React.FC<BaseResultPageProps> = ({
 
   return (
     <div className="bg-[#FFFCFD] min-h-screen md:px-8 py-8 pb-32 flex flex-col items-center relative">
-      <div className="w-full max-w-[1000px] flex flex-col">
+      <div className="w-full max-w-[1000px] pb-8 flex flex-col">
         <div className="w-full flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4">
             <h2 className="text-[24px] md:text-[32px] sora-semibold text-[#161A21] text-center md:text-left">{headerTitle || tool?.name || "Career Tool Output"}</h2>
             <div className="hidden md:block">

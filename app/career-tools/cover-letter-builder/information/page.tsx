@@ -39,7 +39,7 @@ const Page = () => {
   return (
     <div className="bg-[#FFFCFD] px-2 md:px-4 py-14">
       <div
-        className="w-full md:w-[600px] mx-auto bg-white p-4 md:p-8 border border-[#E8E8E8] rounded-[24px]"
+        className="w-full md:w-[600px] mx-auto bg-white p-4 md:p-8 border border-[#E8E8E8] rounded-[12px]"
         style={{
           boxShadow: `
             0px 96px 96px -32px #3333330F,

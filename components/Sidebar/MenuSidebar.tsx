@@ -81,8 +81,10 @@ const others: MenuItemType[] = [
 
 const MenuSidebar = ({
   onCollapseChange,
+  onMenuItemClick,
 }: {
   onCollapseChange?: (collapsed: boolean) => void;
+  onMenuItemClick?: () => void;
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -116,6 +118,7 @@ const MenuSidebar = ({
               icon={item.icon}
               href={item.href}
               isCollapsed={isCollapsed}
+              onMenuItemClick={onMenuItemClick}
             />
           ))}
           {career.map((item) => (
@@ -126,6 +129,7 @@ const MenuSidebar = ({
               href={item.href}
               soon={item.soon}
               isCollapsed={isCollapsed}
+              onMenuItemClick={onMenuItemClick}
             />
           ))}
           {community.map((item) => (
@@ -136,6 +140,7 @@ const MenuSidebar = ({
               href={item.href}
               soon={item.soon}
               isCollapsed={isCollapsed}
+              onMenuItemClick={onMenuItemClick}
             />
           ))}
           {resources.map((item) => (
@@ -146,6 +151,7 @@ const MenuSidebar = ({
               href={item.href}
               soon={item.soon}
               isCollapsed={isCollapsed}
+              onMenuItemClick={onMenuItemClick}
             />
           ))}
         </div>
@@ -161,6 +167,7 @@ const MenuSidebar = ({
                 href={item.href}
                 soon={item.soon}
                 isCollapsed={isCollapsed}
+                onMenuItemClick={onMenuItemClick}
               />
             ))}
           </div>

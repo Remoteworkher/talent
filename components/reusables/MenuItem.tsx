@@ -11,6 +11,7 @@ interface MenuItemProps {
   showArrow?: boolean;
   soon?: boolean;
   isCollapsed?: boolean;
+  onMenuItemClick?: () => void;
 }
 
 const MenuItem: React.FC<MenuItemProps> = ({
@@ -20,6 +21,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
   showArrow = true,
   soon = false,
   isCollapsed = false,
+  onMenuItemClick,
 }) => {
   const [hovered, setHovered] = useState(false);
   const pathname = usePathname();
@@ -49,6 +51,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
         } transition-all duration-300`}
         onMouseEnter={() => !soon && setHovered(true)}
         onMouseLeave={() => !soon && setHovered(false)}
+        onClick={() => onMenuItemClick?.()}
         tabIndex={soon ? -1 : 0}
         aria-disabled={soon}
         style={{

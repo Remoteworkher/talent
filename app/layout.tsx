@@ -53,7 +53,7 @@ export default function RootLayout({
                   `}
                   style={{ width: `${sidebarWidth}px` }}
                 >
-                  <MenuSidebar onCollapseChange={setIsCollapsed} />
+                  <MenuSidebar onCollapseChange={setIsCollapsed} onMenuItemClick={() => setSidebarOpen(false)} />
                 </div>
                 {/* Overlay for mobile */}
                 {sidebarOpen && (
