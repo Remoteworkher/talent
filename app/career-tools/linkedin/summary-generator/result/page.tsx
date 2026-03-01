@@ -7,9 +7,6 @@ export default function SummaryGeneratorResultPage() {
       slug="linkedin-summary-generator"
       formPath="/career-tools/linkedin/summary-generator"
       headerTitle="LinkedIn Summary Generator"
-      downloadPdf={(output) => {
-          console.log("Downloading PDF for LinkedIn Summary", output);
-      }}
     />
   );
 }

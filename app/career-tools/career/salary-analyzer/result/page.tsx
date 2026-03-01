@@ -6,9 +6,7 @@ export default function SalaryAnalyzerResultPage() {
     <BaseResultPage
       slug="salary-analyzer"
       formPath="/career-tools/career/salary-analyzer"
-      downloadPdf={(output) => {
-          console.log("Downloading PDF for Salary Insights", output);
-      }}
+      headerTitle="Your Salary Analyzer"
     />
   );
 }
