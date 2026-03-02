@@ -8,31 +8,31 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 const slides = [
   {
     image: "/a.png",
-    quote: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore",
-    author: "Mathilde Lewis",
-    role: "Lead Designer, Layers",
-    company: "Web Development Agency"
+    quote: "“Your career doesn’t grow by chance. It grows when you decide where you’re going and build toward it daily”",
+    author: "",
+    role: "Compass",
+    company: ""
   },
   {
     image: "/1.png",
-    quote: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore",
-    author: "Mathilde Lewis",
-    role: "Lead Designer, Layers",
-    company: "Web Development Agency"
+    quote: "Skills create opportunities. Consistency turns them into results",
+    author: "",
+    role: "Compass",
+    company: ""
   },
   {
     image: "/2.png",
-    quote: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore",
-    author: "Mathilde Lewis",
-    role: "Lead Designer, Layers",
-    company: "Web Development Agency"
+    quote: "No one can outwork a focused professional who understands their direction.",
+    author: "",
+    role: "Compass",
+    company: ""
   },
   {
     image: "/3.png",
-    quote: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore",
-    author: "Mathilde Lewis",
-    role: "Lead Designer, Layers",
-    company: "Web Development Agency"
+    quote: "Your next level requires a stronger version of you. Upgrade your skills first.",
+    author: "",
+    role: "Compass",
+    company: ""
   }
 ];
 
@@ -76,7 +76,7 @@ const LoginCarousel = () => {
             <div className="absolute rounded-l-[80px] inset-0 bg-black/10" />
           </div>
 
-          <div className="absolute bottom-16 left-16 right-16 z-10 text-white space-y-10">
+          <div className="absolute bottom-16 left-16 right-16 z-10 text-white space-y-1">
             <motion.blockquote 
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -93,7 +93,6 @@ const LoginCarousel = () => {
                 transition={{ delay: 0.4, duration: 0.6 }}
                 className="space-y-1"
               >
-                <h4 className="text-[24px] sora-semibold text-white">{slides[current].author}</h4>
                 <p className="text-[16px] text-white/90 font-medium">{slides[current].role}</p>
                 <p className="text-[14px] text-white/70">{slides[current].company}</p>
               </motion.div>
