@@ -4,11 +4,11 @@ import React from "react";
 import Image from "next/image";
 import ProgressBar from "../reusables/ProgressBar";
 import Task from "../reusables/Task";
-import { useTodayTasks } from "@/hooks/useTask";
+import { useTaskLibrary } from "@/hooks/useTask";
 import { Loader2 } from "lucide-react";
 
-const Tasks = () => {
-  const { data, isLoading, error } = useTodayTasks();
+const CompletedTasks = () => {
+  const { data: allTasks, isLoading, error } = useTaskLibrary();
 
   if (isLoading) {
     return (
@@ -26,9 +26,7 @@ const Tasks = () => {
     );
   }
 
-  const tasks = data?.tasks || [];
-  const completedCount = tasks.filter(t => t.status === 'completed').length;
-  const totalCount = tasks.length;
+  const tasks = allTasks?.tasks?.filter(t => t.completed === true) || [];
 
   return (
     <div
@@ -39,34 +37,19 @@ const Tasks = () => {
     >
       <section className="md:flex md:justify-between md:items-center p-2">
         <div className="flex justify-start items-center gap-2">
-          {/* <Image src={`/atom.svg`} width={24} height={24} alt="focus" /> */}
           <div className="text-[#161A21] mori-semibold text-[16px]">
-            Completed Tasks for Today
+            Completed Tasks
           </div>
-        </div>
-        <div className="flex justify-start items-center gap-2">
-          <ProgressBar />
-          <ProgressBar />
-          <div className="text-[#6A6D71] text-[14px] font-medium">
-            {completedCount}/{totalCount} Completed
-          </div>
-          <Image
-            src={`/restart-line.svg`}
-            width={24}
-            height={24}
-            alt="restart-line"
-            className="cursor-pointer"
-          />
         </div>
       </section>
-      <section className="space-y-3">
+      <section className="space-y-3 overflow-y-auto h-[400px]">
         {tasks.length > 0 ? (
           tasks.map((task) => (
             <Task key={task.task_id} task={task} />
           ))
         ) : (
           <div className="py-12 text-center text-[#6A6D71]">
-            <p>No tasks for today. You&apos;re all caught up!</p>
+            <p>No completed tasks yet.</p>
           </div>
         )}
       </section>
@@ -74,4 +57,4 @@ const Tasks = () => {
   );
 };
 
-export default Tasks;
+export default CompletedTasks;

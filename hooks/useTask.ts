@@ -10,11 +10,14 @@ export interface Task {
   description: string;
   urgency: "normal" | "urgent";
   time_estimate: string;
-  status: "pending" | "completed" | "skipped";
+  status?: "pending" | "completed" | "skipped";
+  completed?: boolean;
+  category?: string;
   id?: number;
   difficulty?: "beginner" | "intermediate" | "advanced";
   route?: string;
   button_text?: string;
+  completion_type?: "auto" | string;
   assigned_at?: string;
   completed_at?: string | null;
   due_date?: string | null;
@@ -23,6 +26,10 @@ export interface Task {
 export interface TodayTasksData {
   tasks: Task[];
   user_day: number;
+}
+
+export interface LibraryTasksData {
+  tasks: Task[];
 }
 
 export interface SkipTaskData {
@@ -37,7 +44,7 @@ interface ApiResponse<T> {
   errors: Record<string, string[]> | null;
 }
 
-// --- Fetch Hook ---
+// --- Fetch Hooks ---
 
 const fetchTodayTasks = async (): Promise<TodayTasksData> => {
   const res = await axios.get<ApiResponse<TodayTasksData>>(
@@ -50,6 +57,21 @@ export const useTodayTasks = () => {
   return useQuery<TodayTasksData>({
     queryKey: ["today-tasks"],
     queryFn: fetchTodayTasks,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+};
+
+const fetchTaskLibrary = async (): Promise<LibraryTasksData> => {
+  const res = await axios.get<ApiResponse<LibraryTasksData>>(
+    "/api/talent/tasks/library",
+  );
+  return res.data.data;
+};
+
+export const useTaskLibrary = () => {
+  return useQuery<LibraryTasksData>({
+    queryKey: ["task-library"],
+    queryFn: fetchTaskLibrary,
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 };

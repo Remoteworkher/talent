@@ -27,7 +27,7 @@ const Tasks = () => {
   }
 
   const tasks = data?.tasks || [];
-  const completedCount = tasks.filter(t => t.status === 'completed').length;
+  const completedCount = tasks.filter(t => t.completed === true).length;
   const totalCount = tasks.length;
 
   return (
@@ -44,7 +44,7 @@ const Tasks = () => {
             Your Tasks for Today
           </div>
         </div>
-        <div className="flex justify-start items-center gap-2">
+        {/* <div className="flex justify-start items-center gap-2">
           <ProgressBar />
           <ProgressBar />
           <ProgressBar />
@@ -58,9 +58,9 @@ const Tasks = () => {
             alt="restart-line"
             className="cursor-pointer"
           />
-        </div>
+        </div> */}
       </section>
-      <section className="space-y-3">
+      <section className="space-y-3 overflow-y-auto h-[400px]">
         {tasks.length > 0 ? (
           tasks.map((task) => (
             <Task key={task.task_id} task={task} />
