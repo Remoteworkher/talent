@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { motion, Variants } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { useProfile } from "@/hooks/useProfile";
 
 const features = [
   "Match you with relevant jobs",
@@ -34,6 +35,8 @@ const itemVariants: Variants = {
 
 const Page = () => {
   const router = useRouter();
+  const { data: profile } = useProfile();
+  const firstName = profile?.name?.split(" ")[0] || "there";
 
   return (
     <div className="px-4">
@@ -62,7 +65,7 @@ const Page = () => {
           Welcome to Compass!
         </div>
         <div className="text-center text-[#6A6D71] text-[15px] md:text-[16px] mt-2">
-          Hey Adeife! 🎉 Let’s personalize your experience.
+          Hey {firstName}! 🎉 Let&apos;s personalize your experience.
         </div>
 
         {/* Feature Box */}

@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import { useTokens } from "@/hooks/useTokens";
+import { useVerifyTokenTransaction } from "@/hooks/useTokens";
 
 /**
  * PaymentVerifier is a silent component that checks for a 'reference' query parameter 
@@ -15,7 +15,7 @@ export const PaymentVerifier = () => {
   const router = useRouter();
   const pathname = usePathname();
   const queryClient = useQueryClient();
-  const { verifyTokenMutation } = useTokens();
+  const verifyTokenMutation = useVerifyTokenTransaction();
   
   const reference = searchParams.get("reference");
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -86,6 +86,27 @@ const Page = () => {
   const { signup, verifySubscription } = useAuthContext();
   const selectedPlanId = useAuthStore((state) => state.selectedPlanId);
 
+  // Wait for Zustand store to rehydrate from localStorage
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => {
+    // Check if already hydrated
+    if (useAuthStore.persist.hasHydrated()) {
+      setHydrated(true);
+    } else {
+      const unsub = useAuthStore.persist.onFinishHydration(() => {
+        setHydrated(true);
+      });
+      return () => unsub();
+    }
+  }, []);
+
+  // Redirect to /subscribe if no plan is selected (after hydration)
+  useEffect(() => {
+    if (hydrated && !selectedPlanId) {
+      router.replace("/subscribe");
+    }
+  }, [hydrated, selectedPlanId, router]);
+
   const [loading, setLoading] = useState(false);
   const [countryCode, setCountryCode] = useState("+234"); // Default to NG
   const [showPassword, setShowPassword] = useState(false);
@@ -152,7 +173,7 @@ const Page = () => {
     e.preventDefault();
 
     if (!selectedPlanId) {
-      toast.error("Please select a plan first.");
+      router.replace("/subscribe");
       return;
     }
 
