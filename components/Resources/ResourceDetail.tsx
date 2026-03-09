@@ -8,6 +8,7 @@ import Image from "next/image";
 import { useBuyResource, useDownloadResource, useResourceDetail } from "@/hooks/useResources";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { ResourceDetailSkeleton } from "@/components/reusables/Skeletons";
 
 interface ResourceDetailProps {
   title: string;
@@ -73,9 +74,7 @@ const ResourceDetail = ({
         <div className="lg:col-span-8 space-y-8">
           <div className="bg-white border border-[#E8E8E8] p-6 md:p-10 min-h-[800px] flex justify-center items-start">
             {isDetailLoading ? (
-               <div className="py-20 flex justify-center w-full">
-                 <Loader2 className="w-10 h-10 animate-spin text-[#322FEB]" />
-               </div>
+               <ResourceDetailSkeleton />
             ) : (
               <div className="w-full max-w-[700px]">
                  <Image 

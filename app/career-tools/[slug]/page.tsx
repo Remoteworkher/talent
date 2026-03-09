@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToolBySlug, useGenerateToolOutput } from "@/hooks/useCareerTools";
 import { Loader2, ArrowLeft, RefreshCw } from "lucide-react";
+import { ToolPageSkeleton } from "@/components/reusables/Skeletons";
 import { toast } from "sonner";
 import ToolFormWrapper from "@/components/reusables/ToolFormWrapper";
 import { useCareerStore } from "@/lib/store/useCareerStore";
@@ -161,11 +162,7 @@ const Page = () => {
   };
 
   if (isLoadingTool) {
-    return (
-      <div className="flex justify-center items-center h-[400px]">
-        <Loader2 className="w-8 h-8 animate-spin text-[#322FEB]" />
-      </div>
-    );
+    return <ToolPageSkeleton />;
   }
 
   if (!tool) {

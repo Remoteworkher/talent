@@ -2,11 +2,12 @@
 import React from "react";
 import { useEvents } from "@/hooks/useEvents";
 import EventCard from "../reusables/EventCard";
+import { EventListSkeleton } from "../reusables/Skeletons";
 
 const EventList = () => {
   const { data, isLoading, isError } = useEvents({ filter: "upcoming" });
 
-  if (isLoading) return <div>Loading events...</div>;
+  if (isLoading) return <EventListSkeleton />;
   if (isError) return <div>Failed to load events.</div>;
 
   return (

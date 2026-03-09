@@ -8,6 +8,7 @@ import Image from "next/image";
 import { toast } from "sonner";
 import { useCareerStore } from "@/lib/store/useCareerStore";
 import { ToolResultRenderer } from "./ToolResultRenderer";
+import { ResultPageSkeleton } from "@/components/reusables/Skeletons";
 
 interface BaseResultPageProps {
   slug: string;
@@ -34,11 +35,7 @@ export const BaseResultPage: React.FC<BaseResultPageProps> = ({
   }, []);
 
   if (isLoadingTool || !hydrated) {
-    return (
-      <div className="flex justify-center items-center h-[400px]">
-        <Loader2 className="w-8 h-8 animate-spin text-[#322FEB]" />
-      </div>
-    );
+    return <ResultPageSkeleton />;
   }
 
   if (results.length === 0) {

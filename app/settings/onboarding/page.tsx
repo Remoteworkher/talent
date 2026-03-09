@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, Loader2, Upload, Link as LinkIcon } from "lucide-react";
+import { OnboardingSkeleton } from "@/components/reusables/Skeletons";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import {
@@ -96,11 +97,7 @@ const OnboardingPage = () => {
   };
 
   if (goalsLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <Loader2 className="w-8 h-8 animate-spin text-[#322FEB]" />
-      </div>
-    );
+    return <OnboardingSkeleton />;
   }
 
   const renderQuestionInput = (question: OnboardingQuestion) => {
