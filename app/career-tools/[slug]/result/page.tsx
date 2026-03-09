@@ -4,6 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useToolBySlug } from "@/hooks/useCareerTools";
 import { Loader2, Copy, Download, Plus } from "lucide-react";
+import { ResultPageSkeleton } from "@/components/reusables/Skeletons";
 import { toast } from "sonner";
 import ToolResultCard from "@/components/reusables/ToolResultCard";
 import { useCareerStore } from "@/lib/store/useCareerStore";
@@ -41,11 +42,7 @@ const ResultPage = () => {
   const results = resultsBySlug[slug] || [];
 
   if (isLoadingTool) {
-    return (
-      <div className="flex justify-center items-center h-[400px]">
-        <Loader2 className="w-8 h-8 animate-spin text-[#322FEB]" />
-      </div>
-    );
+    return <ResultPageSkeleton />;
   }
 
   const renderResultItem = (result: any) => {

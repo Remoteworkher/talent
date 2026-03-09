@@ -9,6 +9,7 @@ import { useEmailVerification } from "@/hooks/useEmailVerification";
 import { useUserData } from "@/hooks/userData";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { VerifyEmailSkeleton } from "@/components/reusables/Skeletons";
 
 function VerifyEmailContent() {
   const router = useRouter();
@@ -117,7 +118,7 @@ function VerifyEmailContent() {
 
 export default function VerifyEmailPage() {
   return (
-    <Suspense fallback={<div className="flex justify-center items-center min-h-screen"><Loader2 className="w-8 h-8 animate-spin text-[#322FEB]" /></div>}>
+    <Suspense fallback={<VerifyEmailSkeleton />}>
       <VerifyEmailContent />
     </Suspense>
   );

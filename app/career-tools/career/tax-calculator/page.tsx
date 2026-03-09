@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToolBySlug, useGenerateToolOutput } from "@/hooks/useCareerTools";
 import { Loader2 } from "lucide-react";
+import { ToolPageSkeleton } from "@/components/reusables/Skeletons";
 import { toast } from "sonner";
 import ToolFormWrapper from "@/components/reusables/ToolFormWrapper";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -69,11 +70,7 @@ export default function TaxCalculatorPage() {
   };
 
   if (isLoadingTool) {
-    return (
-      <div className="flex justify-center items-center h-[400px]">
-        <Loader2 className="w-8 h-8 animate-spin text-[#322FEB]" />
-      </div>
-    );
+    return <ToolPageSkeleton />;
   }
 
   const icon = tool?.icon_url || "/sparkling-line.svg";

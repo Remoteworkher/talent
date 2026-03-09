@@ -6,6 +6,7 @@ import { Star, Users, Zap, Link2, Copy, User, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useReferrals } from "@/hooks/useReferrals";
 import { toast } from "sonner";
+import { ReferralSkeleton } from "../reusables/Skeletons";
 
 const ReferralTab = () => {
   const { data, isLoading, isError } = useReferrals();
@@ -16,11 +17,7 @@ const ReferralTab = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center py-20">
-        <Loader2 className="w-8 h-8 animate-spin text-[#322FEB]" />
-      </div>
-    );
+    return <ReferralSkeleton />;
   }
 
   if (isError || !data) {

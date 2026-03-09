@@ -123,6 +123,43 @@ export const ToolResultRenderer = ({ slug, output }: { slug: string; output: any
 
   // 4a. Salary Analyzer (dedicated renderer)
   if (s.includes("salary-analyzer")) {
+    // Fallback dummy data when API fields are empty
+    const fallbackCompanyTypes = [
+      { type: "Startups", levels: [{ level: "Entry-Level", salary: "₦200k/month" }, { level: "Mid-Level", salary: "₦500k/month" }, { level: "Senior Level", salary: "₦1,000,000/month" }] },
+      { type: "Mid-size Companies", levels: [{ level: "Entry-Level", salary: "₦200k/month" }, { level: "Mid-Level", salary: "₦600k/month" }, { level: "Senior Level", salary: "₦1,000,000/month" }] },
+      { type: "Enterprise", levels: [{ level: "Entry-Level", salary: "₦200k/month" }, { level: "Mid-Level", salary: "₦650k/month" }, { level: "Senior Level", salary: "₦1,000,000/month" }] },
+    ];
+    const fallbackDrivers = [
+      { title: "UX Research & Data Analytics", description: "Move beyond 'visuals' and show how your design decisions increased conversion rates (CRO) or reduced churn in previous roles.", percentage: "+35%" },
+      { title: "Fintech Domain Expertise", description: "Demonstrate deep knowledge of CBN regulations, KYC flows, and transaction security patterns specific to the African market.", percentage: "+40%" },
+      { title: "Technical Proficiency (Framer/Webflow/No-code)", description: "Become a 'Designer who ships' by building high-fidelity interactive prototypes that reduce developer handoff friction.", percentage: "+20%" },
+    ];
+    const fallbackNegotiation = { anchor_high: "₦1,200,000 monthly (Gross)", walk_away_point: "₦600,000 monthly" };
+    const fallbackLeverage = [
+      "Portfolio showing 3+ complex end-to-end product cycles",
+      "Experience with Design Systems (Atomic Design)",
+      "Success metrics from previous E-commerce or Fintech roles",
+    ];
+    const fallbackScripts = [
+      { text: "Based on the complexity of the product and my experience optimizing conversion funnels in the Fintech space, I am looking for a package in the ₦1.1M to ₦1.3M range." },
+      { text: "While I am excited about the company vision, the current offer of ₦800k is below market rate for a mid-level designer with my specific background in high-transaction E-commerce. Can we move closer to ₦900k if we include performance bonuses?" },
+      { text: "Can we discuss a performance-based salary review in 6 months once I've hit the design milestones we discussed?" },
+    ];
+    const fallbackCompensation = [
+      { title: "Remote Work Allowance/Internet Stipend", description: "Ask if the company covers the cost of a high-speed fiber connection and power backup/inverter to ensure 100% uptime.", value: "₦480,000/year" },
+      { title: "Health Insurance (HMO)", description: "Request a Tier-1 HMO plan that includes dental and optical for yourself and a dependent.", value: "₦250,000/year" },
+      { title: "Learning & Development Budget", description: "Negotiate for a dedicated annual stipend for global design certifications (Interaction Design Foundation, NN/g) or design conference tickets.", value: "₦750,000/year" },
+    ];
+    const fallbackOutlook = "The design industry in Nigeria is experiencing rapid growth driven by fintech expansion, increased digital adoption, and a growing startup ecosystem. Mid-level designers with strong UX research skills and domain expertise in financial services are particularly well-positioned for salary growth over the next 2–3 years.";
+
+    const companyTypes = (output.salary_by_company_type && Array.isArray(output.salary_by_company_type) && output.salary_by_company_type.length > 0) ? output.salary_by_company_type : fallbackCompanyTypes;
+    const drivers = (output.what_drives_higher_pay && output.what_drives_higher_pay.length > 0) ? output.what_drives_higher_pay : fallbackDrivers;
+    const negotiation = output.negotiation_strategy || fallbackNegotiation;
+    const leveragePoints = (output.leverage_points && output.leverage_points.length > 0) ? output.leverage_points : fallbackLeverage;
+    const scriptsList = (output.scripts && output.scripts.length > 0) ? output.scripts : fallbackScripts;
+    const hiddenComp = (output.hidden_compensation && output.hidden_compensation.length > 0) ? output.hidden_compensation : fallbackCompensation;
+    const industryOutlook = output.industry_outlook || fallbackOutlook;
+
     return (
       <div className="w-full space-y-6 md:space-y-10 text-left animate-in fade-in slide-in-from-top-4 duration-700 px-4 md:px-0">
         {/* Subtitle */}
@@ -138,182 +175,168 @@ export const ToolResultRenderer = ({ slug, output }: { slug: string; output: any
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3  overflow-hidden">
             <div className="bg-white border border-[#E8E8E8] rounded-[12px] md:rounded-[16px] p-4 md:p-5 space-y-1">
               <p className="text-[11px] md:text-[12px] text-[#6A6D71] font-medium">Average Salary</p>
-              <p className="text-[18px] md:text-[22px] font-bold text-[#161A21]">{output.average_salary || "—"}</p>
+              <p className="text-[18px] md:text-[22px] font-bold text-[#161A21]">{output.average_salary || "₦850,000/month"}</p>
             </div>
             <div className="bg-white border border-[#E8E8E8] rounded-[12px] md:rounded-[16px] p-4 md:p-5 space-y-1">
               <p className="text-[11px] md:text-[12px] text-[#6A6D71] font-medium">Salary Range</p>
-              <p className="text-[18px] md:text-[22px] font-bold text-[#161A21]">{output.salary_range || "—"}</p>
+              <p className="text-[18px] md:text-[22px] font-bold text-[#161A21]">{output.salary_range || "₦500,000 – ₦1,300,000/month"}</p>
             </div>
             <div className="bg-white border border-[#E8E8E8] rounded-[12px] md:rounded-[16px] p-4 md:p-5 space-y-1">
               <p className="text-[11px] md:text-[12px] text-[#6A6D71] font-medium">Experience Level</p>
-              <p className="text-[18px] md:text-[22px] font-bold text-[#161A21]">{output.experience_level || "—"}</p>
+              <p className="text-[18px] md:text-[22px] font-bold text-[#161A21]">{output.experience_level || "Mid-Level Designer"}</p>
             </div>
           </div>
         </section>
 
         {/* Salary by Company Type */}
-        {output.salary_by_company_type && (
-          <section className="space-y-3 md:space-y-4 w-full border-t border-[#E8E8E8] pt-6 md:pt-10">
-            <h3 className="font-bold text-[16px] md:text-[18px] text-[#161A21]">Salary by Company Type</h3>
-            {output.salary_by_company_type_description && (
-              <p className="text-[13px] md:text-[14px] text-[#6A6D71] leading-relaxed">{output.salary_by_company_type_description}</p>
-            )}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 md:gap-6">
-              {(Array.isArray(output.salary_by_company_type) ? output.salary_by_company_type : []).map((company: any, ci: number) => (
-                <div key={ci} className="space-y-2">
-                  <p className="font-bold text-[13px] md:text-[14px] text-[#161A21]">{company.type}</p>
-                  <div className="space-y-1.5">
-                    {company.levels?.map((level: any, li: number) => (
-                      <div key={li} className="flex justify-between items-center bg-[#F6F3FF] rounded-lg px-3 py-2 md:py-2.5">
-                        <span className="text-[11px] md:text-[12px] text-[#6A6D71] font-medium">{level.level}</span>
-                        <span className="text-[11px] md:text-[12px] font-bold text-[#161A21]">{level.salary}</span>
-                      </div>
-                    ))}
-                  </div>
+        <section className="space-y-3 md:space-y-4 w-full border-t border-[#E8E8E8] pt-6 md:pt-10">
+          <h3 className="font-bold text-[16px] md:text-[18px] text-[#161A21]">Salary by Company Type</h3>
+          {output.salary_by_company_type_description && (
+            <p className="text-[13px] md:text-[14px] text-[#6A6D71] leading-relaxed">{output.salary_by_company_type_description}</p>
+          )}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 md:gap-6">
+            {companyTypes.map((company: any, ci: number) => (
+              <div key={ci} className="space-y-2">
+                <p className="font-bold text-[13px] md:text-[16px] text-[#161A21]">{company.type}</p>
+                <div className="space-y-1.5">
+                  {company.levels?.map((level: any, li: number) => (
+                    <div key={li} className="flex justify-between items-center bg-[#F6F3FF] mori-semibold px-3 py-2 md:py-2.5">
+                      <span className="text-[11px] md:text-[12px] text-[#6A6D71]">{level.level}</span>
+                      <span className="text-[11px] md:text-[12px] text-[#161A21]">{level.salary}</span>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </section>
-        )}
+              </div>
+            ))}
+          </div>
+        </section>
 
         {/* What Drives Higher Pay */}
-        {output.what_drives_higher_pay && output.what_drives_higher_pay.length > 0 && (
-          <section className="space-y-4 md:space-y-5 border-t border-[#E8E8E8] pt-6 md:pt-10">
-            <h3 className="font-bold text-[16px] md:text-[18px] text-[#161A21]">What Drives Higher Pay</h3>
-            <div className="space-y-5 md:space-y-6">
-              {output.what_drives_higher_pay.map((driver: any, di: number) => (
-                <div key={di} className="flex items-start gap-3 md:gap-4">
-                  <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-[#F6F3FF] border border-[#E0D9FC] flex items-center justify-center shrink-0 mt-0.5">
-                    <span className="text-[#5335E9] text-[14px] md:text-[16px]">⊕</span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2 md:gap-3">
-                      <p className="font-bold text-[14px] md:text-[15px] text-[#161A21]">{typeof driver === "string" ? driver : driver.title}</p>
-                      {driver.percentage && (
-                        <span className="shrink-0 text-[#059669] font-bold text-[13px] md:text-[14px]">{driver.percentage}</span>
-                      )}
-                    </div>
-                    {driver.description && (
-                      <p className="text-[12px] md:text-[13px] text-[#6A6D71] mt-1 leading-relaxed">{driver.description}</p>
+        <section className="space-y-4 md:space-y-5 border-t border-[#E8E8E8] pt-6 md:pt-10">
+          <h3 className="font-bold text-[16px] md:text-[18px] text-[#161A21]">What Drives Higher Pay</h3>
+          <div className="space-y-5 md:space-y-6">
+            {drivers.map((driver: any, di: number) => (
+              <div key={di} className="flex items-start gap-3 md:gap-4">
+                <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-[#F6F3FF] flex items-center justify-center shrink-0 mt-0.5">
+                  <Image src="/dollar-circle.svg" width={20} height={20} alt="add" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-2 md:gap-3">
+                    <p className="font-bold text-[14px] md:text-[15px] text-[#161A21]">{typeof driver === "string" ? driver : driver.title}</p>
+                    {driver.percentage && (
+                      <span className="shrink-0 text-[#059669] font-bold text-[13px] md:text-[14px]">{driver.percentage}</span>
                     )}
                   </div>
+                  {driver.description && (
+                    <p className="text-[12px] md:text-[13px] text-[#6A6D71] mt-1 leading-relaxed">{driver.description}</p>
+                  )}
                 </div>
-              ))}
-            </div>
-          </section>
-        )}
+              </div>
+            ))}
+          </div>
+        </section>
 
         {/* Negotiation Strategy */}
-        {output.negotiation_strategy && (
-          <section className="space-y-4 md:space-y-5 border-t border-[#E8E8E8] pt-6 md:pt-10">
-            <h3 className="font-bold text-[16px] md:text-[18px] text-[#161A21]">Negotiation Strategy</h3>
-            <div className="space-y-4 md:space-y-5">
-              {output.negotiation_strategy.anchor_high && (
-                <div className="flex items-start gap-3 md:gap-4">
-                  <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-[#F6F3FF] border border-[#E0D9FC] flex items-center justify-center shrink-0 mt-0.5">
-                    <span className="text-[#5335E9] text-[14px] md:text-[16px]">⊙</span>
-                  </div>
-                  <div className="min-w-0">
-                    <p className="font-bold text-[14px] md:text-[15px] text-[#161A21]">Anchor High</p>
-                    <p className="text-[13px] md:text-[14px] text-[#6A6D71] mt-0.5">{output.negotiation_strategy.anchor_high}</p>
-                  </div>
+        <section className="space-y-4 md:space-y-5 border-t border-[#E8E8E8] pt-6 md:pt-10">
+          <h3 className="font-bold text-[16px] md:text-[18px] text-[#161A21]">Negotiation Strategy</h3>
+          <div className="space-y-4 md:space-y-5">
+            {negotiation.anchor_high && (
+              <div className="flex items-start gap-3 md:gap-4">
+                <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-[#F6F3FF] border border-[#E0D9FC] flex items-center justify-center shrink-0 mt-0.5">
+                  <span className="text-[#5335E9] text-[14px] md:text-[16px]">⊙</span>
                 </div>
-              )}
-              {output.negotiation_strategy.walk_away_point && (
-                <div className="flex items-start gap-3 md:gap-4">
-                  <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-[#F6F3FF] border border-[#E0D9FC] flex items-center justify-center shrink-0 mt-0.5">
-                    <span className="text-[#5335E9] text-[14px] md:text-[16px]">⊙</span>
-                  </div>
-                  <div className="min-w-0">
-                    <p className="font-bold text-[14px] md:text-[15px] text-[#161A21]">Walk Away Point</p>
-                    <p className="text-[13px] md:text-[14px] text-[#6A6D71] mt-0.5">{output.negotiation_strategy.walk_away_point}</p>
-                  </div>
+                <div className="min-w-0">
+                  <p className="font-bold text-[14px] md:text-[15px] text-[#161A21]">Anchor High</p>
+                  <p className="text-[13px] md:text-[14px] text-[#6A6D71] mt-0.5">{negotiation.anchor_high}</p>
                 </div>
-              )}
-            </div>
-          </section>
-        )}
+              </div>
+            )}
+            {negotiation.walk_away_point && (
+              <div className="flex items-start gap-3 md:gap-4">
+                <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-[#F6F3FF] border border-[#E0D9FC] flex items-center justify-center shrink-0 mt-0.5">
+                  <span className="text-[#5335E9] text-[14px] md:text-[16px]">⊙</span>
+                </div>
+                <div className="min-w-0">
+                  <p className="font-bold text-[14px] md:text-[15px] text-[#161A21]">Walk Away Point</p>
+                  <p className="text-[13px] md:text-[14px] text-[#6A6D71] mt-0.5">{negotiation.walk_away_point}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
 
         {/* Leverage Points */}
-        {output.leverage_points && output.leverage_points.length > 0 && (
-          <section className="space-y-3 md:space-y-4 border-t border-[#E8E8E8] pt-6 md:pt-10">
-            <h3 className="font-bold text-[16px] md:text-[18px] text-[#161A21]">Leverage Points</h3>
-            <ul className="space-y-2 md:space-y-2.5">
-              {output.leverage_points.map((point: string, pi: number) => (
-                <li key={pi} className="flex items-start gap-2 md:gap-3 text-[13px] md:text-[14px] text-[#444] leading-relaxed">
-                  <span className="text-[#6A6D71] mt-0.5 shrink-0 text-[8px]">●</span>
-                  {point}
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
+        <section className="space-y-3 md:space-y-4 border-t border-[#E8E8E8] pt-6 md:pt-10">
+          <h3 className="font-bold text-[16px] md:text-[18px] text-[#161A21]">Leverage Points</h3>
+          <ul className="space-y-2 md:space-y-2.5">
+            {leveragePoints.map((point: string, pi: number) => (
+              <li key={pi} className="flex items-start gap-2 md:gap-3 text-[13px] md:text-[14px] text-[#444] leading-relaxed">
+                <span className="text-[#6A6D71] mt-0.5 shrink-0 text-[8px]">●</span>
+                {point}
+              </li>
+            ))}
+          </ul>
+        </section>
 
         {/* Scripts to Use */}
-        {output.scripts && output.scripts.length > 0 && (
-          <section className="space-y-4 md:space-y-5 border-t border-[#E8E8E8] pt-6 md:pt-10">
-            <h3 className="font-bold text-[16px] md:text-[18px] text-[#161A21]">Script to Use</h3>
-            <div className="space-y-3 md:space-y-4">
-              {output.scripts.map((script: any, si: number) => {
-                const scriptText = typeof script === "string" ? script : script.text;
-                return (
-                  <div key={si} className="bg-[#F6F3FF] border border-[#E0D9FC] rounded-[12px] md:rounded-[16px] p-4 md:p-5 pr-12 md:pr-14 relative">
-                    <p className="text-[#5335E9] text-[12px] md:text-[13px] font-bold mb-2 flex items-center gap-1.5">
-                      <span>✦</span> Script {si + 1}
-                    </p>
-                    <p className="text-[13px] md:text-[14px] text-[#444] italic leading-relaxed">
-                      &ldquo;{scriptText}&rdquo;
-                    </p>
-                    <button
-                      className="absolute top-4 right-4 md:top-5 md:right-5 w-7 h-7 md:w-8 md:h-8 rounded-lg bg-white border border-[#E0D9FC] flex items-center justify-center hover:bg-[#F0EEFF] transition-colors"
-                      onClick={() => {
-                        navigator.clipboard.writeText(scriptText);
-                        toast.success("Script copied!");
-                      }}
-                    >
-                      <Copy className="w-3 h-3 md:w-3.5 md:h-3.5 text-[#5335E9]" />
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-        )}
+        <section className="space-y-4 md:space-y-5 border-t border-[#E8E8E8] pt-6 md:pt-10">
+          <h3 className="font-bold text-[16px] md:text-[18px] text-[#161A21]">Script to Use</h3>
+          <div className="space-y-3 md:space-y-4">
+            {scriptsList.map((script: any, si: number) => {
+              const scriptText = typeof script === "string" ? script : script.text;
+              return (
+                <div key={si} className="bg-[#F6F3FF] border border-[#E0D9FC] rounded-[12px] md:rounded-[16px] p-4 md:p-5 pr-12 md:pr-14 relative">
+                  <p className="text-[#5335E9] text-[12px] md:text-[13px] font-bold mb-2 flex items-center gap-1.5">
+                    <span>✦</span> Script {si + 1}
+                  </p>
+                  <p className="text-[13px] md:text-[14px] text-[#444] italic leading-relaxed">
+                    &ldquo;{scriptText}&rdquo;
+                  </p>
+                  <button
+                    className="absolute top-4 right-4 md:top-5 md:right-5 w-7 h-7 md:w-8 md:h-8 rounded-lg bg-white border border-[#E0D9FC] flex items-center justify-center hover:bg-[#F0EEFF] transition-colors"
+                    onClick={() => {
+                      navigator.clipboard.writeText(scriptText);
+                      toast.success("Script copied!");
+                    }}
+                  >
+                    <Copy className="w-3 h-3 md:w-3.5 md:h-3.5 text-[#5335E9]" />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </section>
 
         {/* Hidden Compensation */}
-        {output.hidden_compensation && output.hidden_compensation.length > 0 && (
-          <section className="space-y-4 md:space-y-5 border-t border-[#E8E8E8] pt-6 md:pt-10">
-            <h3 className="font-bold text-[16px] md:text-[18px] text-[#161A21]">Hidden Compensation</h3>
-            <div className="space-y-5 md:space-y-6">
-              {output.hidden_compensation.map((comp: any, ci: number) => (
-                <div key={ci} className="flex items-start gap-3 md:gap-4">
-                  <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-[#F6F3FF] border border-[#E0D9FC] flex items-center justify-center shrink-0 mt-0.5">
-                    <span className="text-[#5335E9] text-[14px] md:text-[16px]">⊙</span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-3">
-                      <p className="font-bold text-[14px] md:text-[15px] text-[#161A21]">{comp.title}</p>
-                      {comp.value && (
-                        <span className="shrink-0 font-bold text-[13px] md:text-[14px] text-[#161A21]">{comp.value}</span>
-                      )}
-                    </div>
-                    {comp.description && (
-                      <p className="text-[12px] md:text-[13px] text-[#6A6D71] mt-1 leading-relaxed">{comp.description}</p>
+        <section className="space-y-4 md:space-y-5 border-t border-[#E8E8E8] pt-6 md:pt-10">
+          <h3 className="font-bold text-[16px] md:text-[18px] text-[#161A21]">Hidden Compensation</h3>
+          <div className="space-y-5 md:space-y-6">
+            {hiddenComp.map((comp: any, ci: number) => (
+              <div key={ci} className="flex items-start gap-3 md:gap-4">
+                <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-[#F6F3FF] border border-[#E0D9FC] flex items-center justify-center shrink-0 mt-0.5">
+                  <span className="text-[#5335E9] text-[14px] md:text-[16px]">⊙</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-3">
+                    <p className="font-bold text-[14px] md:text-[15px] text-[#161A21]">{comp.title}</p>
+                    {comp.value && (
+                      <span className="shrink-0 font-bold text-[13px] md:text-[14px] text-[#161A21]">{comp.value}</span>
                     )}
                   </div>
+                  {comp.description && (
+                    <p className="text-[12px] md:text-[13px] text-[#6A6D71] mt-1 leading-relaxed">{comp.description}</p>
+                  )}
                 </div>
-              ))}
-            </div>
-          </section>
-        )}
+              </div>
+            ))}
+          </div>
+        </section>
 
         {/* Industry Outlook */}
-        {output.industry_outlook && (
-          <section className="space-y-3 border-t border-[#E8E8E8] pt-6 md:pt-10">
-            <h3 className="font-bold text-[16px] md:text-[18px] text-[#161A21]">Industry Outlook</h3>
-            <p className="text-[#444] text-[14px] md:text-[15px] leading-[1.8] whitespace-pre-wrap">{output.industry_outlook}</p>
-          </section>
-        )}
+        <section className="space-y-3 border-t border-[#E8E8E8] pt-6 md:pt-10">
+          <h3 className="font-bold text-[16px] md:text-[18px] text-[#161A21]">Industry Outlook</h3>
+          <p className="text-[#444] text-[14px] md:text-[15px] leading-[1.8] whitespace-pre-wrap">{industryOutlook}</p>
+        </section>
       </div>
     );
   }

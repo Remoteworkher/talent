@@ -8,6 +8,7 @@ import Image from "next/image";
 import { toast } from "sonner";
 import { useCareerStore } from "@/lib/store/useCareerStore";
 import { ToolResultRenderer } from "./ToolResultRenderer";
+import { ResultPageSkeleton } from "@/components/reusables/Skeletons";
 
 interface BaseResultPageProps {
   slug: string;
@@ -34,11 +35,7 @@ export const BaseResultPage: React.FC<BaseResultPageProps> = ({
   }, []);
 
   if (isLoadingTool || !hydrated) {
-    return (
-      <div className="flex justify-center items-center h-[400px]">
-        <Loader2 className="w-8 h-8 animate-spin text-[#322FEB]" />
-      </div>
-    );
+    return <ResultPageSkeleton />;
   }
 
   if (results.length === 0) {
@@ -91,32 +88,9 @@ export const BaseResultPage: React.FC<BaseResultPageProps> = ({
 
         <div className="w-full space-y-12">
             <div className="space-y-16">
-              {results.map((res, idx) => (
-                <div key={idx} className="relative w-full flex flex-col items-center animate-in fade-in slide-in-from-top-4 duration-500">
-                  {/* <div className="absolute -top-4 left-6 bg-white px-3 py-1 rounded-[20px] border border-[#E8E8E8] text-[11px] font-bold text-[#6A6D71] z-10 shadow-sm">
-                    VERSION {results.length - idx}
-                  </div> */}
-                  <ToolResultRenderer slug={slug} output={res.payload.output} />
-                  
-                  {/* Common Actions like Download PDF could go here if needed across all tools */}
-                  {/* <div className="mt-6 flex flex-col sm:flex-row gap-3 w-full">
-                     <Button variant="outline" className="h-12 rounded-xl gap-2 hover:bg-gray-50 text-[14px] w-full sm:w-auto px-6" onClick={() => {
-                        const output = res.payload.output;
-                        const text = output.email_body || output.cover_letter_text || output.post_text || output.summary_text || output.content || (Array.isArray(output) ? output.join('\n') : JSON.stringify(output));
-                        navigator.clipboard.writeText(text);
-                        toast.success("Copied to clipboard!");
-                     }}>
-                        <Copy className="w-4 h-4" /> Copy result
-                     </Button>
-                     {downloadPdf && (
-                        <Button className="h-12 rounded-xl gap-2 bg-[#161A21] hover:bg-black text-[14px] w-full sm:w-auto px-6" onClick={() => downloadPdf(res.payload.output)}>
-                           <Download className="w-4 h-4" /> Download PDF
-                        </Button>
-                     )}
-                  </div> */}
-
-                </div>
-              ))}
+              <div className="relative w-full flex flex-col items-center animate-in fade-in slide-in-from-top-4 duration-500">
+                <ToolResultRenderer slug={slug} output={results[0].payload.output} />
+              </div>
             </div>
         </div>
       </div>

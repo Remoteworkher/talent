@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import ResourceDetail from "@/components/Resources/ResourceDetail";
 import { useResourceDetail } from "@/hooks/useResources";
 import { useUserData } from "@/hooks/userData";
-import { Loader2 } from "lucide-react";
+import { ResourceDetailSkeleton } from "@/components/reusables/Skeletons";
 
 export default function ResourceDetailPage() {
   const { uid } = useParams();
@@ -14,11 +14,7 @@ export default function ResourceDetailPage() {
   const { data: userData } = useUserData();
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <Loader2 className="w-10 h-10 animate-spin text-[#322FEB]" />
-      </div>
-    );
+    return <ResourceDetailSkeleton />;
   }
 
   if (!resource) {

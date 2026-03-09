@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useUserData } from "@/hooks/userData";
 import { useTokens } from "@/hooks/useTokens";
 import { Loader2 } from "lucide-react";
+import { PlansTabSkeleton } from "@/components/reusables/Skeletons";
 import { toast } from "sonner";
 
 interface PlanCardProps {
@@ -93,11 +94,7 @@ const PlansTab = () => {
   };
 
   if (plansLoading || userLoading) {
-    return (
-      <div className="flex justify-center py-20">
-        <Loader2 className="w-8 h-8 animate-spin text-[#322FEB]" />
-      </div>
-    );
+    return <PlansTabSkeleton />;
   }
 
   // Use monthly plans for this view as per design
