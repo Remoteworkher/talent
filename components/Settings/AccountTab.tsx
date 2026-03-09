@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { Loader2, AlertTriangle, Info, Upload, FileText, X } from "lucide-react";
 
 import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
+import { AccountSkeleton } from "../reusables/Skeletons";
 
 const AccountTab = () => {
   const router = useRouter();
@@ -120,11 +121,7 @@ const AccountTab = () => {
   };
 
   if (profileLoading) {
-    return (
-      <div className="flex justify-center py-20">
-        <Loader2 className="w-8 h-8 animate-spin text-[#322FEB]" />
-      </div>
-    );
+    return <AccountSkeleton />;
   }
 
   const isChanged = 

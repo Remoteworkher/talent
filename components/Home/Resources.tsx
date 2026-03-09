@@ -4,13 +4,17 @@ import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import Resource from "../reusables/Resource";
 import { useResources } from "@/hooks/useResources";
-import { Loader2 } from "lucide-react";
+import { ResourceListSkeleton } from "../reusables/Skeletons";
 
 const Resources = () => {
   const router = useRouter();
   const { data, isLoading } = useResources();
 
   const resources = data?.groups?.flatMap(group => group.resources).slice(0, 3) || [];
+
+  if (isLoading) {
+    return <ResourceListSkeleton />;
+  }
 
   return (
     <div className="p-3 border border-[#E8E8E8] rounded-[16px] space-y-3">
@@ -29,12 +33,8 @@ const Resources = () => {
           </Button>
         </div>
       </div>
-      
-      {isLoading ? (
-        <div className="flex justify-center py-8">
-          <Loader2 className="w-6 h-6 animate-spin text-[#322FEB]" />
-        </div>
-      ) : resources.length > 0 ? (
+
+      {resources.length > 0 ? (
         <section className="space-y-3">
           {resources.map((resource) => (
             <Resource key={resource.uid} resource={resource} />

@@ -3,18 +3,21 @@ import Image from "next/image";
 import React from "react";
 import { Button } from "../ui/button";
 import { useUserData } from "@/hooks/userData";
+import { WelcomeSkeleton } from "../reusables/Skeletons";
 
 const Welcome = () => {
   const { data, isLoading } = useUserData();
+
+  if (isLoading) {
+    return <WelcomeSkeleton />;
+  }
 
   return (
     <div className="p-5 rounded-[16px] flex justify-between items-center bg-gradient-to-r from-[#F3F8FF] to-[#FFFFFF]">
       <div className="flex justify-start items-center gap-4">
         <div>
           <div className="mori-semibold text-[24px] text-[#161A21]">
-            {isLoading
-              ? "Welcome back!"
-              : `Welcome back! ${data?.first_name ?? ""} 👋`}
+            Welcome back! {data?.first_name ?? ""} 👋
           </div>
           {data?.goal && (
             <div className="text-[14px] text-[#161A21]">

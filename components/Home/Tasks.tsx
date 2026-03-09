@@ -5,17 +5,13 @@ import Image from "next/image";
 import ProgressBar from "../reusables/ProgressBar";
 import Task from "../reusables/Task";
 import { useTodayTasks } from "@/hooks/useTask";
-import { Loader2 } from "lucide-react";
+import { TaskListSkeleton } from "../reusables/Skeletons";
 
 const Tasks = () => {
   const { data, isLoading, error } = useTodayTasks();
 
   if (isLoading) {
-    return (
-      <div className="border border-[#E8E8E8] rounded-[24px] p-8 flex justify-center items-center bg-white h-[400px]">
-        <Loader2 className="w-8 h-8 animate-spin text-[#322FEB]" />
-      </div>
-    );
+    return <TaskListSkeleton icon title="Your Tasks for Today" />;
   }
 
   if (error) {

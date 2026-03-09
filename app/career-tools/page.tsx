@@ -6,7 +6,7 @@ import ToolCard from "@/components/reusables/ToolCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React, { useState } from "react";
 import { useToolTypes, useToolGroups, Tool } from "@/hooks/useCareerTools";
-import { Loader2 } from "lucide-react";
+import { CareerToolsPageSkeleton, CareerToolsGridSkeleton } from "@/components/reusables/Skeletons";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useTokens } from "@/hooks/useTokens";
 import { toast } from "sonner";
@@ -68,11 +68,7 @@ const Page = () => {
   const { data: toolGroups, isLoading: isLoadingGroups } = useToolGroups(activeTab);
 
   if (isLoadingTypes) {
-    return (
-      <div className="flex justify-center items-center h-[400px]">
-        <Loader2 className="w-8 h-8 animate-spin text-[#322FEB]" />
-      </div>
-    );
+    return <CareerToolsPageSkeleton />;
   }
 
   return (
@@ -104,9 +100,7 @@ const Page = () => {
 
           <TabsContent value={activeTab} className="space-y-8 pt-4">
             {isLoadingGroups ? (
-              <div className="flex justify-center items-center py-20">
-                <Loader2 className="w-8 h-8 animate-spin text-[#322FEB]" />
-              </div>
+              <CareerToolsGridSkeleton />
             ) : (
               toolGroups?.map((group) => (
                 <section key={group.uid} className="space-y-5">

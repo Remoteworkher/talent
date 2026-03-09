@@ -13,7 +13,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 import { useResources, useBuyResource, useDownloadResource, ResourceItem } from "@/hooks/useResources";
 import { useUserData } from "@/hooks/userData";
-import { Loader2 } from "lucide-react";
+import { ResourcesPageSkeleton } from "@/components/reusables/Skeletons";
 import { toast } from "sonner";
 
 import { useRouter } from "next/navigation";
@@ -130,9 +130,7 @@ export default function ResourcesPage() {
           </TabsList>
 
           {isResourcesLoading ? (
-            <div className="flex justify-center items-center py-20">
-              <Loader2 className="w-10 h-10 animate-spin text-[#322FEB]" />
-            </div>
+            <ResourcesPageSkeleton />
           ) : (
             <>
               <TabsContent value={selectedResourceType || "all"} className="space-y-12">
