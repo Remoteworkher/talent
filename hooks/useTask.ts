@@ -32,6 +32,18 @@ export interface LibraryTasksData {
   tasks: Task[];
 }
 
+export interface CompletedTasksData {
+  tasks: Task[];
+}
+
+export interface TaskStats {
+  current_day: number;
+  total_days: number;
+  completed_due_tasks_count: number;
+  due_tasks_count: number;
+  roadmap_progress_percentage: number;
+}
+
 export interface SkipTaskData {
   task: Task;
 }
@@ -76,9 +88,41 @@ export const useTaskLibrary = () => {
   });
 };
 
+const fetchCompletedTasks = async (): Promise<CompletedTasksData> => {
+  const res = await axios.get<ApiResponse<CompletedTasksData>>(
+    "/api/talent/tasks/completed",
+  );
+  return res.data.data;
+};
+
+export const useCompletedTasks = () => {
+  return useQuery<CompletedTasksData>({
+    queryKey: ["completed-tasks"],
+    queryFn: fetchCompletedTasks,
+    staleTime: 1000 * 60 * 5,
+  });
+};
+
+const fetchTaskStats = async (): Promise<TaskStats> => {
+  const res = await axios.get<ApiResponse<TaskStats>>(
+    "/api/talent/tasks/stats",
+  );
+  return res.data.data;
+};
+
+export const useTaskStats = () => {
+  return useQuery<TaskStats>({
+    queryKey: ["task-stats"],
+    queryFn: fetchTaskStats,
+    staleTime: 1000 * 60 * 5,
+  });
+};
+
 // --- Skip Task Mutation ---
 
-const skipTask = async (id: number | string): Promise<ApiResponse<SkipTaskData>> => {
+const skipTask = async (
+  id: number | string,
+): Promise<ApiResponse<SkipTaskData>> => {
   const res = await axios.post<ApiResponse<SkipTaskData>>(
     `/api/talent/tasks/${id}/skip`,
   );

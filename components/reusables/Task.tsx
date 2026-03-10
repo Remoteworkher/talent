@@ -31,14 +31,14 @@ const Task = ({ task }: { task: TaskType }) => {
     if (task.id) {
       skip(task.id, {
         onSuccess: () => toast.success("Task skipped"),
-        onError: () => toast.error("Failed to skip task")
+        onError: () => toast.error("Failed to skip task"),
       });
     } else {
-       // Fallback to task_id if numeric id is missing, 
-       // though the API spec suggests numeric ID in URL
-       skip(task.task_id, {
+      // Fallback to task_id if numeric id is missing,
+      // though the API spec suggests numeric ID in URL
+      skip(task.task_id, {
         onSuccess: () => toast.success("Task skipped"),
-        onError: () => toast.error("Failed to skip task")
+        onError: () => toast.error("Failed to skip task"),
       });
     }
   };
@@ -54,9 +54,9 @@ const Task = ({ task }: { task: TaskType }) => {
   // Determine if this is an external redirect based on:
   // 1. API completion_type (if explicitly set to something other than "auto")
   // 2. OR if the resolved route is an absolute URL starting with http/https
-  const isExternal = 
-    (task.completion_type && task.completion_type !== "auto") || 
-    (taskRoute?.startsWith("http"));
+  const isExternal =
+    (task.completion_type && task.completion_type !== "auto") ||
+    taskRoute?.startsWith("http");
 
   const handleAction = async (e: React.MouseEvent) => {
     // Special internal flow: email verification needs OTP trigger first
@@ -90,14 +90,13 @@ const Task = ({ task }: { task: TaskType }) => {
     }
   };
 
-
   return (
     <div className="border border-[#E8E8E8] rounded-[12px] p-4 relative group hover:border-[#322FEB] transition-all bg-white">
-      <section className="flex justify-start gap-3">
-        <Checkbox className="mt-1" checked={task.completed} />
-        <div className="grid grid-cols-1 md:grid-cols-7 w-full gap-4">
-          <div className="md:col-span-5 space-y-2">
-            <div className="flex justify-start items-center gap-3">
+      <section className="flex justify-start md:items-center gap-3">
+        <Checkbox className="" checked={task.completed} />
+        <div className="space-y-3 md:space-y-0 md:flex md:justify-between md:items-center w-full gap-">
+          <div className="">
+            {/* <div className="flex justify-start items-center gap-3">
               {isUrgent && (
                 <div className="text-[#E16614] text-[11px] bg-[#FFF3EB] rounded-full px-2.5 py-0.5 mori-semibold uppercase tracking-wider">
                   URGENT
@@ -114,18 +113,18 @@ const Task = ({ task }: { task: TaskType }) => {
                   {task.time_estimate}
                 </div>
               </div>
-            </div>
+            </div> */}
             <div className="text-[#161A21] text-[16px] mori-semibold leading-tight">
               {task.title}
             </div>
-            <div className="text-[14px] text-[#6A6D71] leading-relaxed">
+            {/* <div className="text-[14px] text-[#6A6D71] leading-relaxed">
               {task.description}
-            </div>
+            </div> */}
           </div>
-          <div className="md:col-span-2 flex md:justify-end items-center">
+          <div className="flex md:justify-end items-center">
             {!task.completed && (
-              <Button 
-                onClick={handleAction} 
+              <Button
+                onClick={handleAction}
                 className="px-6 rounded-full bg-[#322FEB] hover:bg-[#2826c8] flex items-center gap-2"
                 disabled={isTriggering}
               >
@@ -141,7 +140,7 @@ const Task = ({ task }: { task: TaskType }) => {
           </div>
         </div>
       </section>
-      
+
       {/* Skip Button */}
       {/* <button 
         onClick={handleSkip}
@@ -153,16 +152,24 @@ const Task = ({ task }: { task: TaskType }) => {
       </button> */}
 
       <Dialog open={isTriggering}>
-        <DialogContent 
-          className="sm:max-w-md p-0 overflow-hidden border-none" 
+        <DialogContent
+          className="sm:max-w-md p-0 overflow-hidden border-none"
           showCloseButton={false}
           onPointerDownOutside={(e) => e.preventDefault()}
           onEscapeKeyDown={(e) => e.preventDefault()}
         >
           <div className="p-10 bg-white">
-            <ProcessModal 
-              title={task.task_type === "email_verification" ? "Sending Verification Code" : "Preparing Onboarding"}
-              description={task.task_type === "email_verification" ? "We're sending a fresh verification code to your email." : "Taking you to the onboarding flow..."}
+            <ProcessModal
+              title={
+                task.task_type === "email_verification"
+                  ? "Sending Verification Code"
+                  : "Preparing Onboarding"
+              }
+              description={
+                task.task_type === "email_verification"
+                  ? "We're sending a fresh verification code to your email."
+                  : "Taking you to the onboarding flow..."
+              }
             />
           </div>
         </DialogContent>
