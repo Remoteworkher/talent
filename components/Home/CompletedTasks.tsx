@@ -2,13 +2,12 @@
 
 import React from "react";
 import Image from "next/image";
-import ProgressBar from "../reusables/ProgressBar";
 import Task from "../reusables/Task";
-import { useTaskLibrary } from "@/hooks/useTask";
+import { useCompletedTasks } from "@/hooks/useTask";
 import { TaskListSkeleton } from "../reusables/Skeletons";
 
 const CompletedTasks = () => {
-  const { data: allTasks, isLoading, error } = useTaskLibrary();
+  const { data, isLoading, error } = useCompletedTasks();
 
   if (isLoading) {
     return <TaskListSkeleton title="Completed Tasks" />;
@@ -22,30 +21,45 @@ const CompletedTasks = () => {
     );
   }
 
-  const tasks = allTasks?.tasks?.filter(t => t.completed === true) || [];
+  const tasks = data?.tasks || [];
 
   return (
     <div
-      className="border border-[#E8E8E8] rounded-[24px] p-3 space-y-4 bg-white min-h-[400px]"
+      className="border border-[#E8E8E8] rounded-[24px] p-3 space-y-4 bg-white"
       style={{
         boxShadow: "0px 1px 2px 0px #0A0D1408",
       }}
     >
-      <section className="md:flex md:justify-between md:items-center p-2">
+      <section className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 p-2">
         <div className="flex justify-start items-center gap-2">
+          <Image
+            src={`/checkmark-badge2.svg`}
+            width={24}
+            height={24}
+            alt="focus"
+          />
           <div className="text-[#161A21] mori-semibold text-[16px]">
             Completed Tasks
           </div>
         </div>
       </section>
-      <section className="space-y-3 overflow-y-auto h-[400px]">
+      <section className="space-y-3 overflow-y-auto">
         {tasks.length > 0 ? (
-          tasks.map((task) => (
-            <Task key={task.task_id} task={task} />
-          ))
+          tasks.map((task) => <Task key={task.task_id} task={task} />)
         ) : (
-          <div className="py-12 text-center text-[#6A6D71]">
-            <p>No completed tasks yet.</p>
+          <div className="py-8 flex flex-col items-center justify-center">
+            <div className="w-full max-w-[172px]">
+              <Image
+                src={`/empty-tasks.svg`}
+                width={172}
+                height={128}
+                alt="no completed tasks"
+                className="w-full h-auto"
+              />
+            </div>
+            <div className="text-[#181D27] mori-semibold text-center text-[14px] mt-4">
+              No Completed Tasks to show
+            </div>
           </div>
         )}
       </section>

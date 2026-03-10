@@ -31,7 +31,7 @@ const RoadmapTasks = () => {
         boxShadow: "0px 1px 2px 0px #0A0D1408",
       }}
     >
-      <section className="md:flex md:justify-between md:items-center p-2">
+      <section className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 p-2">
         <div className="flex justify-start items-center gap-2">
           <Image src={`/atom-blue.svg`} width={24} height={24} alt="focus" />
           <div className="text-[#161A21] mori-semibold text-[16px]">
@@ -39,11 +39,9 @@ const RoadmapTasks = () => {
           </div>
         </div>
       </section>
-      <section className="space-y-3 overflow-y-auto h-[400px]">
+      <section className="space-y-3 overflow-y-auto">
         {tasks.length > 0 ? (
-          tasks.map((task) => (
-            <Task key={task.task_id} task={task} />
-          ))
+          tasks.map((task) => <Task key={task.task_id} task={task} />)
         ) : (
           <div className="py-12 text-center text-[#6A6D71]">
             <p>No roadmap tasks available.</p>
